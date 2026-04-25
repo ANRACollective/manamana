@@ -7,6 +7,15 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>manamana</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<!-- GA4 -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-S528P2LS3S"></script>
+<script>
+  window.dataLayer=window.dataLayer||[];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js',new Date());
+  gtag('config','G-S528P2LS3S');
+  function track(event,params){if(typeof gtag==='function')gtag('event',event,params||{});}
+</script>
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-font-smoothing:antialiased;}
 
@@ -714,6 +723,9 @@ function renderQ(i){
 function pick(key,val,btn){
   btn.classList.add('sel');
   answers[key]=val;
+  const qLabel=QUESTIONS.find(q=>q.key===key);
+  const optLabel=qLabel?.opts.find(o=>o.v===val)?.label||val;
+  track('question_answered',{question:key,answer:optLabel,step:qIdx+1});
   setTimeout(()=>{
     qIdx++;
     if(qIdx<QUESTIONS.length){
@@ -780,8 +792,8 @@ function showReveal(idx){
     priceChip,
   ].join('');
 
-  document.getElementById('btnGo').onclick=()=>window.open(r.maps,'_blank');
-  document.getElementById('btnShare').onclick=()=>shareIt(r);
+  document.getElementById('btnGo').onclick=()=>{track('maps_clicked',{restaurant:r.name,area:r.area,category:r.cat,price_tier:r.price});window.open(r.maps,'_blank');};
+  document.getElementById('btnShare').onclick=()=>{track('share_clicked',{restaurant:r.name});shareIt(r);};
 
   const rr=document.getElementById('btnReroll');
   if(rerollUsed||idx>0){
@@ -796,13 +808,14 @@ function showReveal(idx){
       setTimeout(()=>{document.getElementById('reveal').classList.remove('out');showReveal(1);},300);
     };
   }
+  track('restaurant_revealed',{restaurant:r.name,area:r.area,category:r.cat,price_tier:r.price,reroll:idx>0});
   go('reveal');
 }
 
 /* ── SHARE ── */
 function shareIt(r){
   const distTxt=r._dist!=null?` (${fmtDist(r._dist)} dari kau)`:'';
-  const txt=`manamana dah decide untuk aku\n\nMalam ni pergi ${r.name}${distTxt} — ${r.area}.\n\n"${r.why}"\n\nCuba kau punya: manamana.app`;
+  const txt=`manamana dah decide untuk aku\n\nMalam ni pergi ${r.name}${distTxt} — ${r.area}.\n\n"${r.why}"\n\nCuba kau punya: manamana.io`;
   if(navigator.share){navigator.share({text:txt}).catch(()=>{});}
   else{window.open('https://api.whatsapp.com/send?text='+encodeURIComponent(txt),'_blank');}
 }
@@ -811,8 +824,8 @@ function shareIt(r){
 document.getElementById('spMoment').innerHTML=
   `${M.label} — ${M.isWeekend?'hujung minggu':'hari biasa'}. <b>Lapar ke?</b>`;
 
-document.getElementById('splash').addEventListener('click',()=>{go('quiz');renderQ(0);});
-document.getElementById('spBtn').addEventListener('click',(e)=>{e.stopPropagation();go('quiz');renderQ(0);});
+document.getElementById('splash').addEventListener('click',()=>{track('quiz_start');go('quiz');renderQ(0);});
+document.getElementById('spBtn').addEventListener('click',(e)=>{e.stopPropagation();track('quiz_start');go('quiz');renderQ(0);});
 </script>
 </body>
 </html>

@@ -35,7 +35,6 @@ html,body{
   font-family:'Space Grotesk',-apple-system,sans-serif;
 }
 
-/* ── SCREENS ── */
 .screen{
   position:fixed;inset:0;
   display:flex;flex-direction:column;
@@ -46,241 +45,116 @@ html,body{
 .screen.active{opacity:1;pointer-events:all;transform:translateY(0);}
 .screen.out{opacity:0;transform:translateY(-16px);}
 
-/* ══════════════════
-   SPLASH
-══════════════════ */
+/* SPLASH */
 #splash{
   background:var(--bg);
-  justify-content:center;
-  align-items:center;
+  justify-content:center;align-items:center;
   text-align:center;
   padding:32px 36px max(env(safe-area-inset-bottom,0px),48px);
-  cursor:pointer;
-  overflow:hidden;
+  cursor:pointer;overflow:hidden;
 }
-
 .sp-glow{
-  position:absolute;
-  top:-20%;left:50%;transform:translateX(-50%);
+  position:absolute;top:-20%;left:50%;transform:translateX(-50%);
   width:110%;aspect-ratio:1;
   background:radial-gradient(ellipse,rgba(255,184,0,.16) 0%,rgba(255,68,34,.06) 50%,transparent 72%);
   pointer-events:none;
 }
-
 .sp-inner{
   position:relative;z-index:2;
-  display:flex;flex-direction:column;
-  align-items:center;gap:0;
-  width:100%;
+  display:flex;flex-direction:column;align-items:center;gap:0;width:100%;
 }
-
 .sp-eyebrow{
   font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;
-  color:var(--gold);margin-bottom:28px;
-  opacity:.8;
+  color:var(--gold);margin-bottom:28px;opacity:.8;
 }
-
 .sp-logo{
   font-size:clamp(68px,20vw,100px);
-  font-weight:800;line-height:.88;
-  letter-spacing:-3px;color:var(--cream);
+  font-weight:800;line-height:.88;letter-spacing:-3px;color:var(--cream);
 }
 .sp-logo em{color:var(--gold);font-style:normal;}
-
-.sp-divider{
-  width:32px;height:1px;
-  background:var(--muted2);
-  margin:28px 0;
-}
-
+.sp-divider{width:32px;height:1px;background:var(--muted2);margin:28px 0;}
 .sp-tagline{
   font-size:15px;font-weight:500;
-  color:var(--muted);line-height:1.6;
-  max-width:260px;
+  color:var(--muted);line-height:1.6;max-width:260px;
 }
 .sp-tagline strong{color:var(--cream);font-weight:700;}
-
-.sp-moment{
-  margin-top:10px;
-  font-size:12px;color:var(--muted);font-weight:500;
-  letter-spacing:.3px;
-}
+.sp-moment{margin-top:10px;font-size:12px;color:var(--muted);font-weight:500;letter-spacing:.3px;}
 .sp-moment b{color:var(--gold);font-weight:700;}
-
+.sp-geo{
+  margin-top:10px;
+  font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;
+  color:var(--muted2);transition:color .3s;
+}
+.sp-geo.found{color:var(--green);}
 .sp-btn{
-  margin-top:40px;
-  background:var(--gold);
-  color:#000;
-  font-size:16px;font-weight:800;
-  padding:18px 0;
-  border-radius:14px;
-  border:none;cursor:pointer;
-  font-family:inherit;
-  width:100%;
-  letter-spacing:.5px;
+  margin-top:40px;background:var(--gold);color:#000;
+  font-size:16px;font-weight:800;padding:18px 0;
+  border-radius:14px;border:none;cursor:pointer;font-family:inherit;
+  width:100%;letter-spacing:.5px;
   transition:filter .12s,transform .1s;
 }
 .sp-btn:active{filter:brightness(.88);transform:scale(.98);}
+.sp-hint{margin-top:16px;font-size:11px;color:var(--muted2);letter-spacing:1.5px;text-transform:uppercase;}
 
-.sp-hint{
-  margin-top:16px;
-  font-size:11px;color:var(--muted2);
-  letter-spacing:1.5px;text-transform:uppercase;
-}
-
-/* ══════════════════
-   QUIZ
-══════════════════ */
+/* QUIZ */
 #quiz{
   background:var(--bg);
   padding-top:max(env(safe-area-inset-top,0px),52px);
   align-items:center;
 }
-
-.q-top{
-  width:100%;max-width:400px;
-  padding:0 28px 0;
-  display:flex;flex-direction:column;
-  align-items:center;gap:18px;
-}
-
+.q-top{width:100%;max-width:400px;padding:0 28px 0;display:flex;flex-direction:column;align-items:center;gap:18px;}
 .prog{display:flex;gap:5px;width:100%;}
 .pseg{height:2px;flex:1;background:var(--s2);border-radius:2px;transition:background .35s;}
 .pseg.done{background:var(--gold);}
 .pseg.active{background:rgba(255,184,0,.35);}
-
-.q-num{
-  font-size:11px;font-weight:700;
-  letter-spacing:3px;text-transform:uppercase;
-  color:var(--gold);opacity:.7;
-  text-align:center;
-}
-
+.q-num{font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--gold);opacity:.7;text-align:center;}
 .q-text{
-  width:100%;max-width:400px;
-  padding:20px 28px 0;
-  font-size:clamp(24px,7.5vw,34px);
-  font-weight:800;line-height:1.1;
-  letter-spacing:-.8px;
-  color:var(--cream);
-  text-align:center;
+  width:100%;max-width:400px;padding:20px 28px 0;
+  font-size:clamp(24px,7.5vw,34px);font-weight:800;line-height:1.1;
+  letter-spacing:-.8px;color:var(--cream);text-align:center;
 }
-
 .q-opts{
-  flex:1;overflow-y:auto;
-  width:100%;max-width:400px;
+  flex:1;overflow-y:auto;width:100%;max-width:400px;
   padding:22px 28px max(env(safe-area-inset-bottom,0px),28px);
-  display:flex;flex-direction:column;
-  align-items:center;
-  gap:10px;
+  display:flex;flex-direction:column;align-items:center;gap:10px;
 }
-
-/* standard stacked option */
 .opt{
-  all:unset;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  padding:18px 22px;
-  background:var(--s1);
-  border:1px solid var(--s2);
-  border-radius:14px;
-  cursor:pointer;width:100%;
-  text-align:center;
+  all:unset;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:18px 22px;background:var(--s1);border:1px solid var(--s2);
+  border-radius:14px;cursor:pointer;width:100%;text-align:center;
   transition:border-color .12s,background .12s,transform .1s;
 }
-.opt:active,.opt.sel{
-  border-color:var(--gold);
-  background:var(--gold-faint);
-  transform:scale(.98);
-}
-.opt-label{
-  font-size:16px;font-weight:700;
-  color:var(--cream);letter-spacing:-.2px;
-  line-height:1.2;
-}
-.opt-sub{
-  font-size:12px;font-weight:500;
-  color:var(--muted);margin-top:3px;
-}
-
-/* 2-option row layout */
-.opts-row{
-  display:grid;grid-template-columns:1fr 1fr;
-  gap:10px;width:100%;
-}
+.opt:active,.opt.sel{border-color:var(--gold);background:var(--gold-faint);transform:scale(.98);}
+.opt-label{font-size:16px;font-weight:700;color:var(--cream);letter-spacing:-.2px;line-height:1.2;}
+.opt-sub{font-size:12px;font-weight:500;color:var(--muted);margin-top:3px;}
+.opts-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;}
 .opts-row .opt{padding:22px 12px;}
-
-/* price pill style — distinct per tier */
 .opts-price{display:flex;flex-direction:column;gap:10px;width:100%;}
+.opt-jimat{border-color:#2a6640;}
+.opt-jimat:active,.opt-jimat.sel{border-color:var(--green);background:rgba(61,214,140,.08);}
+.opt-jimat .opt-label{color:var(--green);}
+.opt-jimat .opt-sub{color:rgba(61,214,140,.5);}
+.opt-mid{border-color:var(--s3);}
+.opt-mid:active,.opt-mid.sel{border-color:var(--gold);background:var(--gold-faint);}
+.opt-mid .opt-label{color:var(--cream);}
+.opt-splash{border-color:#3d2200;}
+.opt-splash:active,.opt-splash.sel{border-color:var(--red);background:rgba(255,68,34,.08);}
+.opt-splash .opt-label{color:var(--red);}
+.opt-splash .opt-sub{color:rgba(255,68,34,.5);}
 
-.opt-jimat   { border-color:#2a6640; }
-.opt-jimat:active,.opt-jimat.sel { border-color:var(--green); background:rgba(61,214,140,.08); }
-.opt-jimat .opt-label   { color:var(--green); }
-.opt-jimat .opt-sub     { color:rgba(61,214,140,.5); }
-
-.opt-mid     { border-color:var(--s3); }
-.opt-mid:active,.opt-mid.sel { border-color:var(--gold); background:var(--gold-faint); }
-.opt-mid .opt-label     { color:var(--cream); }
-
-.opt-splash  { border-color:#3d2200; }
-.opt-splash:active,.opt-splash.sel { border-color:var(--red); background:rgba(255,68,34,.08); }
-.opt-splash .opt-label  { color:var(--red); }
-.opt-splash .opt-sub    { color:rgba(255,68,34,.5); }
-
-/* ══════════════════
-   LOADING
-══════════════════ */
-#loading{
-  background:var(--bg);
-  justify-content:center;align-items:center;
-  text-align:center;gap:28px;
-  overflow:hidden;
-}
-
-.ld-glow{
-  position:absolute;inset:0;
-  background:radial-gradient(ellipse at 50% 50%,rgba(255,184,0,.09) 0%,transparent 60%);
-}
-
-.ld-title{
-  position:relative;z-index:1;
-  font-size:clamp(30px,9vw,42px);
-  font-weight:800;line-height:1.1;
-  letter-spacing:-1.2px;color:var(--cream);
-  text-align:center;
-}
+/* LOADING */
+#loading{background:var(--bg);justify-content:center;align-items:center;text-align:center;gap:28px;overflow:hidden;}
+.ld-glow{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,rgba(255,184,0,.09) 0%,transparent 60%);}
+.ld-title{position:relative;z-index:1;font-size:clamp(30px,9vw,42px);font-weight:800;line-height:1.1;letter-spacing:-1.2px;color:var(--cream);text-align:center;}
 .ld-title em{color:var(--gold);font-style:normal;}
+.ld-track{position:relative;z-index:1;width:160px;height:2px;background:var(--s2);border-radius:2px;overflow:hidden;}
+.ld-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--gold),var(--red));transition:width 2.7s cubic-bezier(.4,0,.2,1);}
+.ld-msg{position:relative;z-index:1;font-size:11px;color:var(--muted);font-weight:600;letter-spacing:2px;text-transform:uppercase;transition:opacity .25s;}
 
-.ld-track{
-  position:relative;z-index:1;
-  width:160px;height:2px;
-  background:var(--s2);border-radius:2px;overflow:hidden;
-}
-.ld-fill{
-  height:100%;width:0%;
-  background:linear-gradient(90deg,var(--gold),var(--red));
-  transition:width 2.7s cubic-bezier(.4,0,.2,1);
-}
-.ld-msg{
-  position:relative;z-index:1;
-  font-size:11px;color:var(--muted);
-  font-weight:600;letter-spacing:2px;text-transform:uppercase;
-  transition:opacity .25s;
-}
-
-/* ══════════════════
-   REVEAL
-══════════════════ */
+/* REVEAL */
 #reveal{padding:0;overflow:hidden;}
-
-.rv-bg{
-  position:absolute;inset:0;z-index:0;
-  transition:background .5s;
-}
-.rv-bg::after{
-  content:'';position:absolute;inset:0;
-  background:linear-gradient(to top,rgba(13,8,0,1) 35%,rgba(13,8,0,.6) 70%,rgba(13,8,0,.2) 100%);
-}
-
+.rv-bg{position:absolute;inset:0;z-index:0;transition:background .5s;}
+.rv-bg::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(13,8,0,1) 35%,rgba(13,8,0,.6) 70%,rgba(13,8,0,.2) 100%);}
 .rv-top{
   position:relative;z-index:3;
   padding:max(env(safe-area-inset-top,0px),48px) 28px 0;
@@ -293,129 +167,31 @@ html,body{
   background:var(--gold-faint);border:1px solid var(--gold-border);
   color:var(--gold);padding:5px 12px;border-radius:100px;
 }
-
 .rv-body{
   position:absolute;bottom:0;left:0;right:0;z-index:3;
   padding:0 28px max(env(safe-area-inset-bottom,0px),36px);
   display:flex;flex-direction:column;gap:13px;
 }
-
-/* ── DISTINCT PILLS ── */
 .rv-chips{display:flex;gap:7px;flex-wrap:wrap;}
-
-/* 1. Halal — solid green fill, high confidence */
-.ch-halal{
-  display:inline-flex;align-items:center;gap:5px;
-  background:rgba(61,214,140,.15);
-  border:1px solid rgba(61,214,140,.3);
-  color:var(--green);
-  font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;
-  padding:5px 12px;border-radius:100px;
-}
-
-/* 2. Open now — outlined blue, "live" feel */
-.ch-open{
-  display:inline-flex;align-items:center;gap:5px;
-  background:transparent;
-  border:1px solid rgba(91,175,255,.4);
-  color:var(--blue);
-  font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;
-  padding:5px 12px;border-radius:4px;
-}
+.ch-halal{display:inline-flex;align-items:center;gap:5px;background:rgba(61,214,140,.15);border:1px solid rgba(61,214,140,.3);color:var(--green);font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:5px 12px;border-radius:100px;}
+.ch-open{display:inline-flex;align-items:center;gap:5px;background:transparent;border:1px solid rgba(91,175,255,.4);color:var(--blue);font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:5px 12px;border-radius:4px;}
 .ch-open::before{content:'';display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--blue);animation:pulse 1.5s infinite;}
 @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
-
-/* 3. Time match — gold pill, warm */
-.ch-time{
-  display:inline-flex;align-items:center;gap:5px;
-  background:var(--gold-faint);
-  border:1px solid var(--gold-border);
-  color:var(--gold);
-  font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;
-  padding:5px 12px;border-radius:100px;
-}
-
-/* 4. Weekend — square-ish, red accent */
-.ch-wknd{
-  display:inline-flex;align-items:center;gap:5px;
-  background:rgba(255,68,34,.1);
-  border:1px solid rgba(255,68,34,.3);
-  color:var(--red);
-  font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;
-  padding:5px 12px;border-radius:6px;
-}
-
-/* 5. Price — 3 distinct visual tiers */
-.ch-jimat{
-  display:inline-flex;align-items:center;
-  background:rgba(61,214,140,.08);
-  border:1px solid rgba(61,214,140,.25);
-  color:var(--green);
-  font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;
-  padding:5px 12px;border-radius:100px;
-}
-.ch-mid{
-  display:inline-flex;align-items:center;
-  background:rgba(255,255,255,.05);
-  border:1px solid rgba(255,255,255,.12);
-  color:var(--muted);
-  font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;
-  padding:5px 12px;border-radius:100px;
-}
-.ch-splash{
-  display:inline-flex;align-items:center;
-  background:rgba(255,68,34,.08);
-  border:1px solid rgba(255,68,34,.25);
-  color:var(--red);
-  font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;
-  padding:5px 12px;border-radius:100px;
-}
-
-.rv-eyebrow{
-  font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;
-  color:var(--muted);
-}
-.rv-name{
-  font-size:clamp(44px,14vw,72px);
-  font-weight:800;line-height:.92;
-  letter-spacing:-2px;color:var(--cream);
-}
+.ch-time{display:inline-flex;align-items:center;gap:5px;background:var(--gold-faint);border:1px solid var(--gold-border);color:var(--gold);font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:5px 12px;border-radius:100px;}
+.ch-wknd{display:inline-flex;align-items:center;gap:5px;background:rgba(255,68,34,.1);border:1px solid rgba(255,68,34,.3);color:var(--red);font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:5px 12px;border-radius:6px;}
+.ch-jimat{display:inline-flex;align-items:center;background:rgba(61,214,140,.08);border:1px solid rgba(61,214,140,.25);color:var(--green);font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:5px 12px;border-radius:100px;}
+.ch-mid{display:inline-flex;align-items:center;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);color:var(--muted);font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:5px 12px;border-radius:100px;}
+.ch-splash{display:inline-flex;align-items:center;background:rgba(255,68,34,.08);border:1px solid rgba(255,68,34,.25);color:var(--red);font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:5px 12px;border-radius:100px;}
+.ch-dist{display:inline-flex;align-items:center;background:rgba(167,139,250,.08);border:1px solid rgba(167,139,250,.25);color:var(--purple);font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:5px 12px;border-radius:100px;}
+.rv-eyebrow{font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--muted);}
+.rv-name{font-size:clamp(44px,14vw,72px);font-weight:800;line-height:.92;letter-spacing:-2px;color:var(--cream);}
 .rv-meta{font-size:13px;color:var(--muted);font-weight:500;letter-spacing:.2px;}
-
-.rv-why{
-  font-size:15px;line-height:1.65;
-  color:rgba(255,245,228,.6);
-  border-left:2px solid var(--gold);
-  padding-left:14px;
-}
-
-.btn-go{
-  all:unset;display:block;width:100%;
-  background:var(--gold);color:#000;
-  padding:19px 24px;border-radius:14px;
-  font-size:18px;font-weight:800;
-  text-align:center;cursor:pointer;letter-spacing:-.2px;
-  transition:filter .12s,transform .1s;font-family:inherit;
-}
+.rv-why{font-size:15px;line-height:1.65;color:rgba(255,245,228,.6);border-left:2px solid var(--gold);padding-left:14px;}
+.btn-go{all:unset;display:block;width:100%;background:var(--gold);color:#000;padding:19px 24px;border-radius:14px;font-size:18px;font-weight:800;text-align:center;cursor:pointer;letter-spacing:-.2px;transition:filter .12s,transform .1s;font-family:inherit;}
 .btn-go:active{filter:brightness(.88);transform:scale(.98);}
-
-.btn-share{
-  all:unset;display:block;width:100%;
-  border:1px solid var(--s3);
-  color:var(--muted);
-  padding:15px 24px;border-radius:14px;
-  font-size:14px;font-weight:700;
-  text-align:center;cursor:pointer;letter-spacing:.2px;
-  transition:border-color .12s,color .12s;font-family:inherit;
-}
+.btn-share{all:unset;display:block;width:100%;border:1px solid var(--s3);color:var(--muted);padding:15px 24px;border-radius:14px;font-size:14px;font-weight:700;text-align:center;cursor:pointer;letter-spacing:.2px;transition:border-color .12s,color .12s;font-family:inherit;}
 .btn-share:active{border-color:var(--muted2);color:var(--cream);}
-
-.reroll{
-  text-align:center;font-size:11px;color:var(--muted2);
-  cursor:pointer;padding:4px;font-weight:600;
-  letter-spacing:1px;text-transform:uppercase;
-  transition:color .2s;
-}
+.reroll{text-align:center;font-size:11px;color:var(--muted2);cursor:pointer;padding:4px;font-weight:600;letter-spacing:1px;text-transform:uppercase;transition:color .2s;}
 .reroll:active{color:var(--muted);}
 .reroll.spent{opacity:.25;pointer-events:none;font-style:italic;text-transform:none;letter-spacing:0;}
 </style>
@@ -431,6 +207,7 @@ html,body{
     <div class="sp-divider"></div>
     <div class="sp-tagline">Tak tahu nak makan mana?<br><strong>We'll decide. You just eat.</strong></div>
     <div class="sp-moment" id="spMoment"></div>
+    <div class="sp-geo" id="spGeo">📍 Locating you...</div>
     <button class="sp-btn" id="spBtn">Let's go lah</button>
     <div class="sp-hint">tap anywhere to start</div>
   </div>
@@ -463,7 +240,7 @@ html,body{
   </div>
   <div class="rv-body">
     <div class="rv-chips" id="rvchips"></div>
-    <div class="rv-eyebrow">Malam ni, pergi ke</div>
+    <div class="rv-eyebrow" id="rveyebrow">Malam ni, pergi ke</div>
     <div class="rv-name" id="rvname"></div>
     <div class="rv-meta" id="rvmeta"></div>
     <div class="rv-why" id="rvwhy"></div>
@@ -474,92 +251,404 @@ html,body{
 </div>
 
 <script>
-/* MOMENT */
+/* ── GEOLOCATION ── */
+let userLat=null,userLng=null;
+(function initGeo(){
+  if(!navigator.geolocation){setGeoUI(false);return;}
+  navigator.geolocation.getCurrentPosition(
+    pos=>{userLat=pos.coords.latitude;userLng=pos.coords.longitude;setGeoUI(true);},
+    ()=>setGeoUI(false),
+    {timeout:8000,maximumAge:60000}
+  );
+})();
+function setGeoUI(ok){
+  const el=document.getElementById('spGeo');
+  if(!el)return;
+  el.textContent=ok?'📍 Got your location':'📍 No location — showing all KL';
+  if(ok)el.classList.add('found');
+}
+
+/* ── HAVERSINE ── */
+function distKm(lat1,lng1,lat2,lng2){
+  const R=6371,dLat=(lat2-lat1)*Math.PI/180,dLng=(lng2-lng1)*Math.PI/180;
+  const a=Math.sin(dLat/2)**2+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)**2;
+  return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+}
+function fmtDist(km){return km<1?'<1 km':km.toFixed(1)+' km';}
+
+/* ── MOMENT ── */
 function getMoment(){
   const now=new Date(),h=now.getHours(),day=now.getDay();
   const isWeekend=day===0||day===5||day===6;
-  let slot,label;
-  if(h>=6&&h<11){slot='breakfast';label='Breakfast time';}
-  else if(h>=11&&h<15){slot='lunch';label='Lunch hour';}
-  else if(h>=15&&h<18){slot='tea';label='Tea time';}
-  else if(h>=18&&h<22){slot='dinner';label='Dinner time';}
-  else{slot='supper';label='Supper time';}
+  let slot,label,eyebrow;
+  if(h>=6&&h<11){slot='breakfast';label='Breakfast time';eyebrow='Pagi ni, sarapan ke';}
+  else if(h>=11&&h<15){slot='lunch';label='Lunch hour';eyebrow='Tengahari ni, makan ke';}
+  else if(h>=15&&h<18){slot='tea';label='Tea time';eyebrow='Petang ni, teh ke';}
+  else if(h>=18&&h<22){slot='dinner';label='Dinner time';eyebrow='Malam ni, pergi ke';}
+  else{slot='supper';label='Supper time';eyebrow='Lewat ni, pergi ke';}
   const days=['Ahad','Isnin','Selasa','Rabu','Khamis','Jumaat','Sabtu'];
-  return{h,slot,label,isWeekend,dayName:days[day]};
+  return{h,slot,label,eyebrow,isWeekend,dayName:days[day]};
 }
 const M=getMoment();
 
-/* QUESTIONS */
+/* ── QUESTIONS ── */
 const QUESTIONS=[
-  {
-    key:'occasion',num:'01 of 04',
-    text:'Apa plan malam ni?',
-    layout:'stack',
-    opts:[
-      {label:'Makan je lah',sub:'casual, no fuss',v:1},
-      {label:'Work meal',sub:'business lunch or dinner',v:2},
-      {label:'Date night',sub:'nak impress sikit',v:3},
-      {label:'Brunch mode',sub:'weekend, relax je',v:4},
-      {label:'Treat myself',sub:'duit bukan isu hari ni',v:5},
-    ]
-  },
-  {
-    key:'budget',num:'02 of 04',
-    text:'Bajet per orang?',
-    layout:'price',
-    opts:[
-      {label:'Jimat',sub:'Bawah RM30',v:1,cls:'opt-jimat'},
-      {label:'Mid-range',sub:'RM30 – RM80',v:2,cls:'opt-mid'},
-      {label:'Splash out',sub:'RM80 ke atas',v:3,cls:'opt-splash'},
-    ]
-  },
-  {
-    key:'speed',num:'03 of 04',
-    text:'Berapa lapar sekarang?',
-    layout:'row',
-    opts:[
-      {label:'Lapar gila',sub:'Fast, now',v:1},
-      {label:'Boleh tunggu',sub:'I have time',v:2},
-    ]
-  },
-  {
-    key:'cuisine',num:'04 of 04',
-    text:'Apa yang mengoda?',
-    layout:'row',
-    opts:[
-      {label:'Malaysian soul food',sub:'Nasi, lauk, sedap',v:1},
-      {label:'Something different',sub:'Japanese, Thai, Western',v:2},
-    ]
-  }
+  {key:'occasion',num:'01 of 04',text:'What\'s the plan tonight?',layout:'stack',
+   opts:[{label:'Makan je lah',sub:'casual, no fuss',v:1},{label:'Work meal',sub:'business lunch or dinner',v:2},{label:'Date night',sub:'nak impress sikit',v:3},{label:'Brunch mode',sub:'weekend, relax je',v:4},{label:'Treat myself',sub:'duit bukan isu hari ni',v:5}]},
+  {key:'budget',num:'02 of 04',text:'Budget per person?',layout:'price',
+   opts:[{label:'Jimat',sub:'Bawah RM30',v:1,cls:'opt-jimat'},{label:'Mid-range',sub:'RM30 – RM80',v:2,cls:'opt-mid'},{label:'Splash out',sub:'RM80 ke atas',v:3,cls:'opt-splash'}]},
+  {key:'speed',num:'03 of 04',text:'Lapar tak?',layout:'row',
+   opts:[{label:'Lapar gila',sub:'Fast, now',v:1},{label:'Boleh tunggu',sub:'I have time',v:2}]},
+  {key:'cuisine',num:'04 of 04',text:'Craving apa?',layout:'row',
+   opts:[{label:'Malaysian soul food',sub:'Nasi, lauk, sedap',v:1},{label:'Something different',sub:'Japanese, Thai, Western',v:2}]}
 ];
 
-/* RESTAURANTS */
+/* ── RESTAURANTS (50) ── */
 const RESTAURANTS=[
-  {name:'Village Park',area:'Damansara Uptown',cat:'Nasi Lemak',price:1,goodFor:[1,4],openHours:[{o:7,c:16}],bestFor:['breakfast','lunch','tea'],weekendBoost:true,scores:{speed:[1,2],cuisine:[1]},bg:'linear-gradient(160deg,#0f2d1a,#0D0800)',maps:'https://www.google.com/maps/search/Village+Park+Restaurant+Damansara+Uptown+KL',why:'Nasi lemak terbaik KL. You said comfort — ini je jawapannya.',momentCopy:{breakfast:'Pagi pagi makan nasi lemak. Hidup sempurna.',weekend:'Weekend nasi lemak hits different.'}},
-  {name:'Nasi Kandar Pelita',area:'Jalan Ampang',cat:'Nasi Kandar 24h',price:1,goodFor:[1],openHours:[{o:0,c:24}],bestFor:['breakfast','lunch','dinner','supper'],weekendBoost:false,scores:{speed:[1],cuisine:[1]},bg:'linear-gradient(160deg,#2d1a0a,#0D0800)',maps:'https://www.google.com/maps/search/Pelita+Nasi+Kandar+Jalan+Ampang+KL',why:'Open 24 jam, selalu penuh, selalu betul.',momentCopy:{supper:'2 pagi pun boleh. Pelita selalu ada.'}},
-  {name:'Syed Bistro',area:'Chow Kit',cat:'Mamak 24h',price:1,goodFor:[1],openHours:[{o:0,c:24}],bestFor:['supper','dinner','breakfast'],weekendBoost:false,scores:{speed:[1],cuisine:[1]},bg:'linear-gradient(160deg,#000d2d,#0D0800)',maps:'https://www.google.com/maps/search/Syed+Bistro+Chow+Kit+KL',why:'Real mamak energy. Open late, no drama.',momentCopy:{supper:'Lewat malam, masih lapar. Ini je lah.'}},
-  {name:'Nasi Lemak Wanjo',area:'Chow Kit',cat:'Nasi Lemak',price:1,goodFor:[1,4],openHours:[{o:6,c:15}],bestFor:['breakfast','lunch'],weekendBoost:true,scores:{speed:[1],cuisine:[1]},bg:'linear-gradient(160deg,#1a2d00,#0D0800)',maps:'https://www.google.com/maps/search/Nasi+Lemak+Wanjo+Chow+Kit+KL',why:'Old school nasi lemak. No frills, maximum satisfaction.',momentCopy:{breakfast:'Pagi awal, nasi lemak, teh tarik. Perfect.',weekend:'Weekend breakfast yang betul-betul proper.'}},
-  {name:'Yusoof & Zakhir',area:'Masjid India',cat:'Nasi Kandar',price:1,goodFor:[1],openHours:[{o:6,c:16}],bestFor:['breakfast','lunch'],weekendBoost:false,scores:{speed:[1],cuisine:[1]},bg:'linear-gradient(160deg,#2d1500,#0D0800)',maps:'https://www.google.com/maps/search/Restoran+Yusoof+Dan+Zakhir+Masjid+India+KL',why:'Orang KL makan sini setiap hari. Itu dah cukup kata.',momentCopy:{breakfast:'Sarapan klasik yang tak pernah mengecewakan.'}},
-  {name:'Ali, Muthu & Ah Hock',area:'Bangsar',cat:'Nasi Campur',price:1,goodFor:[1],openHours:[{o:11,c:21}],bestFor:['lunch','dinner'],weekendBoost:false,scores:{speed:[1,2],cuisine:[1]},bg:'linear-gradient(160deg,#2d1500,#0D0800)',maps:'https://www.google.com/maps/search/Ali+Muthu+Ah+Hock+Bangsar+KL',why:'Nasi campur paling iconic KL. Cepat, sedap, memang kena.',momentCopy:{}},
-  {name:'MyBurgerLab',area:'Various KL',cat:'Burger',price:1,goodFor:[1],openHours:[{o:11,c:23}],bestFor:['lunch','dinner','supper'],weekendBoost:true,scores:{speed:[1,2],cuisine:[2]},bg:'linear-gradient(160deg,#2d1800,#0D0800)',maps:'https://www.google.com/maps/search/MyBurgerLab+Kuala+Lumpur',why:'Smash burger Malaysia yang memang tak tipu. Satisfying gila.',momentCopy:{supper:'Lewat malam dan lapar. Burger je lah.',weekend:'Weekend indulgence. Layak dapat.'}},
-  {name:'Wondermama',area:'Bangsar Village',cat:'Malaysian Comfort',price:2,goodFor:[1,4],openHours:[{o:10,c:22}],bestFor:['lunch','tea','dinner'],weekendBoost:true,scores:{speed:[1,2],cuisine:[1]},bg:'linear-gradient(160deg,#1a0d2d,#0D0800)',maps:'https://www.google.com/maps/search/Wondermama+Bangsar+KL',why:'Malaysian comfort food yang rasa macam peluk dari ibu.',momentCopy:{tea:'Tea time dan comfort food. Combination terbaik.',weekend:'Weekend comfort? Wondermama. Senang cerita.'}},
-  {name:'Plan B',area:'Various KL',cat:'All-Day Dining',price:2,goodFor:[1,4],openHours:[{o:9,c:22}],bestFor:['breakfast','lunch','tea','dinner'],weekendBoost:false,scores:{speed:[1,2],cuisine:[2]},bg:'linear-gradient(160deg,#0d1a2d,#0D0800)',maps:'https://www.google.com/maps/search/Plan+B+Restaurant+Kuala+Lumpur',why:'All-day, always reliable, good for any mood.',momentCopy:{breakfast:'Brunch done properly. No drama.',tea:'Petang-petang, kopi dan rehat.'}},
-  {name:'Absolute Thai',area:'Various KL',cat:'Thai',price:2,goodFor:[1,2],openHours:[{o:11,c:22}],bestFor:['lunch','dinner'],weekendBoost:false,scores:{speed:[1,2],cuisine:[2]},bg:'linear-gradient(160deg,#002d0a,#0D0800)',maps:'https://www.google.com/maps/search/Absolute+Thai+Kuala+Lumpur',why:'Berbeza tapi tak pelik. Reliable tapi tak boring.',momentCopy:{}},
-  {name:'The Bird',area:'Various KL',cat:'Rotisserie Chicken',price:2,goodFor:[1],openHours:[{o:11,c:22}],bestFor:['lunch','dinner'],weekendBoost:false,scores:{speed:[1,2],cuisine:[2]},bg:'linear-gradient(160deg,#2d0f00,#0D0800)',maps:'https://www.google.com/maps/search/The+Bird+Restaurant+KL',why:'Rotisserie chicken, kulit rangup, sides yang betul.',momentCopy:{}},
-  {name:"Madam Kwan's",area:'KLCC',cat:'Malaysian',price:2,goodFor:[1,2],openHours:[{o:11,c:22}],bestFor:['lunch','dinner'],weekendBoost:false,scores:{speed:[2],cuisine:[1]},bg:'linear-gradient(160deg,#2d2200,#0D0800)',maps:'https://www.google.com/maps/search/Madam+Kwans+KLCC+KL',why:'Nasi bojari, portion banyak, tak pernah kecewa.',momentCopy:{}},
-  {name:'The Rebung',area:'Bangsar',cat:'Buffet Melayu',price:2,goodFor:[1,2,4],openHours:[{o:12,c:22}],bestFor:['lunch','dinner'],weekendBoost:true,scores:{speed:[2],cuisine:[1]},bg:'linear-gradient(160deg,#0d2d00,#0D0800)',maps:'https://www.google.com/maps/search/The+Rebung+Restaurant+Bangsar+KL',why:"Chef Ismail's legendary buffet. Resepi turun-temurun.",momentCopy:{weekend:'Weekend buffet energy. Ambil masa, enjoy.'}},
-  {name:'Dancing Fish',area:'Mont Kiara',cat:'Nyonya / Melayu',price:2,goodFor:[1,3],openHours:[{o:11,c:22}],bestFor:['lunch','dinner'],weekendBoost:false,scores:{speed:[2],cuisine:[1]},bg:'linear-gradient(160deg,#2d0a0a,#0D0800)',maps:'https://www.google.com/maps/search/Dancing+Fish+Restaurant+Mont+Kiara+KL',why:'Asam pedas yang memang kena. You said adventure — trust the process.',momentCopy:{}},
-  {name:'Jibril',area:'Bukit Damansara',cat:'Middle Eastern',price:2,goodFor:[1,3],openHours:[{o:12,c:23}],bestFor:['lunch','dinner'],weekendBoost:true,scores:{speed:[2],cuisine:[2]},bg:'linear-gradient(160deg,#2d1f00,#0D0800)',maps:'https://www.google.com/maps/search/Jibril+Restaurant+Bukit+Damansara+KL',why:'Mezze dan grill Lebanon yang proper. Berbeza dalam cara yang betul.',momentCopy:{weekend:'Weekend, nak benda exotic. Jibril deliver.'}},
-  {name:'Elemen',area:'Pavilion KL',cat:'Plant-Based',price:2,goodFor:[1,3],openHours:[{o:11,c:22}],bestFor:['lunch','dinner'],weekendBoost:false,scores:{speed:[2],cuisine:[2]},bg:'linear-gradient(160deg,#003d1a,#0D0800)',maps:'https://www.google.com/maps/search/Elemen+Restaurant+Pavilion+KL',why:'Plant-based dengan jiwa Malaysia. Mengejutkan dalam cara yang bagus.',momentCopy:{}},
-  {name:'PAUL Bakery',area:'Pavilion KL',cat:'French Cafe',price:2,goodFor:[1,4],openHours:[{o:8,c:22}],bestFor:['breakfast','lunch','tea'],weekendBoost:false,scores:{speed:[1,2],cuisine:[2]},bg:'linear-gradient(160deg,#2d2500,#0D0800)',maps:'https://www.google.com/maps/search/PAUL+Bakery+Pavilion+KL',why:'Croissant, kopi, vibes Paris tapi address KL.',momentCopy:{breakfast:'Sarapan croissant. Good life.',tea:'Petang-petang, pause sekejap. Deserved.'}},
-  {name:'Bijan',area:'Bukit Bintang',cat:'Fine Malaysian',price:3,goodFor:[2,3,5],openHours:[{o:12,c:23}],bestFor:['lunch','dinner'],weekendBoost:true,scores:{speed:[2],cuisine:[1]},bg:'linear-gradient(160deg,#0a0a2d,#0D0800)',maps:'https://www.google.com/maps/search/Bijan+Bar+Restaurant+Kuala+Lumpur',why:'Malaysian fine dining yang betul-betul finest. You said treat yourself — kita ambil serius tu.',momentCopy:{weekend:'Weekend, belanja diri sendiri. Bijan. Done.'}},
-  {name:'Zipangu',area:'Hilton KL',cat:'Japanese',price:3,goodFor:[2,3,5],openHours:[{o:12,c:22}],bestFor:['lunch','dinner'],weekendBoost:true,scores:{speed:[2],cuisine:[2]},bg:'linear-gradient(160deg,#00152d,#0D0800)',maps:'https://www.google.com/maps/search/Zipangu+Hilton+Kuala+Lumpur',why:'Hotel Japanese yang serious. Grown-up eating. Worth every ringgit.',momentCopy:{weekend:'Weekend splurge. Tak rugi pun.'}},
-  {name:'Dewakan',area:'KL City Centre',cat:'Modern Malaysian',price:3,goodFor:[3,5],openHours:[{o:12,c:22}],bestFor:['lunch','dinner'],weekendBoost:true,scores:{speed:[2],cuisine:[1]},bg:'linear-gradient(160deg,#1a001a,#0D0800)',maps:'https://www.google.com/maps/search/Dewakan+Restaurant+KL',why:'Yang terbaik yang Malaysia ada. Dewakan adalah jawapannya.',momentCopy:{weekend:'Occasion special, hari biasa. Pergi je.'}},
-  {name:'Rahsia',area:'Roof Garden, Bangsar',cat:'Malaysian Rooftop',price:3,goodFor:[3,5],openHours:[{o:18,c:24}],bestFor:['dinner','supper'],weekendBoost:true,scores:{speed:[2],cuisine:[1]},bg:'linear-gradient(160deg,#1a0a2d,#0D0800)',maps:'https://www.google.com/maps/search/Rahsia+Restaurant+Bangsar+KL',why:'Rooftop, Malaysian modern, angin malam. Scene yang betul-betul kena.',momentCopy:{supper:'Malam, rooftop, mood. Perfect.',weekend:'Friday night done dengan proper.'}},
-  {name:'Fuego',area:'Troika Sky Dining',cat:'Latin Rooftop',price:3,goodFor:[3,5],openHours:[{o:18,c:24}],bestFor:['dinner','supper'],weekendBoost:true,scores:{speed:[2],cuisine:[2]},bg:'linear-gradient(160deg,#2d0500,#0D0800)',maps:'https://www.google.com/maps/search/Fuego+Troika+Sky+Dining+KL',why:'Rooftop, Latin heat, skyline KL malam hari. You said treat myself — say less.',momentCopy:{weekend:"Friday/Saturday at Fuego. That's the move.",dinner:'Sunset kat Troika memang lain.'}}
+  /* ── JIMAT ── */
+  {name:'Village Park',area:'Damansara Uptown',cat:'Nasi Lemak',price:1,lat:3.1479,lng:101.6267,
+   goodFor:[1,4],openHours:[{o:7,c:16}],bestFor:['breakfast','lunch','tea'],weekendBoost:true,
+   scores:{speed:[1,2],cuisine:[1]},bg:'linear-gradient(160deg,#0f2d1a,#0D0800)',
+   maps:'https://www.google.com/maps/search/Village+Park+Restaurant+Damansara+Uptown+KL',
+   why:'Nasi lemak terbaik KL. You said comfort — ini je jawapannya.',
+   momentCopy:{breakfast:'Pagi pagi makan nasi lemak. Hidup sempurna.',weekend:'Weekend nasi lemak hits different.'}},
+
+  {name:'Nasi Kandar Pelita',area:'Jalan Ampang',cat:'Nasi Kandar 24h',price:1,lat:3.1624,lng:101.7285,
+   goodFor:[1],openHours:[{o:0,c:24}],bestFor:['breakfast','lunch','dinner','supper'],weekendBoost:false,
+   scores:{speed:[1],cuisine:[1]},bg:'linear-gradient(160deg,#2d1a0a,#0D0800)',
+   maps:'https://www.google.com/maps/search/Pelita+Nasi+Kandar+Jalan+Ampang+KL',
+   why:'Open 24 jam, selalu penuh, selalu betul.',
+   momentCopy:{supper:'2 pagi pun boleh. Pelita selalu ada.'}},
+
+  {name:'Syed Bistro',area:'Chow Kit',cat:'Mamak 24h',price:1,lat:3.1724,lng:101.6931,
+   goodFor:[1],openHours:[{o:0,c:24}],bestFor:['supper','dinner','breakfast'],weekendBoost:false,
+   scores:{speed:[1],cuisine:[1]},bg:'linear-gradient(160deg,#000d2d,#0D0800)',
+   maps:'https://www.google.com/maps/search/Syed+Bistro+Chow+Kit+KL',
+   why:'Real mamak energy. Open late, no drama.',
+   momentCopy:{supper:'Lewat malam, masih lapar. Ini je lah.'}},
+
+  {name:'Nasi Lemak Wanjo',area:'Chow Kit',cat:'Nasi Lemak',price:1,lat:3.1718,lng:101.6991,
+   goodFor:[1,4],openHours:[{o:6,c:15}],bestFor:['breakfast','lunch'],weekendBoost:true,
+   scores:{speed:[1],cuisine:[1]},bg:'linear-gradient(160deg,#1a2d00,#0D0800)',
+   maps:'https://www.google.com/maps/search/Nasi+Lemak+Wanjo+Chow+Kit+KL',
+   why:'Old school nasi lemak. No frills, maximum satisfaction.',
+   momentCopy:{breakfast:'Pagi awal, nasi lemak, teh tarik. Perfect.',weekend:'Weekend breakfast yang betul-betul proper.'}},
+
+  {name:'Yusoof & Zakhir',area:'Masjid India',cat:'Nasi Kandar',price:1,lat:3.1486,lng:101.6935,
+   goodFor:[1],openHours:[{o:6,c:16}],bestFor:['breakfast','lunch'],weekendBoost:false,
+   scores:{speed:[1],cuisine:[1]},bg:'linear-gradient(160deg,#2d1500,#0D0800)',
+   maps:'https://www.google.com/maps/search/Restoran+Yusoof+Dan+Zakhir+Masjid+India+KL',
+   why:'Orang KL makan sini setiap hari. Itu dah cukup kata.',
+   momentCopy:{breakfast:'Sarapan klasik yang tak pernah mengecewakan.'}},
+
+  {name:'Ali, Muthu & Ah Hock',area:'Bangsar',cat:'Nasi Campur',price:1,lat:3.1278,lng:101.6745,
+   goodFor:[1],openHours:[{o:11,c:21}],bestFor:['lunch','dinner'],weekendBoost:false,
+   scores:{speed:[1,2],cuisine:[1]},bg:'linear-gradient(160deg,#2d1500,#0D0800)',
+   maps:'https://www.google.com/maps/search/Ali+Muthu+Ah+Hock+Bangsar+KL',
+   why:'Nasi campur paling iconic KL. Cepat, sedap, memang kena.',
+   momentCopy:{}},
+
+  {name:'MyBurgerLab',area:'TTDI',cat:'Smash Burger',price:1,lat:3.1357,lng:101.6382,
+   goodFor:[1],openHours:[{o:11,c:23}],bestFor:['lunch','dinner','supper'],weekendBoost:true,
+   scores:{speed:[1,2],cuisine:[2]},bg:'linear-gradient(160deg,#2d1800,#0D0800)',
+   maps:'https://www.google.com/maps/search/MyBurgerLab+Kuala+Lumpur',
+   why:'Smash burger Malaysia yang memang tak tipu. Satisfying gila.',
+   momentCopy:{supper:'Lewat malam dan lapar. Burger je lah.',weekend:'Weekend indulgence. Layak dapat.'}},
+
+  {name:'Restoran Sri Nirwana Maju',area:'Bangsar',cat:'Banana Leaf Rice',price:1,lat:3.1278,lng:101.6748,
+   goodFor:[1,4],openHours:[{o:11,c:22}],bestFor:['lunch','dinner'],weekendBoost:true,
+   scores:{speed:[1,2],cuisine:[1]},bg:'linear-gradient(160deg,#0d2d0a,#0D0800)',
+   maps:'https://www.google.com/maps/search/Sri+Nirwana+Maju+Bangsar+KL',
+   why:'Banana leaf rice yang ramai datang jauh untuk makan. Kenapa? Sebab memang sedap.',
+   momentCopy:{weekend:'Weekend banana leaf? Non-negotiable.'}},
+
+  {name:"Pak Nasser's Nasi Lemak",area:'Jalan Bellamy',cat:'Nasi Lemak',price:1,lat:3.1428,lng:101.6868,
+   goodFor:[1,4],openHours:[{o:7,c:14}],bestFor:['breakfast','lunch'],weekendBoost:true,
+   scores:{speed:[1],cuisine:[1]},bg:'linear-gradient(160deg,#1a2d00,#0D0800)',
+   maps:'https://www.google.com/maps/search/Pak+Nasser+Nasi+Lemak+Jalan+Bellamy+KL',
+   why:'Ikat dalam daun pisang. Makan tepi jalan. Rasa macam dah win the day.',
+   momentCopy:{breakfast:'Morning nasi lemak wrapped in banana leaf. Nothing better.'}},
+
+  {name:'Sup Utara',area:'Masjid India',cat:'Northern Soup',price:1,lat:3.1486,lng:101.6925,
+   goodFor:[1],openHours:[{o:10,c:22}],bestFor:['lunch','dinner','supper'],weekendBoost:false,
+   scores:{speed:[1],cuisine:[1]},bg:'linear-gradient(160deg,#2d1a00,#0D0800)',
+   maps:'https://www.google.com/maps/search/Sup+Utara+Masjid+India+KL',
+   why:'Sup tulang, roti canai, vibes Kedah kat tengah KL. Warm, filling, the real deal.',
+   momentCopy:{supper:'Malam-malam, sup panas. Comfort tak ada tandingan.'}},
+
+  {name:'Nasi Padang Minang',area:'Brickfields',cat:'Nasi Padang',price:1,lat:3.1378,lng:101.6888,
+   goodFor:[1],openHours:[{o:11,c:21}],bestFor:['lunch','dinner'],weekendBoost:false,
+   scores:{speed:[1,2],cuisine:[1]},bg:'linear-gradient(160deg,#2d1000,#0D0800)',
+   maps:'https://www.google.com/maps/search/Nasi+Padang+Minang+Brickfields+KL',
+   why:'Rendang, gulai, sambal — ambil berapa lauk pun boleh. Padang-style, KL location.',
+   momentCopy:{}},
+
+  {name:'Saravanaa Bhavan',area:'Brickfields',cat:'South Indian Veg',price:1,lat:3.1368,lng:101.6878,
+   goodFor:[1],openHours:[{o:8,c:22}],bestFor:['breakfast','lunch','dinner'],weekendBoost:false,
+   scores:{speed:[1,2],cuisine:[1]},bg:'linear-gradient(160deg,#2d1500,#0D0800)',
+   maps:'https://www.google.com/maps/search/Saravanaa+Bhavan+Brickfields+KL',
+   why:'Thosai, idli, banana leaf set. Pure South Indian, purely halal. Reliable tiap-tiap kali.',
+   momentCopy:{breakfast:'Breakfast thosai. Under-rated and over-delicious.'}},
+
+  /* ── MID-RANGE ── */
+  {name:'Wondermama',area:'Bangsar Village',cat:'Malaysian Comfort',price:2,lat:3.1268,lng:101.6748,
+   goodFor:[1,4],openHours:[{o:10,c:22}],bestFor:['lunch','tea','dinner'],weekendBoost:true,
+   scores:{speed:[1,2],cuisine:[1]},bg:'linear-gradient(160deg,#1a0d2d,#0D0800)',
+   maps:'https://www.google.com/maps/search/Wondermama+Bangsar+KL',
+   why:'Malaysian comfort food yang rasa macam peluk dari ibu.',
+   momentCopy:{tea:'Tea time dan comfort food. Combination terbaik.',weekend:'Weekend comfort? Wondermama. Senang cerita.'}},
+
+  {name:'Plan B',area:'Bangsar',cat:'All-Day Dining',price:2,lat:3.1258,lng:101.6738,
+   goodFor:[1,4],openHours:[{o:9,c:22}],bestFor:['breakfast','lunch','tea','dinner'],weekendBoost:false,
+   scores:{speed:[1,2],cuisine:[2]},bg:'linear-gradient(160deg,#0d1a2d,#0D0800)',
+   maps:'https://www.google.com/maps/search/Plan+B+Restaurant+Kuala+Lumpur',
+   why:'All-day, always reliable, good for any mood.',
+   momentCopy:{breakfast:'Brunch done properly. No drama.',tea:'Petang-petang, kopi dan rehat.'}},
+
+  {name:'Absolute Thai',area:'Sri Hartamas',cat:'Thai',price:2,lat:3.1685,lng:101.6528,
+   goodFor:[1,2],openHours:[{o:11,c:22}],bestFor:['lunch','dinner'],weekendBoost:false,
+   scores:{speed:[1,2],cuisine:[2]},bg:'linear-gradient(160deg,#002d0a,#0D0800)',
+   maps:'https://www.google.com/maps/search/Absolute+Thai+Sri+Hartamas+KL',
+   why:'Berbeza tapi tak pelik. Reliable tapi tak boring.',momentCopy:{}},
+
+  {name:'The Bird',area:'Solaris Mont Kiara',cat:'Rotisserie Chicken',price:2,lat:3.1718,lng:101.6488,
+   goodFor:[1],openHours:[{o:11,c:22}],bestFor:['lunch','dinner'],weekendBoost:false,
+   scores:{speed:[1,2],cuisine:[2]},bg:'linear-gradient(160deg,#2d0f00,#0D0800)',
+   maps:'https://www.google.com/maps/search/The+Bird+Restaurant+Mont+Kiara+KL',
+   why:'Rotisserie chicken, kulit rangup, sides yang betul.',momentCopy:{}},
+
+  {name:"Madam Kwan's",area:'KLCC',cat:'Malaysian',price:2,lat:3.1578,lng:101.7134,
+   goodFor:[1,2],openHours:[{o:11,c:22}],bestFor:['lunch','dinner'],weekendBoost:false,
+   scores:{speed:[2],cuisine:[1]},bg:'linear-gradient(160deg,#2d2200,#0D0800)',
+   maps:'https://www.google.com/maps/search/Madam+Kwans+KLCC+KL',
+   why:'Nasi bojari, portion banyak, tak pernah kecewa.',momentCopy:{}},
+
+  {name:'The Rebung',area:'Bangsar',cat:'Buffet Melayu',price:2,lat:3.1168,lng:101.6758,
+   goodFor:[1,2,4],openHours:[{o:12,c:22}],bestFor:['lunch','dinner'],weekendBoost:true,
+   scores:{speed:[2],cuisine:[1]},bg:'linear-gradient(160deg,#0d2d00,#0D0800)',
+   maps:'https://www.google.com/maps/search/The+Rebung+Restaurant+Bangsar+KL',
+   why:"Chef Ismail's legendary buffet. Resepi turun-temurun.",
+   momentCopy:{weekend:'Weekend buffet energy. Ambil masa, enjoy.'}},
+
+  {name:'Dancing Fish',area:'Mont Kiara',cat:'Nyonya / Melayu',price:2,lat:3.1718,lng:101.6562,
+   goodFor:[1,3],openHours:[{o:11,c:22}],bestFor:['lunch','dinner'],weekendBoost:false,
+   scores:{speed:[2],cuisine:[1]},bg:'linear-gradient(160deg,#2d0a0a,#0D0800)',
+   maps:'https://www.google.com/maps/search/Dancing+Fish+Restaurant+Mont+Kiara+KL',
+   why:'Asam pedas yang memang kena. You said adventure — trust the process.',momentCopy:{}},
+
+  {name:'Jibril',area:'Bukit Damansara',cat:'Middle Eastern',price:2,lat:3.1348,lng:101.6651,
+   goodFor:[1,3],openHours:[{o:12,c:23}],bestFor:['lunch','dinner'],weekendBoost:true,
+   scores:{speed:[2],cuisine:[2]},bg:'linear-gradient(160deg,#2d1f00,#0D0800)',
+   maps:'https://www.google.com/maps/search/Jibril+Restaurant+Bukit+Damansara+KL',
+   why:'Mezze dan grill Lebanon yang proper. Berbeza dalam cara yang betul.',
+   momentCopy:{weekend:'Weekend, nak benda exotic. Jibril deliver.'}},
+
+  {name:'Elemen',area:'Pavilion KL',cat:'Plant-Based',price:2,lat:3.1488,lng:101.7134,
+   goodFor:[1,3],openHours:[{o:11,c:22}],bestFor:['lunch','dinner'],weekendBoost:false,
+   scores:{speed:[2],cuisine:[2]},bg:'linear-gradient(160deg,#003d1a,#0D0800)',
+   maps:'https://www.google.com/maps/search/Elemen+Restaurant+Pavilion+KL',
+   why:'Plant-based dengan jiwa Malaysia. Mengejutkan dalam cara yang bagus.',momentCopy:{}},
+
+  {name:'PAUL Bakery',area:'Pavilion KL',cat:'French Cafe',price:2,lat:3.1488,lng:101.7128,
+   goodFor:[1,4],openHours:[{o:8,c:22}],bestFor:['breakfast','lunch','tea'],weekendBoost:false,
+   scores:{speed:[1,2],cuisine:[2]},bg:'linear-gradient(160deg,#2d2500,#0D0800)',
+   maps:'https://www.google.com/maps/search/PAUL+Bakery+Pavilion+KL',
+   why:'Croissant, kopi, vibes Paris tapi address KL.',
+   momentCopy:{breakfast:'Sarapan croissant. Good life.',tea:'Petang-petang, pause sekejap. Deserved.'}},
+
+  {name:"Merchant's Lane",area:'Pudu',cat:'Heritage Cafe',price:2,lat:3.1428,lng:101.7038,
+   goodFor:[1,4],openHours:[{o:10,c:17}],bestFor:['breakfast','lunch','tea'],weekendBoost:true,
+   scores:{speed:[1,2],cuisine:[2]},bg:'linear-gradient(160deg,#2d1800,#0D0800)',
+   maps:'https://www.google.com/maps/search/Merchants+Lane+Pudu+KL',
+   why:'Shophouse cafe yang aesthetic tapi makanan dia pun betul. Hidden gem Pudu.',
+   momentCopy:{weekend:'Weekend brunch yang worth the gram.',tea:'Afternoon tea, old KL vibes.'}},
+
+  {name:'Feeka Coffee Roasters',area:'Bukit Bintang',cat:'Specialty Coffee',price:2,lat:3.1498,lng:101.7018,
+   goodFor:[1,4],openHours:[{o:9,c:18}],bestFor:['breakfast','lunch','tea'],weekendBoost:false,
+   scores:{speed:[1,2],cuisine:[2]},bg:'linear-gradient(160deg,#1a0d00,#0D0800)',
+   maps:'https://www.google.com/maps/search/Feeka+Coffee+Roasters+KL',
+   why:'Serious coffee, serious food, serious vibes. KL\'s go-to for the coffee crowd.',
+   momentCopy:{tea:'Coffee o\'clock. This is the spot.'}},
+
+  {name:'Hao You Le',area:'Desa Sri Hartamas',cat:'Chinese Muslim',price:2,lat:3.1648,lng:101.6535,
+   goodFor:[1,2],openHours:[{o:11,c:22}],bestFor:['lunch','dinner'],weekendBoost:false,
+   scores:{speed:[1,2],cuisine:[1]},bg:'linear-gradient(160deg,#2d0a00,#0D0800)',
+   maps:'https://www.google.com/maps/search/Hao+You+Le+Desa+Sri+Hartamas+KL',
+   why:'Chinese Muslim cooking done right. Char kway teow, claypot, the works — semua halal.',
+   momentCopy:{}},
+
+  {name:"Nando's",area:'Pavilion KL',cat:'Portuguese Chicken',price:2,lat:3.1488,lng:101.7138,
+   goodFor:[1],openHours:[{o:11,c:22}],bestFor:['lunch','dinner'],weekendBoost:false,
+   scores:{speed:[1,2],cuisine:[2]},bg:'linear-gradient(160deg,#2d0800,#0D0800)',
+   maps:'https://www.google.com/maps/search/Nandos+Pavilion+KL',
+   why:'PERi-PERi chicken yang halal certified. Reliable hit, every single time.',momentCopy:{}},
+
+  {name:'Three Little Birds',area:'Bangsar',cat:'All-Day Cafe',price:2,lat:3.1248,lng:101.6728,
+   goodFor:[1,4],openHours:[{o:9,c:18}],bestFor:['breakfast','lunch','tea'],weekendBoost:true,
+   scores:{speed:[1,2],cuisine:[2]},bg:'linear-gradient(160deg,#0d1a1a,#0D0800)',
+   maps:'https://www.google.com/maps/search/Three+Little+Birds+Bangsar+KL',
+   why:'Chill Bangsar cafe, good eggs, good coffee. Weekend morning sorted.',
+   momentCopy:{breakfast:'Slow morning, good eggs. Exactly this.',weekend:'Weekend breakfast done properly.'}},
+
+  {name:'Atas Modern Malaysian',area:'The Row KL',cat:'Modern Malaysian',price:2,lat:3.1528,lng:101.6968,
+   goodFor:[1,2,4],openHours:[{o:11,c:22}],bestFor:['lunch','dinner'],weekendBoost:true,
+   scores:{speed:[2],cuisine:[1]},bg:'linear-gradient(160deg,#1a0a2d,#0D0800)',
+   maps:'https://www.google.com/maps/search/Atas+Modern+Malaysian+Eatery+KL',
+   why:'Malaysian classics dengan twist yang masuk akal. Sedap tanpa perlu pretentious.',
+   momentCopy:{weekend:'Modern Malaysian pada weekend. This is how you do it.'}},
+
+  {name:'Sitka',area:'Publika',cat:'Modern Cafe',price:2,lat:3.1718,lng:101.6498,
+   goodFor:[1,4],openHours:[{o:9,c:18}],bestFor:['breakfast','lunch','tea'],weekendBoost:true,
+   scores:{speed:[1,2],cuisine:[2]},bg:'linear-gradient(160deg,#0a1a2d,#0D0800)',
+   maps:'https://www.google.com/maps/search/Sitka+Publika+KL',
+   why:'Publika\'s best kept secret. Simple menu, done exceptionally well.',
+   momentCopy:{weekend:'Lazy weekend lunch at Sitka. The move.',tea:'Coffee and cake in the afternoon. Deserved.'}},
+
+  {name:'Ante Kitchen & Bar',area:'TTDI',cat:'Modern Grill',price:2,lat:3.1285,lng:101.6278,
+   goodFor:[1,2],openHours:[{o:11,c:22}],bestFor:['lunch','dinner'],weekendBoost:false,
+   scores:{speed:[2],cuisine:[2]},bg:'linear-gradient(160deg,#1a1a00,#0D0800)',
+   maps:'https://www.google.com/maps/search/Ante+Kitchen+Bar+TTDI+KL',
+   why:'Grill-forward, flavour-first. TTDI crowd knows. Now you do too.',momentCopy:{}},
+
+  {name:'Botanica+CO',area:'TTDI',cat:'Garden Cafe',price:2,lat:3.1268,lng:101.6278,
+   goodFor:[1,4],openHours:[{o:9,c:18}],bestFor:['breakfast','lunch','tea'],weekendBoost:true,
+   scores:{speed:[1,2],cuisine:[2]},bg:'linear-gradient(160deg,#0d2d0d,#0D0800)',
+   maps:'https://www.google.com/maps/search/Botanica+CO+TTDI+KL',
+   why:'Garden setting, healthy-ish food, genuinely good coffee. Guilt-free makan.',
+   momentCopy:{weekend:'Sunday brunch in a garden. Rare but available.',tea:'Afternoon refresh. Botanica delivers.'}},
+
+  {name:'Breakfast Thieves',area:'TTDI',cat:'Australian Brunch',price:2,lat:3.1268,lng:101.6288,
+   goodFor:[1,4],openHours:[{o:8,c:16}],bestFor:['breakfast','lunch'],weekendBoost:true,
+   scores:{speed:[1,2],cuisine:[2]},bg:'linear-gradient(160deg,#0a1a0a,#0D0800)',
+   maps:'https://www.google.com/maps/search/Breakfast+Thieves+TTDI+KL',
+   why:'Avocado toast dan eggs yang serious. TTDI brunch institution.',
+   momentCopy:{breakfast:'Proper brunch energy. Breakfast Thieves delivers.',weekend:'Weekend brunch benchmark in TTDI.'}},
+
+  {name:'Burger Junkyard',area:'Bangsar',cat:'Gourmet Burger',price:2,lat:3.1268,lng:101.6738,
+   goodFor:[1],openHours:[{o:11,c:22}],bestFor:['lunch','dinner','supper'],weekendBoost:true,
+   scores:{speed:[1,2],cuisine:[2]},bg:'linear-gradient(160deg,#2d1000,#0D0800)',
+   maps:'https://www.google.com/maps/search/Burger+Junkyard+Bangsar+KL',
+   why:'Messy, beefy, 100% worth it. Bangsar\'s answer to serious burger cravings.',
+   momentCopy:{supper:'Late night burger yang tak tipu.',weekend:'Weekend cheat meal. No regrets.'}},
+
+  {name:'Delicious',area:'Bangsar Village',cat:'Contemporary Cafe',price:2,lat:3.1278,lng:101.6748,
+   goodFor:[1,4],openHours:[{o:10,c:22}],bestFor:['breakfast','lunch','tea','dinner'],weekendBoost:false,
+   scores:{speed:[1,2],cuisine:[2]},bg:'linear-gradient(160deg,#1a1500,#0D0800)',
+   maps:'https://www.google.com/maps/search/Delicious+Bangsar+Village+KL',
+   why:'Bangsar staple for over a decade. Always consistent, always a good shout.',
+   momentCopy:{tea:'Coffee and cake in Bangsar. Classic move.'}},
+
+  {name:'Sushi Zanmai',area:'KLCC',cat:'Japanese (Halal)',price:2,lat:3.1578,lng:101.7134,
+   goodFor:[1,2],openHours:[{o:11,c:22}],bestFor:['lunch','dinner'],weekendBoost:false,
+   scores:{speed:[1,2],cuisine:[2]},bg:'linear-gradient(160deg,#00152d,#0D0800)',
+   maps:'https://www.google.com/maps/search/Sushi+Zanmai+KLCC+KL',
+   why:'Halal-certified Japanese kat KLCC. Sushi conveyor belt yang tak menipu.',momentCopy:{}},
+
+  {name:'Limapulo',area:'Bukit Bintang',cat:'Peranakan Nyonya',price:2,lat:3.1448,lng:101.7108,
+   goodFor:[1,3],openHours:[{o:11,c:22}],bestFor:['lunch','dinner'],weekendBoost:false,
+   scores:{speed:[2],cuisine:[1]},bg:'linear-gradient(160deg,#2d0a2d,#0D0800)',
+   maps:'https://www.google.com/maps/search/Limapulo+Baba+Can+Cook+KL',
+   why:'Nyonya cooking yang rasa macam rumah nenek tapi presentation lebih proper.',
+   momentCopy:{weekend:'Weekend Nyonya lunch. This is culture.'}},
+
+  {name:'Tarbush',area:'Bukit Bintang',cat:'Lebanese',price:2,lat:3.1468,lng:101.7118,
+   goodFor:[1,2,3],openHours:[{o:11,c:23}],bestFor:['lunch','dinner'],weekendBoost:false,
+   scores:{speed:[2],cuisine:[2]},bg:'linear-gradient(160deg,#2d1a00,#0D0800)',
+   maps:'https://www.google.com/maps/search/Tarbush+Restaurant+Bukit+Bintang+KL',
+   why:'Lebanese meze, shawarma dan mixed grill. Proper Middle Eastern kat tengah KL.',momentCopy:{}},
+
+  {name:'Restoran Nelayan',area:'Titiwangsa',cat:'Malay Seafood Buffet',price:2,lat:3.1788,lng:101.7038,
+   goodFor:[1,2,4],openHours:[{o:12,c:22}],bestFor:['lunch','dinner'],weekendBoost:true,
+   scores:{speed:[2],cuisine:[1]},bg:'linear-gradient(160deg,#001a2d,#0D0800)',
+   maps:'https://www.google.com/maps/search/Restoran+Nelayan+Titiwangsa+KL',
+   why:'Seafood buffet tepi tasik. Ambil banyak-banyak, bayar sekali. Berbaloi.',
+   momentCopy:{weekend:'Weekend seafood spread. The ultimate KL move.'}},
+
+  {name:'Yarl Restaurant',area:'Wangsa Maju',cat:'Sri Lankan',price:2,lat:3.2028,lng:101.7348,
+   goodFor:[1,3],openHours:[{o:11,c:22}],bestFor:['lunch','dinner'],weekendBoost:false,
+   scores:{speed:[2],cuisine:[2]},bg:'linear-gradient(160deg,#2d0000,#0D0800)',
+   maps:'https://www.google.com/maps/search/Yarl+Restaurant+Wangsa+Maju+KL',
+   why:'Sri Lankan curry yang authentic dan halal. Rare find, worth the trip.',momentCopy:{}},
+
+  {name:'The Good Batch',area:'Bangsar',cat:'Craft Coffee & Food',price:2,lat:3.1258,lng:101.6748,
+   goodFor:[1,4],openHours:[{o:9,c:18}],bestFor:['breakfast','lunch','tea'],weekendBoost:true,
+   scores:{speed:[1,2],cuisine:[2]},bg:'linear-gradient(160deg,#1a0d00,#0D0800)',
+   maps:'https://www.google.com/maps/search/The+Good+Batch+Bangsar+KL',
+   why:'Small menu, big flavour. Bangsar neighbourhood cafe yang betul-betul good.',
+   momentCopy:{breakfast:'Morning done right. Good Batch style.',weekend:'Chill Saturday morning sorted.'}},
+
+  {name:'Chagaloo',area:'Sri Petaling',cat:'Modern Cafe',price:2,lat:3.0868,lng:101.6948,
+   goodFor:[1,4],openHours:[{o:10,c:22}],bestFor:['lunch','tea','dinner'],weekendBoost:true,
+   scores:{speed:[1,2],cuisine:[2]},bg:'linear-gradient(160deg,#0d1a0d,#0D0800)',
+   maps:'https://www.google.com/maps/search/Chagaloo+Sri+Petaling+KL',
+   why:'Sri Petaling gem yang ramai tak tau. Good food, good coffee, no queue.',momentCopy:{}},
+
+  {name:'Sangkaya',area:'Bukit Bintang',cat:'Coconut Ice Cream & Light Meals',price:2,lat:3.1458,lng:101.7108,
+   goodFor:[1,4],openHours:[{o:12,c:22}],bestFor:['lunch','tea','dinner'],weekendBoost:true,
+   scores:{speed:[1,2],cuisine:[1]},bg:'linear-gradient(160deg,#1a2d00,#0D0800)',
+   maps:'https://www.google.com/maps/search/Sangkaya+Bukit+Bintang+KL',
+   why:'Coconut ice cream yang original dan Malaysian. Light meals pun ada untuk yang lapar sikit.',
+   momentCopy:{tea:'Petang-petang, ice cream coconut. Happiness is simple.'}},
+
+  /* ── SPLASH ── */
+  {name:'Bijan',area:'Bukit Bintang',cat:'Fine Malaysian',price:3,lat:3.1448,lng:101.7118,
+   goodFor:[2,3,5],openHours:[{o:12,c:23}],bestFor:['lunch','dinner'],weekendBoost:true,
+   scores:{speed:[2],cuisine:[1]},bg:'linear-gradient(160deg,#0a0a2d,#0D0800)',
+   maps:'https://www.google.com/maps/search/Bijan+Bar+Restaurant+Kuala+Lumpur',
+   why:'Malaysian fine dining yang betul-betul finest. You said treat yourself — kita ambil serius tu.',
+   momentCopy:{weekend:'Weekend, belanja diri sendiri. Bijan. Done.'}},
+
+  {name:'Zipangu',area:'Hilton KL',cat:'Japanese Fine Dining',price:3,lat:3.1418,lng:101.7098,
+   goodFor:[2,3,5],openHours:[{o:12,c:22}],bestFor:['lunch','dinner'],weekendBoost:true,
+   scores:{speed:[2],cuisine:[2]},bg:'linear-gradient(160deg,#00152d,#0D0800)',
+   maps:'https://www.google.com/maps/search/Zipangu+Hilton+Kuala+Lumpur',
+   why:'Hotel Japanese yang serious. Grown-up eating. Worth every ringgit.',
+   momentCopy:{weekend:'Weekend splurge. Tak rugi pun.'}},
+
+  {name:'Dewakan',area:'KL City Centre',cat:'Modern Malaysian',price:3,lat:3.1578,lng:101.7048,
+   goodFor:[3,5],openHours:[{o:12,c:22}],bestFor:['lunch','dinner'],weekendBoost:true,
+   scores:{speed:[2],cuisine:[1]},bg:'linear-gradient(160deg,#1a001a,#0D0800)',
+   maps:'https://www.google.com/maps/search/Dewakan+Restaurant+KL',
+   why:'Yang terbaik yang Malaysia ada. Dewakan adalah jawapannya.',
+   momentCopy:{weekend:'Occasion special, hari biasa. Pergi je.'}},
+
+  {name:'Rahsia',area:'Roof Garden, Bangsar',cat:'Malaysian Rooftop',price:3,lat:3.1168,lng:101.6758,
+   goodFor:[3,5],openHours:[{o:18,c:24}],bestFor:['dinner','supper'],weekendBoost:true,
+   scores:{speed:[2],cuisine:[1]},bg:'linear-gradient(160deg,#1a0a2d,#0D0800)',
+   maps:'https://www.google.com/maps/search/Rahsia+Restaurant+Bangsar+KL',
+   why:'Rooftop, Malaysian modern, angin malam. Scene yang betul-betul kena.',
+   momentCopy:{supper:'Malam, rooftop, mood. Perfect.',weekend:'Friday night done dengan proper.'}},
+
+  {name:'Fuego',area:'Troika Sky Dining',cat:'Latin Rooftop',price:3,lat:3.1578,lng:101.7188,
+   goodFor:[3,5],openHours:[{o:18,c:24}],bestFor:['dinner','supper'],weekendBoost:true,
+   scores:{speed:[2],cuisine:[2]},bg:'linear-gradient(160deg,#2d0500,#0D0800)',
+   maps:'https://www.google.com/maps/search/Fuego+Troika+Sky+Dining+KL',
+   why:'Rooftop, Latin heat, skyline KL malam hari. You said treat myself — say less.',
+   momentCopy:{weekend:"Friday/Saturday at Fuego. That's the move.",dinner:'Sunset kat Troika memang lain.'}},
+
+  {name:'Al-Amar',area:'KLCC',cat:'Lebanese Fine Dining',price:3,lat:3.1578,lng:101.7148,
+   goodFor:[2,3,5],openHours:[{o:12,c:23}],bestFor:['lunch','dinner'],weekendBoost:true,
+   scores:{speed:[2],cuisine:[2]},bg:'linear-gradient(160deg,#1a0d00,#0D0800)',
+   maps:'https://www.google.com/maps/search/Al-Amar+Lebanese+Restaurant+KLCC+KL',
+   why:'Lebanese fine dining kat KLCC. Mezze, lamb, baklava — semua kelas atas.',
+   momentCopy:{weekend:'Date night Lebanese style. Impress guaranteed.'}},
+
+  {name:'Skillet at 163',area:'Ampang Hilir',cat:'Modern European',price:3,lat:3.1628,lng:101.7248,
+   goodFor:[2,3,5],openHours:[{o:12,c:22}],bestFor:['lunch','dinner'],weekendBoost:true,
+   scores:{speed:[2],cuisine:[2]},bg:'linear-gradient(160deg,#0a1a1a,#0D0800)',
+   maps:'https://www.google.com/maps/search/Skillet+at+163+Ampang+KL',
+   why:'Fine dining yang tak pretentious. Chef-driven, ingredient-focused, consistently excellent.',
+   momentCopy:{weekend:'Special occasion dinner. Skillet delivers every time.'}},
+
+  {name:'Entier',area:'Bangsar South',cat:'French Fine Dining',price:3,lat:3.1068,lng:101.6748,
+   goodFor:[3,5],openHours:[{o:12,c:22}],bestFor:['lunch','dinner'],weekendBoost:true,
+   scores:{speed:[2],cuisine:[2]},bg:'linear-gradient(160deg,#0d0a1a,#0D0800)',
+   maps:'https://www.google.com/maps/search/Entier+French+Dining+Bangsar+South+KL',
+   why:'French fine dining yang proper kat KL. Tasting menu, wine pairing, the whole experience.',
+   momentCopy:{weekend:'Treat yourself properly. Entier is that meal.'}}
 ];
 
-/* LAYER 1 */
+/* ── LAYER 1: IS OPEN ── */
 function isOpen(r){
   const h=M.h;
   return r.openHours.some(w=>{
@@ -568,7 +657,7 @@ function isOpen(r){
   });
 }
 
-/* LAYER 2 */
+/* ── LAYER 2: MOOD SCORE ── */
 function moodScore(r,a){
   let s=0;
   if(r.goodFor.includes(a.occasion))s+=5;
@@ -579,7 +668,7 @@ function moodScore(r,a){
   return s;
 }
 
-/* LAYER 3 */
+/* ── LAYER 3: MOMENT SCORE ── */
 function momentScore(r){
   let s=0;
   if(r.bestFor.includes(M.slot))s+=3;
@@ -587,53 +676,38 @@ function momentScore(r){
   return s;
 }
 
-/* WHY COPY */
+/* ── WHY COPY ── */
 function buildWhy(r){
   const mc=r.momentCopy||{};
   const add=mc[M.slot]||(M.isWeekend&&mc.weekend)||null;
   return r.why+(add?'\n\n'+add:'');
 }
 
-/* STATE */
+/* ── STATE ── */
 let answers={},qIdx=0,ranked=[],rerollUsed=false;
+const RADIUS_KM=15;
 
-/* TRANSITIONS */
+/* ── TRANSITIONS ── */
 function go(id){
   const cur=document.querySelector('.screen.active');
   if(cur){cur.classList.add('out');setTimeout(()=>cur.classList.remove('active','out'),300);}
   setTimeout(()=>document.getElementById(id).classList.add('active'),155);
 }
 
-/* QUIZ RENDER */
+/* ── QUIZ RENDER ── */
 function renderQ(i){
   const q=QUESTIONS[i];
   document.getElementById('prog').innerHTML=
     QUESTIONS.map((_,j)=>`<div class="pseg ${j<i?'done':j===i?'active':''}"></div>`).join('');
   document.getElementById('qNum').textContent=q.num;
   document.getElementById('qText').textContent=q.text;
-
   const container=document.getElementById('qOpts');
-
   if(q.layout==='row'){
-    container.innerHTML=`<div class="opts-row">${
-      q.opts.map(o=>`<button class="opt" onclick="pick('${q.key}',${o.v},this)">
-        <span class="opt-label">${o.label}</span>
-        <span class="opt-sub">${o.sub}</span>
-      </button>`).join('')
-    }</div>`;
-  } else if(q.layout==='price'){
-    container.innerHTML=`<div class="opts-price">${
-      q.opts.map(o=>`<button class="opt ${o.cls}" onclick="pick('${q.key}',${o.v},this)">
-        <span class="opt-label">${o.label}</span>
-        <span class="opt-sub">${o.sub}</span>
-      </button>`).join('')
-    }</div>`;
-  } else {
-    container.innerHTML=q.opts.map(o=>`
-      <button class="opt" onclick="pick('${q.key}',${o.v},this)">
-        <span class="opt-label">${o.label}</span>
-        <span class="opt-sub">${o.sub}</span>
-      </button>`).join('');
+    container.innerHTML=`<div class="opts-row">${q.opts.map(o=>`<button class="opt" onclick="pick('${q.key}',${o.v},this)"><span class="opt-label">${o.label}</span><span class="opt-sub">${o.sub}</span></button>`).join('')}</div>`;
+  }else if(q.layout==='price'){
+    container.innerHTML=`<div class="opts-price">${q.opts.map(o=>`<button class="opt ${o.cls}" onclick="pick('${q.key}',${o.v},this)"><span class="opt-label">${o.label}</span><span class="opt-sub">${o.sub}</span></button>`).join('')}</div>`;
+  }else{
+    container.innerHTML=q.opts.map(o=>`<button class="opt" onclick="pick('${q.key}',${o.v},this)"><span class="opt-label">${o.label}</span><span class="opt-sub">${o.sub}</span></button>`).join('');
   }
 }
 
@@ -645,19 +719,15 @@ function pick(key,val,btn){
     if(qIdx<QUESTIONS.length){
       const q=document.getElementById('quiz');
       q.style.cssText='opacity:0;transform:translateY(-10px);transition:opacity .15s,transform .15s';
-      setTimeout(()=>{
-        renderQ(qIdx);
-        q.style.cssText='opacity:1;transform:translateY(0);transition:opacity .2s,transform .2s';
-        setTimeout(()=>q.style.cssText='',200);
-      },150);
+      setTimeout(()=>{renderQ(qIdx);q.style.cssText='opacity:1;transform:translateY(0);transition:opacity .2s,transform .2s';setTimeout(()=>q.style.cssText='',200);},150);
     }else{startLoading();}
   },160);
 }
 
-/* LOADING */
+/* ── LOADING + GEO FILTER ── */
 function startLoading(){
   go('loading');
-  const msgs=['Reading your soul lah','Checking the vibes','Tanya semua mamak','Almost ready dah...'];
+  const msgs=['Reading your soul lah','Scanning spots near you','Checking the vibes','Almost ready dah...'];
   let mi=0;
   const lmsg=document.getElementById('lmsg');
   setTimeout(()=>{document.getElementById('lfill').style.width='100%';},80);
@@ -667,35 +737,43 @@ function startLoading(){
   },700);
   setTimeout(()=>{
     clearInterval(iv);
-    const open=RESTAURANTS.filter(isOpen);
-    const pool=open.length>=3?open:RESTAURANTS;
-    ranked=pool.map(r=>({...r,_s:moodScore(r,answers)+momentScore(r)+Math.random()*.4})).sort((a,b)=>b._s-a._s);
+    let pool;
+    if(userLat!==null){
+      // attach distance and filter by radius
+      const withDist=RESTAURANTS.map(r=>({...r,_dist:distKm(userLat,userLng,r.lat,r.lng)}));
+      const nearby=withDist.filter(r=>r._dist<=RADIUS_KM);
+      const nearbyOpen=nearby.filter(isOpen);
+      pool=nearbyOpen.length>=3?nearbyOpen:nearby.length>=3?nearby:withDist;
+    }else{
+      const open=RESTAURANTS.filter(isOpen);
+      pool=(open.length>=3?open:RESTAURANTS).map(r=>({...r,_dist:null}));
+    }
+    ranked=pool
+      .map(r=>({...r,_s:moodScore(r,answers)+momentScore(r)+Math.random()*.4}))
+      .sort((a,b)=>b._s-a._s);
     showReveal(0);
   },2900);
 }
 
-/* REVEAL */
+/* ── REVEAL ── */
 function showReveal(idx){
   const r=ranked[idx];
   const open=isOpen(r);
   const timeMatch=r.bestFor.includes(M.slot);
   const wkBoost=r.weekendBoost&&M.isWeekend;
-
-  // distinct price pill class
-  const priceChip=r.price===1
-    ?`<span class="ch-jimat">Jimat</span>`
-    :r.price===2
-    ?`<span class="ch-mid">Mid-range</span>`
-    :`<span class="ch-splash">Splash out</span>`;
+  const priceChip=r.price===1?`<span class="ch-jimat">Jimat</span>`:r.price===2?`<span class="ch-mid">Mid-range</span>`:`<span class="ch-splash">Splash out</span>`;
+  const distChip=r._dist!=null?`<span class="ch-dist">${fmtDist(r._dist)}</span>`:'';
 
   document.getElementById('rvbg').style.background=r.bg;
   document.getElementById('rvtag').textContent=idx===0?'Matched':'Re-roll';
+  document.getElementById('rveyebrow').textContent=M.eyebrow;
   document.getElementById('rvname').textContent=r.name;
   document.getElementById('rvmeta').textContent=r.area+' · '+r.cat;
   document.getElementById('rvwhy').textContent=buildWhy(r);
 
   document.getElementById('rvchips').innerHTML=[
     `<span class="ch-halal">Halal</span>`,
+    distChip,
     open?`<span class="ch-open">Open now</span>`:'',
     timeMatch?`<span class="ch-time">${M.label}</span>`:'',
     wkBoost?`<span class="ch-wknd">Weekend pick</span>`:'',
@@ -721,14 +799,15 @@ function showReveal(idx){
   go('reveal');
 }
 
-/* SHARE */
+/* ── SHARE ── */
 function shareIt(r){
-  const txt=`manamana dah decide untuk aku\n\nMalam ni pergi ${r.name} (${r.area}).\n\n"${r.why}"\n\nCuba kau punya: manamana.app`;
+  const distTxt=r._dist!=null?` (${fmtDist(r._dist)} dari kau)`:'';
+  const txt=`manamana dah decide untuk aku\n\nMalam ni pergi ${r.name}${distTxt} — ${r.area}.\n\n"${r.why}"\n\nCuba kau punya: manamana.app`;
   if(navigator.share){navigator.share({text:txt}).catch(()=>{});}
   else{window.open('https://api.whatsapp.com/send?text='+encodeURIComponent(txt),'_blank');}
 }
 
-/* INIT */
+/* ── INIT ── */
 document.getElementById('spMoment').innerHTML=
   `${M.label} — ${M.isWeekend?'hujung minggu':'hari biasa'}. <b>Lapar ke?</b>`;
 

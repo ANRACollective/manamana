@@ -200,9 +200,6 @@ html,body{
 .btn-go:active{filter:brightness(.88);transform:scale(.98);}
 .btn-share{all:unset;display:block;width:100%;border:1px solid var(--s3);color:var(--muted);padding:15px 24px;border-radius:14px;font-size:14px;font-weight:700;text-align:center;cursor:pointer;letter-spacing:.2px;transition:border-color .12s,color .12s;font-family:inherit;}
 .btn-share:active{border-color:var(--muted2);color:var(--cream);}
-.reroll{text-align:center;font-size:11px;color:var(--muted2);cursor:pointer;padding:4px;font-weight:600;letter-spacing:1px;text-transform:uppercase;transition:color .2s;}
-.reroll:active{color:var(--muted);}
-.reroll.spent{opacity:.25;pointer-events:none;font-style:italic;text-transform:none;letter-spacing:0;}
 </style>
 </head>
 <body>
@@ -255,7 +252,6 @@ html,body{
     <div class="rv-why" id="rvwhy"></div>
     <button class="btn-go" id="btnGo">Pergi dah</button>
     <button class="btn-share" id="btnShare">Share dengan kawan-kawan</button>
-    <div class="reroll" id="btnReroll">Not feeling it? One re-roll only.</div>
   </div>
 </div>
 
@@ -308,8 +304,8 @@ const QUESTIONS=[
    opts:[{label:'Jimat',sub:'Bawah RM30',v:1,cls:'opt-jimat'},{label:'Mid-range',sub:'RM30 – RM80',v:2,cls:'opt-mid'},{label:'Splash out',sub:'RM80 ke atas',v:3,cls:'opt-splash'}]},
   {key:'speed',num:'03 of 04',text:'Lapar tak?',layout:'row',
    opts:[{label:'Lapar gila',sub:'Fast, now',v:1},{label:'Boleh tunggu',sub:'I have time',v:2}]},
-  {key:'cuisine',num:'04 of 04',text:'Craving apa?',layout:'row',
-   opts:[{label:'Malaysian soul food',sub:'Nasi, lauk, sedap',v:1},{label:'Something different',sub:'Japanese, Thai, Western',v:2}]}
+  {key:'cuisine',num:'04 of 04',text:'Craving apa?',layout:'stack',
+   opts:[{label:'Malaysian & local',sub:'Nasi, mamak, nyonya, kopitiam',v:1},{label:'Asian vibes',sub:'Japanese, Korean, Thai, Indian',v:2},{label:'Western & cafe',sub:'Italian, French, steak, brunch',v:3}]}
 ];
 
 /* ── RESTAURANTS (50) ── */
@@ -359,7 +355,7 @@ const RESTAURANTS=[
 
   {name:'MyBurgerLab',area:'TTDI',cat:'Smash Burger',price:1,lat:3.1357,lng:101.6382,
    goodFor:[1],openHours:[{o:11,c:23}],bestFor:['lunch','dinner','supper'],weekendBoost:true,
-   scores:{speed:[1,2],cuisine:[2]},bg:'linear-gradient(160deg,#2d1800,#0D0800)',
+   scores:{speed:[1,2],cuisine:[3]},bg:'linear-gradient(160deg,#2d1800,#0D0800)',
    maps:'https://www.google.com/maps/search/MyBurgerLab+Kuala+Lumpur',
    why:'Smash burger Malaysia yang memang tak tipu. Satisfying gila.',
    momentCopy:{supper:'Lewat malam dan lapar. Burger je lah.',weekend:'Weekend indulgence. Layak dapat.'}},
@@ -409,7 +405,7 @@ const RESTAURANTS=[
 
   {name:'Plan B',area:'Bangsar',cat:'All-Day Dining',price:2,lat:3.1258,lng:101.6738,
    goodFor:[1,4],openHours:[{o:9,c:22}],bestFor:['breakfast','lunch','tea','dinner'],weekendBoost:false,
-   scores:{speed:[1,2],cuisine:[2]},bg:'linear-gradient(160deg,#0d1a2d,#0D0800)',
+   scores:{speed:[1,2],cuisine:[3]},bg:'linear-gradient(160deg,#0d1a2d,#0D0800)',
    maps:'https://www.google.com/maps/search/Plan+B+Restaurant+Kuala+Lumpur',
    why:'All-day, always reliable, good for any mood.',
    momentCopy:{breakfast:'Brunch done properly. No drama.',tea:'Petang-petang, kopi dan rehat.'}},
@@ -422,7 +418,7 @@ const RESTAURANTS=[
 
   {name:'The Bird',area:'Solaris Mont Kiara',cat:'Rotisserie Chicken',price:2,lat:3.1718,lng:101.6488,
    goodFor:[1],openHours:[{o:11,c:22}],bestFor:['lunch','dinner'],weekendBoost:false,
-   scores:{speed:[1,2],cuisine:[2]},bg:'linear-gradient(160deg,#2d0f00,#0D0800)',
+   scores:{speed:[1,2],cuisine:[3]},bg:'linear-gradient(160deg,#2d0f00,#0D0800)',
    maps:'https://www.google.com/maps/search/The+Bird+Restaurant+Mont+Kiara+KL',
    why:'Rotisserie chicken, kulit rangup, sides yang betul.',momentCopy:{}},
 
@@ -454,27 +450,27 @@ const RESTAURANTS=[
 
   {name:'Elemen',area:'Pavilion KL',cat:'Plant-Based',price:2,lat:3.1488,lng:101.7134,
    goodFor:[1,3],openHours:[{o:11,c:22}],bestFor:['lunch','dinner'],weekendBoost:false,
-   scores:{speed:[2],cuisine:[2]},bg:'linear-gradient(160deg,#003d1a,#0D0800)',
+   scores:{speed:[2],cuisine:[1,3]},bg:'linear-gradient(160deg,#003d1a,#0D0800)',
    maps:'https://www.google.com/maps/search/Elemen+Restaurant+Pavilion+KL',
    why:'Plant-based dengan jiwa Malaysia. Mengejutkan dalam cara yang bagus.',momentCopy:{}},
 
   {name:'PAUL Bakery',area:'Pavilion KL',cat:'French Cafe',price:2,lat:3.1488,lng:101.7128,
    goodFor:[1,4],openHours:[{o:8,c:22}],bestFor:['breakfast','lunch','tea'],weekendBoost:false,
-   scores:{speed:[1,2],cuisine:[2]},bg:'linear-gradient(160deg,#2d2500,#0D0800)',
+   scores:{speed:[1,2],cuisine:[3]},bg:'linear-gradient(160deg,#2d2500,#0D0800)',
    maps:'https://www.google.com/maps/search/PAUL+Bakery+Pavilion+KL',
    why:'Croissant, kopi, vibes Paris tapi address KL.',
    momentCopy:{breakfast:'Sarapan croissant. Good life.',tea:'Petang-petang, pause sekejap. Deserved.'}},
 
   {name:"Merchant's Lane",area:'Pudu',cat:'Heritage Cafe',price:2,lat:3.1428,lng:101.7038,
    goodFor:[1,4],openHours:[{o:10,c:17}],bestFor:['breakfast','lunch','tea'],weekendBoost:true,
-   scores:{speed:[1,2],cuisine:[2]},bg:'linear-gradient(160deg,#2d1800,#0D0800)',
+   scores:{speed:[1,2],cuisine:[3]},bg:'linear-gradient(160deg,#2d1800,#0D0800)',
    maps:'https://www.google.com/maps/search/Merchants+Lane+Pudu+KL',
    why:'Shophouse cafe yang aesthetic tapi makanan dia pun betul. Hidden gem Pudu.',
    momentCopy:{weekend:'Weekend brunch yang worth the gram.',tea:'Afternoon tea, old KL vibes.'}},
 
   {name:'Feeka Coffee Roasters',area:'Bukit Bintang',cat:'Specialty Coffee',price:2,lat:3.1498,lng:101.7018,
    goodFor:[1,4],openHours:[{o:9,c:18}],bestFor:['breakfast','lunch','tea'],weekendBoost:false,
-   scores:{speed:[1,2],cuisine:[2]},bg:'linear-gradient(160deg,#1a0d00,#0D0800)',
+   scores:{speed:[1,2],cuisine:[3]},bg:'linear-gradient(160deg,#1a0d00,#0D0800)',
    maps:'https://www.google.com/maps/search/Feeka+Coffee+Roasters+KL',
    why:'Serious coffee, serious food, serious vibes. KL\'s go-to for the coffee crowd.',
    momentCopy:{tea:'Coffee o\'clock. This is the spot.'}},
@@ -488,13 +484,13 @@ const RESTAURANTS=[
 
   {name:"Nando's",area:'Pavilion KL',cat:'Portuguese Chicken',price:2,lat:3.1488,lng:101.7138,
    goodFor:[1],openHours:[{o:11,c:22}],bestFor:['lunch','dinner'],weekendBoost:false,
-   scores:{speed:[1,2],cuisine:[2]},bg:'linear-gradient(160deg,#2d0800,#0D0800)',
+   scores:{speed:[1,2],cuisine:[3]},bg:'linear-gradient(160deg,#2d0800,#0D0800)',
    maps:'https://www.google.com/maps/search/Nandos+Pavilion+KL',
    why:'PERi-PERi chicken yang halal certified. Reliable hit, every single time.',momentCopy:{}},
 
   {name:'Three Little Birds',area:'Bangsar',cat:'All-Day Cafe',price:2,lat:3.1248,lng:101.6728,
    goodFor:[1,4],openHours:[{o:9,c:18}],bestFor:['breakfast','lunch','tea'],weekendBoost:true,
-   scores:{speed:[1,2],cuisine:[2]},bg:'linear-gradient(160deg,#0d1a1a,#0D0800)',
+   scores:{speed:[1,2],cuisine:[3]},bg:'linear-gradient(160deg,#0d1a1a,#0D0800)',
    maps:'https://www.google.com/maps/search/Three+Little+Birds+Bangsar+KL',
    why:'Chill Bangsar cafe, good eggs, good coffee. Weekend morning sorted.',
    momentCopy:{breakfast:'Slow morning, good eggs. Exactly this.',weekend:'Weekend breakfast done properly.'}},
@@ -508,41 +504,41 @@ const RESTAURANTS=[
 
   {name:'Sitka',area:'Publika',cat:'Modern Cafe',price:2,lat:3.1718,lng:101.6498,
    goodFor:[1,4],openHours:[{o:9,c:18}],bestFor:['breakfast','lunch','tea'],weekendBoost:true,
-   scores:{speed:[1,2],cuisine:[2]},bg:'linear-gradient(160deg,#0a1a2d,#0D0800)',
+   scores:{speed:[1,2],cuisine:[3]},bg:'linear-gradient(160deg,#0a1a2d,#0D0800)',
    maps:'https://www.google.com/maps/search/Sitka+Publika+KL',
    why:'Publika\'s best kept secret. Simple menu, done exceptionally well.',
    momentCopy:{weekend:'Lazy weekend lunch at Sitka. The move.',tea:'Coffee and cake in the afternoon. Deserved.'}},
 
   {name:'Ante Kitchen & Bar',area:'TTDI',cat:'Modern Grill',price:2,lat:3.1285,lng:101.6278,
    goodFor:[1,2],openHours:[{o:11,c:22}],bestFor:['lunch','dinner'],weekendBoost:false,
-   scores:{speed:[2],cuisine:[2]},bg:'linear-gradient(160deg,#1a1a00,#0D0800)',
+   scores:{speed:[2],cuisine:[3]},bg:'linear-gradient(160deg,#1a1a00,#0D0800)',
    maps:'https://www.google.com/maps/search/Ante+Kitchen+Bar+TTDI+KL',
    why:'Grill-forward, flavour-first. TTDI crowd knows. Now you do too.',momentCopy:{}},
 
   {name:'Botanica+CO',area:'TTDI',cat:'Garden Cafe',price:2,lat:3.1268,lng:101.6278,
    goodFor:[1,4],openHours:[{o:9,c:18}],bestFor:['breakfast','lunch','tea'],weekendBoost:true,
-   scores:{speed:[1,2],cuisine:[2]},bg:'linear-gradient(160deg,#0d2d0d,#0D0800)',
+   scores:{speed:[1,2],cuisine:[3]},bg:'linear-gradient(160deg,#0d2d0d,#0D0800)',
    maps:'https://www.google.com/maps/search/Botanica+CO+TTDI+KL',
    why:'Garden setting, healthy-ish food, genuinely good coffee. Guilt-free makan.',
    momentCopy:{weekend:'Sunday brunch in a garden. Rare but available.',tea:'Afternoon refresh. Botanica delivers.'}},
 
   {name:'Breakfast Thieves',area:'TTDI',cat:'Australian Brunch',price:2,lat:3.1268,lng:101.6288,
    goodFor:[1,4],openHours:[{o:8,c:16}],bestFor:['breakfast','lunch'],weekendBoost:true,
-   scores:{speed:[1,2],cuisine:[2]},bg:'linear-gradient(160deg,#0a1a0a,#0D0800)',
+   scores:{speed:[1,2],cuisine:[3]},bg:'linear-gradient(160deg,#0a1a0a,#0D0800)',
    maps:'https://www.google.com/maps/search/Breakfast+Thieves+TTDI+KL',
    why:'Avocado toast dan eggs yang serious. TTDI brunch institution.',
    momentCopy:{breakfast:'Proper brunch energy. Breakfast Thieves delivers.',weekend:'Weekend brunch benchmark in TTDI.'}},
 
   {name:'Burger Junkyard',area:'Bangsar',cat:'Gourmet Burger',price:2,lat:3.1268,lng:101.6738,
    goodFor:[1],openHours:[{o:11,c:22}],bestFor:['lunch','dinner','supper'],weekendBoost:true,
-   scores:{speed:[1,2],cuisine:[2]},bg:'linear-gradient(160deg,#2d1000,#0D0800)',
+   scores:{speed:[1,2],cuisine:[3]},bg:'linear-gradient(160deg,#2d1000,#0D0800)',
    maps:'https://www.google.com/maps/search/Burger+Junkyard+Bangsar+KL',
    why:'Messy, beefy, 100% worth it. Bangsar\'s answer to serious burger cravings.',
    momentCopy:{supper:'Late night burger yang tak tipu.',weekend:'Weekend cheat meal. No regrets.'}},
 
   {name:'Delicious',area:'Bangsar Village',cat:'Contemporary Cafe',price:2,lat:3.1278,lng:101.6748,
    goodFor:[1,4],openHours:[{o:10,c:22}],bestFor:['breakfast','lunch','tea','dinner'],weekendBoost:false,
-   scores:{speed:[1,2],cuisine:[2]},bg:'linear-gradient(160deg,#1a1500,#0D0800)',
+   scores:{speed:[1,2],cuisine:[3]},bg:'linear-gradient(160deg,#1a1500,#0D0800)',
    maps:'https://www.google.com/maps/search/Delicious+Bangsar+Village+KL',
    why:'Bangsar staple for over a decade. Always consistent, always a good shout.',
    momentCopy:{tea:'Coffee and cake in Bangsar. Classic move.'}},
@@ -581,14 +577,14 @@ const RESTAURANTS=[
 
   {name:'The Good Batch',area:'Bangsar',cat:'Craft Coffee & Food',price:2,lat:3.1258,lng:101.6748,
    goodFor:[1,4],openHours:[{o:9,c:18}],bestFor:['breakfast','lunch','tea'],weekendBoost:true,
-   scores:{speed:[1,2],cuisine:[2]},bg:'linear-gradient(160deg,#1a0d00,#0D0800)',
+   scores:{speed:[1,2],cuisine:[3]},bg:'linear-gradient(160deg,#1a0d00,#0D0800)',
    maps:'https://www.google.com/maps/search/The+Good+Batch+Bangsar+KL',
    why:'Small menu, big flavour. Bangsar neighbourhood cafe yang betul-betul good.',
    momentCopy:{breakfast:'Morning done right. Good Batch style.',weekend:'Chill Saturday morning sorted.'}},
 
   {name:'Chagaloo',area:'Sri Petaling',cat:'Modern Cafe',price:2,lat:3.0868,lng:101.6948,
    goodFor:[1,4],openHours:[{o:10,c:22}],bestFor:['lunch','tea','dinner'],weekendBoost:true,
-   scores:{speed:[1,2],cuisine:[2]},bg:'linear-gradient(160deg,#0d1a0d,#0D0800)',
+   scores:{speed:[1,2],cuisine:[3]},bg:'linear-gradient(160deg,#0d1a0d,#0D0800)',
    maps:'https://www.google.com/maps/search/Chagaloo+Sri+Petaling+KL',
    why:'Sri Petaling gem yang ramai tak tau. Good food, good coffee, no queue.',momentCopy:{}},
 
@@ -630,7 +626,7 @@ const RESTAURANTS=[
 
   {name:'Fuego',area:'Troika Sky Dining',cat:'Latin Rooftop',price:3,lat:3.1578,lng:101.7188,
    goodFor:[3,5],openHours:[{o:18,c:24}],bestFor:['dinner','supper'],weekendBoost:true,
-   scores:{speed:[2],cuisine:[2]},bg:'linear-gradient(160deg,#2d0500,#0D0800)',
+   scores:{speed:[2],cuisine:[3]},bg:'linear-gradient(160deg,#2d0500,#0D0800)',
    maps:'https://www.google.com/maps/search/Fuego+Troika+Sky+Dining+KL',
    why:'Rooftop, Latin heat, skyline KL malam hari. You said treat myself — say less.',
    momentCopy:{weekend:"Friday/Saturday at Fuego. That's the move.",dinner:'Sunset kat Troika memang lain.'}},
@@ -644,18 +640,203 @@ const RESTAURANTS=[
 
   {name:'Skillet at 163',area:'Ampang Hilir',cat:'Modern European',price:3,lat:3.1628,lng:101.7248,
    goodFor:[2,3,5],openHours:[{o:12,c:22}],bestFor:['lunch','dinner'],weekendBoost:true,
-   scores:{speed:[2],cuisine:[2]},bg:'linear-gradient(160deg,#0a1a1a,#0D0800)',
+   scores:{speed:[2],cuisine:[3]},bg:'linear-gradient(160deg,#0a1a1a,#0D0800)',
    maps:'https://www.google.com/maps/search/Skillet+at+163+Ampang+KL',
    why:'Fine dining yang tak pretentious. Chef-driven, ingredient-focused, consistently excellent.',
    momentCopy:{weekend:'Special occasion dinner. Skillet delivers every time.'}},
 
   {name:'Entier',area:'Bangsar South',cat:'French Fine Dining',price:3,lat:3.1068,lng:101.6748,
    goodFor:[3,5],openHours:[{o:12,c:22}],bestFor:['lunch','dinner'],weekendBoost:true,
-   scores:{speed:[2],cuisine:[2]},bg:'linear-gradient(160deg,#0d0a1a,#0D0800)',
+   scores:{speed:[2],cuisine:[3]},bg:'linear-gradient(160deg,#0d0a1a,#0D0800)',
    maps:'https://www.google.com/maps/search/Entier+French+Dining+Bangsar+South+KL',
    why:'French fine dining yang proper kat KL. Tasting menu, wine pairing, the whole experience.',
-   momentCopy:{weekend:'Treat yourself properly. Entier is that meal.'}}
+   momentCopy:{weekend:'Treat yourself properly. Entier is that meal.'}},
+
+  /* ── TTDI DEEP CUTS ── */
+  {name:'Muhibbah Nasi Lemak',area:'TTDI',cat:'Nasi Lemak',price:1,lat:3.1358,lng:101.6368,
+   goodFor:[1,4],openHours:[{o:6,c:14}],bestFor:['breakfast','lunch'],weekendBoost:true,
+   scores:{speed:[1],cuisine:[1]},bg:'linear-gradient(160deg,#1a2d00,#0D0800)',
+   maps:'https://www.google.com/maps/search/Muhibbah+Nasi+Lemak+TTDI+KL',
+   why:'TTDI locals punya nasi lemak. Sambal yang kena, ayam goreng yang betul. No detour required.',
+   momentCopy:{breakfast:'Pagi TTDI, nasi lemak Muhibbah. That\'s the ritual.',weekend:'Weekend breakfast kat TTDI. Ini je lah.'}},
+
+  {name:'The Larder',area:'TTDI',cat:'Craft Coffee & Brunch',price:2,lat:3.1348,lng:101.6378,
+   goodFor:[1,4],openHours:[{o:8,c:17}],bestFor:['breakfast','lunch','tea'],weekendBoost:true,
+   scores:{speed:[1,2],cuisine:[3]},bg:'linear-gradient(160deg,#0d1a0d,#0D0800)',
+   maps:'https://www.google.com/maps/search/The+Larder+TTDI+Kuala+Lumpur',
+   why:'TTDI neighbourhood cafe yang paling cosy. Coffee serius, brunch menu yang honest.',
+   momentCopy:{breakfast:'Morning kopi dan eggs. Larder je.',weekend:'Weekend slow morning. TTDI best kept secret.'}},
+
+  {name:'El Greco',area:'TTDI',cat:'Mediterranean',price:2,lat:3.1345,lng:101.6390,
+   goodFor:[1,3],openHours:[{o:11,c:22}],bestFor:['lunch','dinner'],weekendBoost:false,
+   scores:{speed:[2],cuisine:[3]},bg:'linear-gradient(160deg,#001a1a,#0D0800)',
+   maps:'https://www.google.com/maps/search/El+Greco+TTDI+Kuala+Lumpur',
+   why:'Mediterranean yang real kat TTDI. Lamb chops, mezze, dan vibes yang tenang. Tempat yang orang TTDI simpan sendiri.',
+   momentCopy:{dinner:'Dinner yang lain dari biasa. El Greco deliver.'}},
+
+  {name:'Zende Persian',area:'TTDI',cat:'Persian',price:2,lat:3.1338,lng:101.6375,
+   goodFor:[1,3],openHours:[{o:12,c:22}],bestFor:['lunch','dinner'],weekendBoost:false,
+   scores:{speed:[2],cuisine:[2]},bg:'linear-gradient(160deg,#2d1500,#0D0800)',
+   maps:'https://www.google.com/maps/search/Zende+Persian+Restaurant+TTDI+KL',
+   why:'Persian yang authentic kat KL. Lamb koobideh, saffron rice, pomegranate stew. Rare find, massive payoff.',
+   momentCopy:{}},
+
+  /* ── BANGSAR DEEP CUTS ── */
+  {name:'Piu Piu Piu',area:'Bangsar',cat:'Italian Casual',price:2,lat:3.1248,lng:101.6735,
+   goodFor:[1,3,4],openHours:[{o:12,c:22}],bestFor:['lunch','dinner'],weekendBoost:true,
+   scores:{speed:[1,2],cuisine:[3]},bg:'linear-gradient(160deg,#1a0000,#0D0800)',
+   maps:'https://www.google.com/maps/search/Piu+Piu+Piu+Bangsar+KL',
+   why:'Italian kat Bangsar yang betul-betul alive. Pizza from a proper oven, pasta yang tak tipu.',
+   momentCopy:{weekend:'Weekend pasta night. Piu Piu Piu delivers.',dinner:'Casual Italian dengan vibes. Exactly right.'}},
+
+  {name:'La Bodega',area:'Bangsar',cat:'Spanish Tapas',price:2,lat:3.1255,lng:101.6740,
+   goodFor:[1,3,4],openHours:[{o:11,c:23}],bestFor:['lunch','dinner'],weekendBoost:true,
+   scores:{speed:[2],cuisine:[3]},bg:'linear-gradient(160deg,#1a0500,#0D0800)',
+   maps:'https://www.google.com/maps/search/La+Bodega+Bangsar+KL',
+   why:'Bangsar tapas institution. Patatas bravas, gambas al ajillo, croquetas — semua kena makan sikit sikit.',
+   momentCopy:{weekend:'Tapas dan chill. Bangsar Friday night done right.',dinner:'Date makan dengan tapas. Perfect pacing.'}},
+
+  {name:'Nathalie\'s Gourmet Studio',area:'Bangsar',cat:'French Patisserie',price:2,lat:3.1252,lng:101.6742,
+   goodFor:[1,4],openHours:[{o:10,c:19}],bestFor:['breakfast','lunch','tea'],weekendBoost:true,
+   scores:{speed:[1,2],cuisine:[3]},bg:'linear-gradient(160deg,#0a0a1a,#0D0800)',
+   maps:'https://www.google.com/maps/search/Nathalies+Gourmet+Studio+Bangsar+KL',
+   why:'French pastry yang betul-betul serious kat Bangsar. Croissant, tart, quiche — all made with care.',
+   momentCopy:{tea:'Petang dan pastry. Nothing more needed.',breakfast:'Sarapan croissant yang proper. Earned.',weekend:'Weekend patisserie treat. This is it.'}},
+
+  {name:'Nero Nero',area:'Bangsar',cat:'Italian Fine Dining',price:3,lat:3.1258,lng:101.6748,
+   goodFor:[3,5],openHours:[{o:12,c:22}],bestFor:['lunch','dinner'],weekendBoost:true,
+   scores:{speed:[2],cuisine:[3]},bg:'linear-gradient(160deg,#0a0a0a,#0D0800)',
+   maps:'https://www.google.com/maps/search/Nero+Nero+Restaurant+Bangsar+KL',
+   why:'Italian fine dining kat Bangsar yang tak perlu explain diri. Truffle pasta, wagyu, wine list yang serious.',
+   momentCopy:{weekend:'Special dinner. Italian at its peak.',dinner:'Romantic Italian night. Nero Nero level.'}},
+
+  /* ── PJ DEEP CUTS ── */
+  {name:'Kanna Curry House',area:'SS2 PJ',cat:'South Indian',price:1,lat:3.1065,lng:101.6225,
+   goodFor:[1,4],openHours:[{o:7,c:17}],bestFor:['breakfast','lunch'],weekendBoost:true,
+   scores:{speed:[1],cuisine:[1]},bg:'linear-gradient(160deg,#1a0800,#0D0800)',
+   maps:'https://www.google.com/maps/search/Kanna+Curry+House+SS2+Petaling+Jaya',
+   why:'SS2 legend. Roti canai dan curry pagi yang tak ada tandingan kat PJ. Queue tu berbaloi.',
+   momentCopy:{breakfast:'Pagi awal, roti canai kat SS2. Ini ritual KL.',weekend:'Weekend roti canai yang wajib. Kanna.'}},
+
+  {name:'Kin by Kindred',area:'SS2 PJ',cat:'Modern Malaysian',price:2,lat:3.1055,lng:101.6238,
+   goodFor:[1,4],openHours:[{o:10,c:22}],bestFor:['lunch','tea','dinner'],weekendBoost:true,
+   scores:{speed:[1,2],cuisine:[1]},bg:'linear-gradient(160deg,#0d1a2d,#0D0800)',
+   maps:'https://www.google.com/maps/search/Kin+by+Kindred+SS2+PJ',
+   why:'Modern Malaysian kat SS2 yang betul-betul kena. Flavour betul, presentation betul, jiwa betul.',
+   momentCopy:{weekend:'PJ hidden gem. Worth every km.',dinner:'Malaysian modern yang tak perlu justify.'}},
+
+  {name:'Subak',area:'Section 17 PJ',cat:'Korean BBQ',price:2,lat:3.0978,lng:101.6318,
+   goodFor:[1,3],openHours:[{o:11,c:22}],bestFor:['lunch','dinner'],weekendBoost:true,
+   scores:{speed:[1,2],cuisine:[2]},bg:'linear-gradient(160deg,#00002d,#0D0800)',
+   maps:'https://www.google.com/maps/search/Subak+Korean+Restaurant+Section+17+PJ',
+   why:'Korean BBQ kat PJ yang authentic. Daging, banchan, dan vibes yang betul. Pergi ramai-ramai lagi best.',
+   momentCopy:{weekend:'Korean BBQ weekend. This is the one.',dinner:'Group dinner Korean style. Subak.'}},
+
+  {name:'Mano Plus',area:'Jaya One PJ',cat:'Specialty Coffee & Food',price:2,lat:3.1048,lng:101.6355,
+   goodFor:[1,4],openHours:[{o:9,c:18}],bestFor:['breakfast','lunch','tea'],weekendBoost:true,
+   scores:{speed:[1,2],cuisine:[3]},bg:'linear-gradient(160deg,#0d0d1a,#0D0800)',
+   maps:'https://www.google.com/maps/search/Mano+Plus+Jaya+One+PJ',
+   why:'PJ\'s most serious coffee destination. Food pun sama serius. Small batch, big flavour.',
+   momentCopy:{tea:'Coffee nerd paradise. Mano Plus is it.',weekend:'Weekend coffee pilgrimage to PJ.'}},
+
+  {name:'Souled Out',area:'Sri Hartamas',cat:'Western Grill',price:2,lat:3.1652,lng:101.6535,
+   goodFor:[1,2],openHours:[{o:11,c:23}],bestFor:['lunch','dinner','supper'],weekendBoost:true,
+   scores:{speed:[1,2],cuisine:[3]},bg:'linear-gradient(160deg,#2d1000,#0D0800)',
+   maps:'https://www.google.com/maps/search/Souled+Out+Sri+Hartamas+KL',
+   why:'KL institution untuk sebab yang betul. Half chicken, ribs, sangat consistent. Tak pernah fail.',
+   momentCopy:{supper:'Late night Souled Out. Classic KL move.',weekend:'Weekend group dinner. Guaranteed hit.'}},
+
+  /* ── MONT KIARA DEEP CUTS ── */
+  {name:'Kampo',area:'Mont Kiara',cat:'Japanese Izakaya',price:2,lat:3.1728,lng:101.6475,
+   goodFor:[1,3],openHours:[{o:11,c:23}],bestFor:['lunch','dinner','supper'],weekendBoost:false,
+   scores:{speed:[1,2],cuisine:[2]},bg:'linear-gradient(160deg,#00001a,#0D0800)',
+   maps:'https://www.google.com/maps/search/Kampo+Japanese+Restaurant+Mont+Kiara+KL',
+   why:'Japanese izakaya energy kat Mont Kiara. Yakitori, ramen, Japanese soul food yang selesa.',
+   momentCopy:{supper:'Late Japanese supper. Kampo comes through.',dinner:'Izakaya night in MK. This is the move.'}},
+
+  {name:'Meatworks',area:'Mont Kiara',cat:'Steakhouse',price:3,lat:3.1725,lng:101.6495,
+   goodFor:[2,3,5],openHours:[{o:12,c:22}],bestFor:['lunch','dinner'],weekendBoost:true,
+   scores:{speed:[2],cuisine:[3]},bg:'linear-gradient(160deg,#1a0000,#0D0800)',
+   maps:'https://www.google.com/maps/search/Meatworks+Restaurant+Mont+Kiara+KL',
+   why:'Steak yang betul. Char-grilled, no pretence, full commitment to the meat. MK carnivores know.',
+   momentCopy:{weekend:'Weekend steak. You earned it, spend it.',dinner:'Splash on a proper steak dinner.'}},
+
+  {name:'Kafka Espresso',area:'Mont Kiara',cat:'Specialty Coffee',price:2,lat:3.1715,lng:101.6498,
+   goodFor:[1,4],openHours:[{o:8,c:18}],bestFor:['breakfast','lunch','tea'],weekendBoost:false,
+   scores:{speed:[1,2],cuisine:[3]},bg:'linear-gradient(160deg,#0a0a0a,#0D0800)',
+   maps:'https://www.google.com/maps/search/Kafka+Espresso+Mont+Kiara+KL',
+   why:'Serious coffee, clean space, no fuss. MK morning ritual yang orang situ semua tau.',
+   momentCopy:{breakfast:'Coffee first. Kafka delivers.',tea:'Mid-day coffee reset. Right here.'}},
+
+  {name:'Opus Bistro',area:'Mont Kiara',cat:'Modern Fine Dining',price:3,lat:3.1732,lng:101.6488,
+   goodFor:[3,5],openHours:[{o:12,c:22}],bestFor:['lunch','dinner'],weekendBoost:true,
+   scores:{speed:[2],cuisine:[3]},bg:'linear-gradient(160deg,#0a1a1a,#0D0800)',
+   maps:'https://www.google.com/maps/search/Opus+Bistro+Mont+Kiara+KL',
+   why:'Modern fine dining kat MK yang creative dan well-executed. Chef-driven, worth the occasion.',
+   momentCopy:{weekend:'Upscale dinner malam ni. Opus Bistro.',dinner:'Dinner yang betul-betul memorable.'}},
+
+  {name:'Chakri Palace',area:'Bangsar',cat:'Royal Thai',price:2,lat:3.1245,lng:101.6728,
+   goodFor:[1,2],openHours:[{o:11,c:22}],bestFor:['lunch','dinner'],weekendBoost:false,
+   scores:{speed:[2],cuisine:[2]},bg:'linear-gradient(160deg,#002d00,#0D0800)',
+   maps:'https://www.google.com/maps/search/Chakri+Palace+Bangsar+KL',
+   why:'Thai yang slightly elevated, tak pretentious. Tom yam, pad thai, mango sticky rice — all done properly.',
+   momentCopy:{}}
 ];
+
+/* ── PREFERENCE LEARNING ── */
+// Tracks what users actually open in Maps → boosts similar picks next time
+const PREF_KEY='mana_prefs_v1';
+
+function loadPrefs(){
+  try{return JSON.parse(localStorage.getItem(PREF_KEY)||'{}');}
+  catch{return {};}
+}
+
+function savePrefs(r){
+  try{
+    const p=loadPrefs();
+    // Cuisine signal
+    const c=r.scores.cuisine[0];
+    p.cuisine=p.cuisine||{};
+    p.cuisine[c]=(p.cuisine[c]||0)+1;
+    // Price signal
+    p.price=p.price||{};
+    p.price[r.price]=(p.price[r.price]||0)+1;
+    // Area signal (first word of area for grouping: Bangsar, TTDI, Mont, etc.)
+    const aKey=r.area.split(' ')[0];
+    p.area=p.area||{};
+    p.area[aKey]=(p.area[aKey]||0)+1;
+    // Occasion signal
+    if(answers.occasion){
+      p.occ=p.occ||{};
+      p.occ[answers.occasion]=(p.occ[answers.occasion]||0)+1;
+    }
+    localStorage.setItem(PREF_KEY,JSON.stringify(p));
+  }catch{}}
+
+function prefScore(r){
+  const p=loadPrefs();
+  let s=0;
+  const sum=obj=>Object.values(obj).reduce((a,b)=>a+b,0);
+  // Cuisine affinity: up to 0.7
+  if(p.cuisine&&sum(p.cuisine)>0){
+    const c=r.scores.cuisine[0];
+    const pct=(p.cuisine[c]||0)/sum(p.cuisine);
+    s+=pct*0.7;
+  }
+  // Price affinity: up to 0.6
+  if(p.price&&sum(p.price)>0){
+    const pct=(p.price[r.price]||0)/sum(p.price);
+    s+=pct*0.6;
+  }
+  // Area affinity: up to 0.4
+  if(p.area&&sum(p.area)>0){
+    const aKey=r.area.split(' ')[0];
+    const pct=(p.area[aKey]||0)/sum(p.area);
+    s+=pct*0.4;
+  }
+  return s; // max ~1.7, nudges score without hijacking the algorithm
+}
 
 /* ── LAYER 1: IS OPEN ── */
 function isOpen(r){
@@ -693,7 +874,7 @@ function buildWhy(r){
 }
 
 /* ── STATE ── */
-let answers={},qIdx=0,ranked=[],rerollUsed=false;
+let answers={},qIdx=0,ranked=[];
 const RADIUS_KM=15;
 
 /* ── TRANSITIONS ── */
@@ -761,15 +942,15 @@ function startLoading(){
       pool=(open.length>=3?open:RESTAURANTS).map(r=>({...r,_dist:null}));
     }
     ranked=pool
-      .map(r=>({...r,_s:moodScore(r,answers)+momentScore(r)+Math.random()*.4}))
+      .map(r=>({...r,_s:moodScore(r,answers)+momentScore(r)+prefScore(r)+Math.random()*.4}))
       .sort((a,b)=>b._s-a._s);
-    showReveal(0);
+    showReveal();
   },2900);
 }
 
 /* ── REVEAL ── */
-function showReveal(idx){
-  const r=ranked[idx];
+function showReveal(){
+  const r=ranked[0];
   const open=isOpen(r);
   const timeMatch=r.bestFor.includes(M.slot);
   const wkBoost=r.weekendBoost&&M.isWeekend;
@@ -777,7 +958,7 @@ function showReveal(idx){
   const distChip=r._dist!=null?`<span class="ch-dist">${fmtDist(r._dist)}</span>`:'';
 
   document.getElementById('rvbg').style.background=r.bg;
-  document.getElementById('rvtag').textContent=idx===0?'Matched':'Re-roll';
+  document.getElementById('rvtag').textContent='Matched';
   document.getElementById('rveyebrow').textContent=M.eyebrow;
   document.getElementById('rvname').textContent=r.name;
   document.getElementById('rvmeta').textContent=r.area+' · '+r.cat;
@@ -792,23 +973,13 @@ function showReveal(idx){
     priceChip,
   ].join('');
 
-  document.getElementById('btnGo').onclick=()=>{track('maps_clicked',{restaurant:r.name,area:r.area,category:r.cat,price_tier:r.price});window.open(r.maps,'_blank');};
+  document.getElementById('btnGo').onclick=()=>{
+    track('maps_clicked',{restaurant:r.name,area:r.area,category:r.cat,price_tier:r.price});
+    savePrefs(r);
+    window.open(r.maps,'_blank');
+  };
   document.getElementById('btnShare').onclick=()=>{track('share_clicked',{restaurant:r.name});shareIt(r);};
-
-  const rr=document.getElementById('btnReroll');
-  if(rerollUsed||idx>0){
-    rr.textContent='Dah decide. Pergi je lah.';
-    rr.classList.add('spent');
-  }else{
-    rr.textContent='Not feeling it? One re-roll only.';
-    rr.classList.remove('spent');
-    rr.onclick=()=>{
-      rerollUsed=true;
-      document.getElementById('reveal').classList.add('out');
-      setTimeout(()=>{document.getElementById('reveal').classList.remove('out');showReveal(1);},300);
-    };
-  }
-  track('restaurant_revealed',{restaurant:r.name,area:r.area,category:r.cat,price_tier:r.price,reroll:idx>0});
+  track('restaurant_revealed',{restaurant:r.name,area:r.area,category:r.cat,price_tier:r.price});
   go('reveal');
 }
 

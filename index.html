@@ -264,6 +264,43 @@ html,body{
 .btn-share{all:unset;display:block;width:100%;border:1px solid var(--s3);color:var(--muted);padding:15px 24px;border-radius:14px;font-size:14px;font-weight:700;text-align:center;cursor:pointer;letter-spacing:.2px;transition:border-color .12s,color .12s;font-family:inherit;}
 .btn-share:active{border-color:var(--muted2);color:var(--cream);}
 
+/* ── SWIPE MECHANIC ── */
+.rv-body{touch-action:pan-y;will-change:transform;}
+.rv-hint-overlay{
+  position:absolute;top:-36px;left:0;right:0;
+  display:flex;justify-content:space-between;
+  padding:0 4px;pointer-events:none;
+}
+.rv-hint-left,.rv-hint-right{
+  opacity:0;
+  font-size:13px;font-weight:800;letter-spacing:2px;text-transform:uppercase;
+  padding:5px 12px;border-radius:8px;transition:opacity .08s;
+}
+.rv-hint-left{color:var(--muted);border:2px solid var(--muted2);}
+.rv-hint-right{color:var(--gold);border:2px solid rgba(255,184,0,.6);}
+.rv-swipe-hint{
+  text-align:center;font-size:12px;color:var(--muted2);
+  font-weight:600;letter-spacing:.3px;transition:color .3s,opacity .3s;
+  padding:2px 0;
+}
+.rv-swipe-hint.locked{color:rgba(255,184,0,.6);}
+.btn-restart{
+  all:unset;display:block;width:100%;text-align:center;
+  font-size:13px;font-weight:600;color:var(--muted2);
+  letter-spacing:.3px;cursor:pointer;padding:4px 0;
+  transition:color .15s;font-family:inherit;
+}
+.btn-restart:active{color:var(--cream);}
+
+/* ── PRICE PREF TOGGLE ── */
+.price-wrap{margin-top:8px;display:flex;gap:6px;justify-content:center;}
+.price-btn{
+  all:unset;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;
+  padding:7px 16px;border-radius:100px;border:1px solid var(--s3);
+  color:var(--muted);cursor:pointer;transition:all .15s;font-family:inherit;
+}
+.price-btn.active{border-color:var(--green);color:var(--green);background:rgba(61,214,140,.08);}
+
 /* ── PROFILE SCREEN ── */
 #profile{
   background:var(--bg);
@@ -333,6 +370,10 @@ html,body{
       <button class="diet-btn" id="dietHalal" onclick="setDiet('halal',event)">Halal</button>
       <button class="diet-btn" id="dietNoPref" onclick="setDiet('no-pref',event)">Semua ok</button>
     </div>
+    <div class="price-wrap">
+      <button class="price-btn" id="priceJimat" onclick="setPrice('jimat',event)">Jimat je</button>
+      <button class="price-btn" id="priceSemua" onclick="setPrice('semua',event)">Semua harga</button>
+    </div>
     <div class="sp-moment" id="spMoment"></div>
     <div class="sp-geo" id="spGeo">📍 Locating you...</div>
     <div class="sedap-banner" id="sedapBanner">
@@ -375,13 +416,18 @@ html,body{
     <div class="rv-tag" id="rvtag">Matched</div>
   </div>
   <div class="rv-body" id="rvBody">
+    <div class="rv-hint-overlay">
+      <span class="rv-hint-left" id="rvHintLeft">← LAIN</span>
+      <span class="rv-hint-right" id="rvHintRight">PERGI →</span>
+    </div>
     <div class="rv-chips" id="rvchips"></div>
     <div class="rv-eyebrow" id="rveyebrow">Malam ni, pergi ke</div>
     <div class="rv-name" id="rvname"></div>
     <div class="rv-meta" id="rvmeta"></div>
     <div class="rv-why" id="rvwhy"></div>
-    <button class="btn-atau hidden" id="btnAtau">atau ini pulak →</button>
+    <div class="rv-swipe-hint" id="rvSwipeHint">← geser untuk pilihan lain</div>
     <button class="btn-go" id="btnGo">Pergi dah</button>
+    <button class="btn-restart" id="btnRestart">Mula balik →</button>
     <button class="btn-share" id="btnShare">Share dengan kawan-kawan</button>
   </div>
 </div>
@@ -409,6 +455,7 @@ const LAST_KEY     = 'mana_last_v1';
 const NEG_KEY      = 'mana_neg_v1';
 const DIET_KEY     = 'mana_diet_v1';
 const VISITS_KEY   = 'mana_visits_v1';
+const PRICE_KEY    = 'mana_price_v1';
 
 /* ════════════════════════════════════════════
    GEOLOCATION
@@ -1034,6 +1081,20 @@ function updateDietUI(){
   document.getElementById('dietNoPref').classList.toggle('active',d==='no-pref');
 }
 
+/* Price preference */
+function getPrice(){return localStorage.getItem(PRICE_KEY)||'semua';}
+function setPrice(mode,e){
+  if(e)e.stopPropagation();
+  localStorage.setItem(PRICE_KEY,mode);
+  updatePriceUI();
+  track('price_pref_changed',{mode});
+}
+function updatePriceUI(){
+  const p=getPrice();
+  document.getElementById('priceJimat').classList.toggle('active',p==='jimat');
+  document.getElementById('priceSemua').classList.toggle('active',p==='semua');
+}
+
 /* Visit counter */
 function incVisit(){
   const v=(parseInt(localStorage.getItem(VISITS_KEY)||'0'))+1;
@@ -1097,6 +1158,12 @@ function prefScore(r){
     const aKey=r.area.split(' ')[0];
     s+=((p.area[aKey]||0)/sumObj(p.area))*0.4;
   }
+  // Persistent price preference boost
+  const pricePref=getPrice();
+  if(pricePref==='jimat'){
+    if(r.price===1)s+=2;
+    else if(r.price===3)s-=1;
+  }
   return s;
 }
 
@@ -1122,8 +1189,9 @@ function buildPriceChip(price){
 
 /* ════ STATE ════ */
 let answers={},qIdx=0,ranked=[];
-let rerollsUsed=0,revealTs=0,revealCleanup=null;
+let rerollsUsed=0,revealIdx=0,revealTs=0,revealCleanup=null;
 const RADIUS_KM=15;
+const MAX_SWIPES=3;
 
 /* ════ TRANSITIONS ════ */
 function go(id){
@@ -1231,13 +1299,11 @@ function populateReveal(r,isAlt){
   document.getElementById('btnGo').textContent=isAlt?(closing?'Pergi cepat ⚡':'Pergi sini pulak'):(closing?'Pergi cepat ⚡':'Pergi dah');
 }
 function showReveal(){
-  rerollsUsed=0;revealTs=Date.now();
+  rerollsUsed=0;revealIdx=0;revealTs=Date.now();
   const r=ranked[0];if(!r)return;
   saveToHistory(r,false);
   populateReveal(r,false);
-  const atauBtn=document.getElementById('btnAtau');
-  if(ranked.length>1){atauBtn.classList.remove('hidden');atauBtn.onclick=()=>swapToAlternate();}
-  else{atauBtn.classList.add('hidden');}
+  updateSwipeHint();
   track('reveal_shown',{
     restaurant:r.name,area:r.area,price_tier:r.price,
     score_total:r._s?.toFixed(2),score_mood:r._smood,score_moment:r._smoment,
@@ -1252,9 +1318,32 @@ function showReveal(){
     }
   };
   document.addEventListener('visibilitychange',revealCleanup);
-  document.getElementById('btnGo').onclick=()=>commitGo(r);
-  document.getElementById('btnShare').onclick=()=>{track('share_clicked',{restaurant:r.name});shareIt(r);};
+  bindRevealButtons(r);
+  // reset card position in case of re-entry
+  const body=document.getElementById('rvBody');
+  body.style.transition='none';body.style.transform='';body.style.opacity='1';
+  document.getElementById('rvHintLeft').style.opacity=0;
+  document.getElementById('rvHintRight').style.opacity=0;
   go('reveal');
+  // init swipe after transition settles
+  setTimeout(()=>initSwipe(body),320);
+}
+function bindRevealButtons(r){
+  document.getElementById('btnGo').onclick=()=>commitGo(r);
+  document.getElementById('btnRestart').onclick=()=>restartQuiz();
+  document.getElementById('btnShare').onclick=()=>{track('share_clicked',{restaurant:r.name});shareIt(r);};
+}
+function updateSwipeHint(){
+  const hint=document.getElementById('rvSwipeHint');
+  if(!hint)return;
+  const canSkip=ranked.length>1&&revealIdx<Math.min(ranked.length-1,MAX_SWIPES-1);
+  if(!canSkip){
+    hint.textContent=revealIdx>0?'Dah tu, just go lah 😅':'';
+    hint.classList.add('locked');
+  }else{
+    hint.textContent=revealIdx===0?'← geser untuk pilihan lain':`Pilihan ${revealIdx+1} / ${Math.min(ranked.length,MAX_SWIPES)}`;
+    hint.classList.remove('locked');
+  }
 }
 function commitGo(r){
   if(revealCleanup){document.removeEventListener('visibilitychange',revealCleanup);revealCleanup=null;}
@@ -1275,20 +1364,89 @@ function commitGo(r){
   window.open(r.maps,'_blank');
 }
 
-/* ════ PATH C: ATAU INI PULAK (CRITICAL-1) ════ */
-function swapToAlternate(){
-  const alt=ranked[1];if(!alt||rerollsUsed>0)return;
-  rerollsUsed=1;
-  track('alternate_viewed',{primary:ranked[0].name,alternate:alt.name,area:alt.area});
+/* ════ SWIPE MECHANIC ════ */
+function initSwipe(el){
+  let startX=0,startY=0,curX=0,dragging=false,axisLocked=false,isHoriz=false;
+  const hintL=document.getElementById('rvHintLeft');
+  const hintR=document.getElementById('rvHintRight');
+  function onStart(x,y){startX=x;startY=y;curX=0;dragging=true;axisLocked=false;isHoriz=false;el.style.transition='none';}
+  function onMove(x,y){
+    if(!dragging)return;
+    const dx=x-startX,dy=y-startY;
+    if(!axisLocked){
+      if(Math.abs(dx)<6&&Math.abs(dy)<6)return;
+      isHoriz=Math.abs(dx)>Math.abs(dy)*0.85;
+      axisLocked=true;
+    }
+    if(!isHoriz)return;
+    curX=dx;
+    el.style.transform=`translateX(${dx}px) rotate(${dx*0.022}deg)`;
+    hintL.style.opacity=String(Math.min(1,Math.max(0,-dx/70)));
+    hintR.style.opacity=String(Math.min(1,Math.max(0,dx/70)));
+  }
+  function onEnd(){
+    if(!dragging)return;
+    dragging=false;axisLocked=false;
+    hintL.style.opacity='0';hintR.style.opacity='0';
+    if(isHoriz&&curX<-55){swipeLeft();}
+    else if(isHoriz&&curX>55){swipeRight();}
+    else{el.style.transition='transform .25s cubic-bezier(.25,.46,.45,.94)';el.style.transform='';}
+    curX=0;
+  }
+  el.addEventListener('touchstart',e=>onStart(e.touches[0].clientX,e.touches[0].clientY),{passive:true});
+  el.addEventListener('touchmove',e=>{if(isHoriz||!axisLocked)onMove(e.touches[0].clientX,e.touches[0].clientY);},{passive:true});
+  el.addEventListener('touchend',onEnd,{passive:true});
+  // mouse fallback for desktop testing
+  el.addEventListener('mousedown',e=>{onStart(e.clientX,e.clientY);
+    const mm=ev=>onMove(ev.clientX,ev.clientY);
+    const mu=()=>{onEnd();document.removeEventListener('mousemove',mm);document.removeEventListener('mouseup',mu);};
+    document.addEventListener('mousemove',mm);document.addEventListener('mouseup',mu);
+  });
+}
+function swipeLeft(){
+  const maxIdx=Math.min(ranked.length-1,MAX_SWIPES-1);
   const body=document.getElementById('rvBody');
-  body.style.opacity='0';body.style.transition='opacity .18s';
+  if(revealIdx>=maxIdx){
+    body.style.transition='transform .3s cubic-bezier(.25,.46,.45,.94)';
+    body.style.transform='';
+    const hint=document.getElementById('rvSwipeHint');
+    hint.textContent='Dah tu, just go lah 😅';hint.classList.add('locked');
+    return;
+  }
+  revealIdx++;rerollsUsed++;
+  const r=ranked[revealIdx];
+  track('swipe_skipped',{from:ranked[revealIdx-1].name,to:r.name,skip_num:revealIdx});
+  body.style.transition='transform .22s ease-in,opacity .18s';
+  body.style.transform='translateX(-115%) rotate(-16deg)';
+  body.style.opacity='0';
   setTimeout(()=>{
-    populateReveal(alt,true);
-    document.getElementById('btnAtau').classList.add('hidden');
-    document.getElementById('btnGo').onclick=()=>commitGo(alt);
-    document.getElementById('btnShare').onclick=()=>{track('share_clicked',{restaurant:alt.name});shareIt(alt);};
+    populateReveal(r,true);
+    updateSwipeHint();
+    body.style.transition='none';
+    body.style.transform='translateX(110%) rotate(10deg)';
     body.style.opacity='1';
-  },180);
+    document.getElementById('rvHintLeft').style.opacity='0';
+    document.getElementById('rvHintRight').style.opacity='0';
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{
+      body.style.transition='transform .28s cubic-bezier(.25,.46,.45,.94)';
+      body.style.transform='';
+    }));
+    bindRevealButtons(r);
+  },230);
+}
+function swipeRight(){
+  const r=ranked[revealIdx];
+  const body=document.getElementById('rvBody');
+  body.style.transition='transform .22s ease-in,opacity .18s';
+  body.style.transform='translateX(115%) rotate(16deg)';
+  body.style.opacity='0';
+  setTimeout(()=>commitGo(r),180);
+}
+function restartQuiz(){
+  if(revealCleanup){document.removeEventListener('visibilitychange',revealCleanup);revealCleanup=null;}
+  track('restart_quiz',{from_restaurant:ranked[revealIdx]?.name});
+  answers={};qIdx=0;ranked=[];revealIdx=0;
+  go('quiz');renderQ(0);
 }
 
 /* ════ SHARE ════ */
@@ -1317,47 +1475,50 @@ function renderProfile(){
   const history=loadHistory(),prefs=loadPrefs(),fb=loadFeedback();
   const topArea=getTopKey(prefs.area),topPrice=getTopKey(prefs.price);
   let html='';
-  if(history.length>0){
-    const priceMsg=topPrice==='1'?'Value-hunter. Kau tau makan.':topPrice==='3'?'Splash-out energy. No regrets.':'Mid-range. Balanced. Practical. We see you.';
-    html+=`<div class="pf-stat">${history.length} match${history.length!==1?'es':''} made${topArea?` · kawasan fav: ${topArea}`:''}</div>`;
-    html+=`<div class="pf-insight">${priceMsg}</div>`;
-    html+=`<div class="pf-section-title">Last matches</div><div class="pf-matches">`;
-    history.slice(0,5).forEach(h=>{
-      const date=new Date(h.ts).toLocaleDateString('ms-MY',{day:'numeric',month:'short'});
-      const fbEntry=fb.find(e=>e.n===h.name);
-      const rating=fbEntry?(fbEntry.rating==='sedap'?' · 😋 Sedap':' · 😐 Mehh'):'';
-      html+=`<div class="pf-match-row"><div class="pf-match-name">${h.name}</div><div class="pf-match-meta">${h.area} · ${date}${rating}</div></div>`;
+  if(history.length===0){
+    html='<div class="pf-empty">Belum ada history lagi.<br>Pergi makan dulu baru balik sini.</div>';
+  }else{
+    const priceMap={1:'Jimat',2:'Mid-range',3:'Splash out'};
+    if(topArea||topPrice){
+      html+=`<div class="pf-card"><div class="pf-stat">Taste Profile</div>`;
+      if(topArea)html+=`<div class="pf-insight">Kau selalu makan kat <strong>${topArea}</strong>.</div>`;
+      if(topPrice)html+=`<div class="pf-insight">Budget biasa: <strong>${priceMap[topPrice]||topPrice}</strong>.</div>`;
+      html+=`</div>`;
+    }
+    html+=`<div class="pf-section-title">Last 5 Visits</div><div class="pf-matches">`;
+    const recent=history.slice(-5).reverse();
+    recent.forEach(h=>{
+      const rating=fb.find(f=>f.n===h.n);
+      const ratingStr=rating?(rating.r==='sedap'?' · 😋 Sedap':' · 😐 Mehh'):'';
+      const dateStr=h.ts?new Date(h.ts).toLocaleDateString('en-MY',{day:'numeric',month:'short'}):'';
+      html+=`<div class="pf-match-row"><div class="pf-match-name">${h.n}${ratingStr}</div><div class="pf-match-meta">${h.area||''} · ${dateStr}</div></div>`;
     });
     html+=`</div>`;
-  }else{
-    html+=`<div class="pf-empty">Belum ada history lagi.<br>Pergi makan dulu lah.</div>`;
   }
-  html+=`<button class="btn-pf-delete" id="btnPfDelete">Reset semua data</button>`;
-  html+=`<div class="pf-delete-hint">Aku still ingat 7 hari lepas untuk variety</div>`;
+  html+=`<button class="btn-pf-delete" onclick="clearAllData()">Padam semua data</button>`;
+  html+=`<div class="pf-delete-hint">Ini akan reset semua history, prefs, dan feedback kau.</div>`;
   document.getElementById('pfBody').innerHTML=html;
-  document.getElementById('btnPfDelete').onclick=()=>{
-    if(confirm('Reset semua preferences dan history?')){
-      const recent7=loadRecent().filter(e=>(Date.now()-e.t)/864e5<=7);
-      [PREF_KEY,HISTORY_KEY,FEEDBACK_KEY,LAST_KEY,NEG_KEY].forEach(k=>localStorage.removeItem(k));
-      lsSet(RECENT_KEY,recent7);
-      track('profile_deleted');go('splash');
-    }
-  };
+  go('profile');
 }
-
-/* ════ SPLASH TEASER (HIGH-4) ════ */
+function clearAllData(){
+  if(!confirm('Confirm nak padam semua?'))return;
+  [PREF_KEY,RECENT_KEY,HISTORY_KEY,FEEDBACK_KEY,LAST_KEY,NEG_KEY,VISITS_KEY].forEach(k=>localStorage.removeItem(k));
+  track('data_cleared');
+  go('splash');
+}
 function updateSplashTeaser(){
-  const h=loadHistory(),prefs=loadPrefs(),el=document.getElementById('spTeaser');
-  if(!el||h.length<3)return;
+  const h=loadHistory();
+  const el=document.getElementById('spTeaser');
+  if(!el)return;
+  if(h.length<3){el.textContent='';return;}
+  const prefs=loadPrefs();
   const topArea=getTopKey(prefs.area);
-  el.innerHTML=`<b>${h.length} matches</b>${topArea?` · selalu kawasan ${topArea}`:''}`;
+  el.innerHTML=`Dah <b>${h.length}</b> kali guna${topArea?` · Top spot: <b>${topArea}</b>`:''}`;
 }
 
 /* ════ INIT ════ */
-document.getElementById('spMoment').innerHTML=
-  `${M.label} — ${M.isWeekend?'hujung minggu':'hari biasa'}. <b>Lapar ke?</b>`;
 updateDietUI();
-if(!localStorage.getItem(DIET_KEY)){localStorage.setItem(DIET_KEY,'halal');track('diet_mode_set',{mode:'halal'});}
+updatePriceUI();
 incVisit();
 updateSplashTeaser();
 checkFeedbackPrompt();

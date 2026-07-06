@@ -790,6 +790,8 @@
     }catch(e){ /* no feed deployed yet: stay on time-of-day forecast */ }
   }
 
+  function track(){ /* analytics hook — no-op for now, keeps report submit from erroring */ }
+
   function clientId(){
     let id = null;
     try{ id = localStorage.getItem("mm_cid"); }catch(e){}

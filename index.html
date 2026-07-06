@@ -394,7 +394,7 @@
     <div class="foot-grid">
       <div>
         <a class="logo" href="#top" style="font-size:1.1rem"><span class="cup" style="width:28px;height:28px;font-size:.85rem">🚈</span>Mana-Mana</a>
-        <div class="fine">Ridership data: data.gov.my · Parking info: Prasarana announcements, June 2026. Mana-Mana is an independent community project — not affiliated with Prasarana Malaysia or Rapid KL. Crowd levels shown are demo data. Station lists per official Rapid KL network.</div>
+        <div class="fine">Ridership data: data.gov.my · Parking info: Prasarana announcements, June 2026. Mana-Mana is an independent community project — not affiliated with Prasarana Malaysia or Rapid KL. Live crowd levels approximate station busyness (Google Live Busyness), refined by community reports; where neither is available we show a time-of-day forecast. These are not official passenger counts. Station lists per official Rapid KL network.</div>
       </div>
       <div style="text-align:right">
         <a href="https://manamana.io" rel="me">manamana.io</a> · <a href="#">GitHub</a> · <a href="#">Feedback</a><br>
@@ -521,16 +521,23 @@
   // =============== render line strip ===============
   const strip = document.getElementById("strip");
   let crowds = [];
+  let crowdSrc = [];   // per-station provenance: "report" | "busy" | "forecast"
   function renderLine(){
     const L = currentLine;
     tipPinned = false; tipIdx = -1; tip.classList.remove("show");
     strip.innerHTML = '<div class="track-line" style="background:repeating-linear-gradient(90deg,'+L.color+' 0 18px, var(--kaya) 18px 30px)"></div>';
     strip.style.minWidth = Math.max(700, L.stations.length*48) + "px";
-    crowds = L.stations.map((n,i)=>crowdFor(n,i,L.stations.length));
+    // baseline: real live-station-busyness feed where we have it, else time-of-day forecast
+    crowds = L.stations.map((n,i)=>{
+      const b = busyMap[n];
+      return (typeof b === "number") ? Math.max(.05, Math.min(.97, b/100)) : crowdFor(n,i,L.stations.length);
+    });
+    crowdSrc = L.stations.map(n => (typeof busyMap[n] === "number") ? "busy" : "forecast");
     liveIdx = new Set();
+    // freshest signal wins: a community report overrides the busyness baseline
     L.stations.forEach((n,i)=>{
       const lr = liveMap[L.id+"||"+n];
-      if(lr){ crowds[i] = levelToC(lr.level); liveIdx.add(i); }
+      if(lr){ crowds[i] = levelToC(lr.level); liveIdx.add(i); crowdSrc[i] = "report"; }
     });
     L.stations.forEach((n,i)=>{
       const c = crowds[i];
@@ -554,7 +561,8 @@
     });
     document.getElementById("boardSwatch").style.background = L.color;
     document.getElementById("boardName").textContent = L.name + " Line";
-    document.getElementById("boardMeta").textContent = "LALUAN " + L.tag + " · " + L.stations.length + " STATIONS";
+    const feedTime = busyUpdated ? " · as of " + new Date(busyUpdated).toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"}) : "";
+    document.getElementById("boardMeta").textContent = "LALUAN " + L.tag + " · " + L.stations.length + " STATIONS" + feedTime;
     document.getElementById("endA").textContent = "◀ " + L.stations[0].toUpperCase();
     document.getElementById("endB").textContent = L.stations[L.stations.length-1].toUpperCase() + " ▶";
     document.getElementById("lineHint").textContent = L.hint;
@@ -580,7 +588,9 @@
     tip.innerHTML =
       '<div class="t-name">'+n+'</div>' +
       '<span class="t-crowd '+crowdClass(c)+'">'+face(c)+' '+lvl(c)+' now</span>' +
-      (liveMap[currentLine.id+"||"+n] ? '<div class="t-live">\u25CF LIVE \u00b7 '+liveMap[currentLine.id+"||"+n].reports+' report'+(liveMap[currentLine.id+"||"+n].reports>1?'s':'')+' \u00b7 '+timeAgo(liveMap[currentLine.id+"||"+n].last_at)+'</div>' : '') +
+      (liveMap[currentLine.id+"||"+n]
+        ? '<div class="t-live">\u25CF LIVE \u00b7 '+liveMap[currentLine.id+"||"+n].reports+' report'+(liveMap[currentLine.id+"||"+n].reports>1?'s':'')+' \u00b7 '+timeAgo(liveMap[currentLine.id+"||"+n].last_at)+'</div>'
+        : (crowdSrc[i]==="busy" ? '<div class="t-live" style="color:#6B4E37">\u25CF LIVE BUSYNESS \u00b7 via Google</div>' : '<div class="t-live" style="color:#B79D82">forecast \u00b7 no live data</div>')) +
       '<div class="t-park">' +
         (P ? '🅿️ ' + P.bays + ' · ' + P.price
            : '<span class="no">No Park N\' Ride here — feeder bus or drop-off je.</span>') +
@@ -760,8 +770,25 @@
 
   let liveMap = {};        // "lineId||Station" -> {level, reports, last_at}
   let liveIdx = new Set(); // station indices on the current line that are live
+  let busyMap = {};        // "Station" -> live busyness score 0-100 (from crowd.json)
+  let busyUpdated = null;  // ISO timestamp of the busyness feed
   const LEVEL_C = { Lengang:0.35, Biasa:0.62, Sesak:0.9 };
   const levelToC = lv => (LEVEL_C[lv] != null ? LEVEL_C[lv] : 0.5);
+
+  // live station busyness (Google Live Busyness), collected by crowd-live/collect_crowd.py
+  // and served next to this page as crowd.json. This is the BASELINE crowd layer;
+  // community reports override it per-station when fresher.
+  async function loadBusyness(){
+    try{
+      const res = await fetch("crowd.json?t=" + Date.now());
+      if(!res.ok) return;
+      const j = await res.json();
+      busyMap = j.busyness || {};
+      busyUpdated = j.updated || null;
+      updateDataChip();
+      renderLine(); highlight();
+    }catch(e){ /* no feed deployed yet: stay on time-of-day forecast */ }
+  }
 
   function clientId(){
     let id = null;
@@ -776,9 +803,19 @@
   }
   function updateDataChip(){
     const chip = document.getElementById("dataChip");
-    const n = Object.keys(liveMap).length;
-    if(n > 0){ chip.classList.add("live"); chip.textContent = n + " live commuter report" + (n>1?"s":"") + " now \u00b7 baseline forecast"; }
-    else { chip.classList.remove("live"); chip.textContent = "Baseline forecast \u00b7 no live reports yet \u2014 tap Reports to be first"; }
+    const reports = Object.keys(liveMap).length;
+    const busy = Object.keys(busyMap).length;
+    if(reports > 0){
+      chip.classList.add("live");
+      chip.textContent = reports + " live commuter report" + (reports>1?"s":"") + " now \u00b7 " +
+        (busy>0 ? "live busyness baseline" : "forecast baseline");
+    } else if(busy > 0){
+      chip.classList.add("live");
+      chip.textContent = "Live station busyness \u00b7 " + busy + " stations \u00b7 tap Reports to add yours";
+    } else {
+      chip.classList.remove("live");
+      chip.textContent = "Baseline forecast \u00b7 no live data yet \u2014 tap Reports to be first";
+    }
   }
   async function loadLive(){
     if(!sb) return;
@@ -840,9 +877,11 @@
 
   // init
   renderLine(); highlight();
+  loadBusyness();
   loadLive();
   loadRidership();
   setInterval(loadLive, 45000);
+  setInterval(loadBusyness, 300000);   // busyness feed refreshes every 5 min
 </script>
 </body>
 </html>

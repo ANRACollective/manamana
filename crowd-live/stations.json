@@ -1,0 +1,500 @@
+{
+  "_note": "Auto-generated from mana-mana-v2 LINES. Unique station names across all active lines. Collector fetches Google Live Busyness per name; interchanges dedupe naturally.",
+  "stations": [
+    {
+      "name": "Abdullah Hukum",
+      "query": "Abdullah Hukum LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Alam Megah",
+      "query": "Alam Megah LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Alam Sutera",
+      "query": "Alam Sutera LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Ampang",
+      "query": "Ampang LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Ampang Park",
+      "query": "Ampang Park LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Ara Damansara",
+      "query": "Ara Damansara LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Asia Jaya",
+      "query": "Asia Jaya LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Awan Besar",
+      "query": "Awan Besar LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "BU 11",
+      "query": "BU 11 LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Bandar Baru Klang",
+      "query": "Bandar Baru Klang LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Bandar Bukit Tinggi",
+      "query": "Bandar Bukit Tinggi LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Bandar Puteri",
+      "query": "Bandar Puteri LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Bandar Tasik Selatan",
+      "query": "Bandar Tasik Selatan LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Bandar Tun Razak",
+      "query": "Bandar Tun Razak LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Bandar Utama",
+      "query": "Bandar Utama LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Bandaraya",
+      "query": "Bandaraya LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Bangsar",
+      "query": "Bangsar LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Bukit Bintang",
+      "query": "Bukit Bintang Monorail station Kuala Lumpur Malaysia",
+      "monorail": true
+    },
+    {
+      "name": "Bukit Jalil",
+      "query": "Bukit Jalil LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Bukit Nanas",
+      "query": "Bukit Nanas Monorail station Kuala Lumpur Malaysia",
+      "monorail": true
+    },
+    {
+      "name": "Cahaya",
+      "query": "Cahaya LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Cempaka",
+      "query": "Cempaka LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Chan Sow Lin",
+      "query": "Chan Sow Lin LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Cheras",
+      "query": "Cheras LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Chow Kit",
+      "query": "Chow Kit Monorail station Kuala Lumpur Malaysia",
+      "monorail": true
+    },
+    {
+      "name": "Damai",
+      "query": "Damai LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Damansara Idaman",
+      "query": "Damansara Idaman LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Dang Wangi",
+      "query": "Dang Wangi LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Dato' Keramat",
+      "query": "Dato' Keramat LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Dato' Menteri",
+      "query": "Dato' Menteri LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Glenmarie",
+      "query": "Glenmarie LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Glenmarie 2",
+      "query": "Glenmarie 2 LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Gombak",
+      "query": "Gombak LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Hang Tuah",
+      "query": "Hang Tuah Monorail station Kuala Lumpur Malaysia",
+      "monorail": true
+    },
+    {
+      "name": "IOI Puchong Jaya",
+      "query": "IOI Puchong Jaya LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Imbi",
+      "query": "Imbi Monorail station Kuala Lumpur Malaysia",
+      "monorail": true
+    },
+    {
+      "name": "Jalan Meru",
+      "query": "Jalan Meru LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Jambatan Kota",
+      "query": "Jambatan Kota LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Jelatek",
+      "query": "Jelatek LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Johan Setia",
+      "query": "Johan Setia LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "KL Sentral",
+      "query": "KL Sentral Monorail station Kuala Lumpur Malaysia",
+      "monorail": true
+    },
+    {
+      "name": "KLCC",
+      "query": "KLCC LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Kampung Baru",
+      "query": "Kampung Baru LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Kayu Ara",
+      "query": "Kayu Ara LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Kelana Jaya",
+      "query": "Kelana Jaya LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Kerinchi",
+      "query": "Kerinchi LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Kerjaya",
+      "query": "Kerjaya LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Kinrara BK5",
+      "query": "Kinrara BK5 LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Klang Jaya",
+      "query": "Klang Jaya LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Lembah Subang",
+      "query": "Lembah Subang LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Maharajalela",
+      "query": "Maharajalela Monorail station Kuala Lumpur Malaysia",
+      "monorail": true
+    },
+    {
+      "name": "Maluri",
+      "query": "Maluri LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Masjid Jamek",
+      "query": "Masjid Jamek LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Medan Tuanku",
+      "query": "Medan Tuanku Monorail station Kuala Lumpur Malaysia",
+      "monorail": true
+    },
+    {
+      "name": "Miharja",
+      "query": "Miharja LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Muhibbah",
+      "query": "Muhibbah LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "PWTC",
+      "query": "PWTC LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Pandan Indah",
+      "query": "Pandan Indah LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Pandan Jaya",
+      "query": "Pandan Jaya LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Pasar Klang",
+      "query": "Pasar Klang LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Pasar Seni",
+      "query": "Pasar Seni LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Plaza Rakyat",
+      "query": "Plaza Rakyat LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Puchong Perdana",
+      "query": "Puchong Perdana LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Puchong Prima",
+      "query": "Puchong Prima LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Pudu",
+      "query": "Pudu LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Pusat Bandar Puchong",
+      "query": "Pusat Bandar Puchong LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Putra Heights",
+      "query": "Putra Heights LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Raja Chulan",
+      "query": "Raja Chulan Monorail station Kuala Lumpur Malaysia",
+      "monorail": true
+    },
+    {
+      "name": "SS 15",
+      "query": "SS 15 LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "SS 18",
+      "query": "SS 18 LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Salak Selatan",
+      "query": "Salak Selatan LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Seksyen 7",
+      "query": "Seksyen 7 LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Sentul",
+      "query": "Sentul LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Sentul Timur",
+      "query": "Sentul Timur LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Seri Andalas",
+      "query": "Seri Andalas LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Setiawangsa",
+      "query": "Setiawangsa LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Sri Petaling",
+      "query": "Sri Petaling LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Sri Rampai",
+      "query": "Sri Rampai LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Stadium Shah Alam",
+      "query": "Stadium Shah Alam LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Subang",
+      "query": "Subang LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Subang Alam",
+      "query": "Subang Alam LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Subang Jaya",
+      "query": "Subang Jaya LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Sultan Ismail",
+      "query": "Sultan Ismail LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Sungai Besi",
+      "query": "Sungai Besi LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Taipan",
+      "query": "Taipan LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Taman Bahagia",
+      "query": "Taman Bahagia LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Taman Jaya",
+      "query": "Taman Jaya LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Taman Melati",
+      "query": "Taman Melati LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Taman Paramount",
+      "query": "Taman Paramount LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Taman Perindustrian Puchong",
+      "query": "Taman Perindustrian Puchong LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Taman Selatan",
+      "query": "Taman Selatan LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Titiwangsa",
+      "query": "Titiwangsa Monorail station Kuala Lumpur Malaysia",
+      "monorail": true
+    },
+    {
+      "name": "Tun Sambanthan",
+      "query": "Tun Sambanthan Monorail station Kuala Lumpur Malaysia",
+      "monorail": true
+    },
+    {
+      "name": "USJ 21",
+      "query": "USJ 21 LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "USJ 7",
+      "query": "USJ 7 LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "UiTM Shah Alam",
+      "query": "UiTM Shah Alam LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Universiti",
+      "query": "Universiti LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Wangsa Maju",
+      "query": "Wangsa Maju LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    },
+    {
+      "name": "Wawasan",
+      "query": "Wawasan LRT station Kuala Lumpur Malaysia",
+      "monorail": false
+    }
+  ]
+}

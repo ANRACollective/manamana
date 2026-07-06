@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>crowd.json — raw feed QA</title>
+<style>
+  :root{--bg:#0f1115;--card:#1a1d24;--line:#2a2e38;--text:#e8eaed;--muted:#9aa0aa;
+        --quiet:#3fb950;--moderate:#d4a72c;--busy:#e8873a;--packed:#e5484d}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+       background:var(--bg);color:var(--text);padding:20px;max-width:720px;margin:0 auto}
+  h1{font-size:18px;margin:0 0 2px}
+  .sub{color:var(--muted);font-size:13px;margin-bottom:16px}
+  .row{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);
+       border-radius:10px;padding:9px 13px;margin-bottom:6px}
+  .name{flex:1;font-size:14px;font-weight:600}
+  .bar{width:160px;height:8px;border-radius:5px;background:#242833;overflow:hidden}
+  .fill{height:100%;border-radius:5px}
+  .score{width:30px;text-align:right;font-variant-numeric:tabular-nums;font-weight:700;font-size:14px}
+  footer{color:var(--muted);font-size:11px;margin-top:16px}
+</style>
+</head>
+<body>
+  <h1>crowd.json — raw feed QA</h1>
+  <div class="sub" id="sub">loading…</div>
+  <div id="list"></div>
+  <footer>Standalone check of the live-busyness feed. The real product view is the integrated Mana-Mana site. Auto-refreshes every 60s.</footer>
+<script>
+function color(s){ return s<25?"--quiet":s<55?"--moderate":s<80?"--busy":"--packed"; }
+const cssv = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+async function load(){
+  let j; try{ j = await (await fetch("crowd.json?t="+Date.now())).json(); }
+  catch(e){ document.getElementById("sub").textContent="No crowd.json — run: python collect_crowd.py --sample"; return; }
+  const b = j.busyness||{};
+  const rows = Object.entries(b).sort((a,c)=>c[1]-a[1]);
+  document.getElementById("sub").textContent =
+    `backend: ${j.backend} · ${rows.length} stations · updated ${new Date(j.updated).toLocaleString()}`;
+  document.getElementById("list").innerHTML = rows.map(([n,s])=>{
+    const col = cssv(color(s));
+    return `<div class="row"><span class="name">${n}</span>
+      <span class="bar"><span class="fill" style="width:${s}%;background:${col}"></span></span>
+      <span class="score">${s}</span></div>`;
+  }).join("");
+}
+load(); setInterval(load, 60000);
+</script>
+</body>
+</html>

@@ -152,9 +152,9 @@
   .dot.g{background:var(--lengang)} .dot.a{background:var(--biasa)} .dot.r{background:var(--sesak)}
 
   .strip-scroller{overflow-x:auto;padding-bottom:6px}
-  .strip{display:flex;align-items:flex-end;height:236px;position:relative;padding:0 4px}
+  .strip{display:flex;align-items:flex-end;height:286px;position:relative;padding:0 4px}
   .track-line{
-    position:absolute;left:0;right:0;bottom:84px;height:10px;
+    position:absolute;left:0;right:0;bottom:134px;height:10px;
     border:2.5px solid var(--milo-deep);border-radius:6px;z-index:0;
   }
   .stn{
@@ -172,11 +172,12 @@
   .stn .node{width:16px;height:16px;border-radius:50%;background:var(--kopi-cup);border:3.5px solid var(--milo-deep);margin:6px 0;flex:none;transition:transform .15s}
   .stn:hover .node,.stn:focus-visible .node{transform:scale(1.35);background:var(--kaya)}
   .stn:focus-visible{outline:3px dashed var(--teh);outline-offset:-3px;border-radius:10px}
-  .stn .name{
-    font-family:'Space Mono',monospace;font-size:.6rem;font-weight:700;line-height:1.1;color:#5C4330;
-    height:68px;writing-mode:vertical-rl;transform:rotate(180deg);display:flex;align-items:flex-start;
+  .stn .name{position:relative;width:100%;height:118px}
+  .stn .name span{
+    position:absolute;top:2px;left:50%;transform-origin:left top;transform:rotate(45deg);
+    white-space:nowrap;font-family:'Baloo 2',sans-serif;font-size:.64rem;font-weight:700;color:#5C4330;
   }
-  .stn.ic .name{color:var(--milo)}
+  .stn.ic .name span{color:var(--milo)}
   .strip-ends{display:flex;justify-content:space-between;font-family:'Space Mono',monospace;font-size:.7rem;font-weight:700;color:#6B4E37;padding-top:6px}
   .hint{
     margin-top:16px;background:var(--kaya);border:var(--bd);border-radius:14px;
@@ -553,10 +554,9 @@
       b.addEventListener("click", (e)=>{ e.preventDefault(); showTip(i, true); });
       const fillH = Math.round(8 + c*92);
       b.innerHTML =
-        '<span class="face">'+face(c)+'</span>' +
         '<div class="glass"><div class="foam" style="bottom:'+fillH+'%"></div><div class="fill" style="height:'+fillH+'%;background:'+col(c)+'"></div></div>' +
         '<div class="node"></div>' +
-        '<div class="name">'+(IC.has(n)?"<b>"+n+"</b>":n)+'</div>';
+        '<div class="name"><span>'+(IC.has(n)?"<b>"+n+"</b>":n)+'</span></div>';
       strip.appendChild(b);
     });
     document.getElementById("boardSwatch").style.background = L.color;

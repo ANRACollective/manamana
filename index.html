@@ -1,1536 +1,714 @@
-<!-- MANAMANA POSITIONING: Oracle-with-grace. Locked 2026-04-26. -->
-<!-- Primary pick is fully deterministic (no jitter). One alternate surfaced once per quiz via "atau ini pulak". -->
-<!-- Voice stays authoritative — the oracle doesn't apologise, it offers a considered second opinion. -->
-<!-- Re-open this decision only after 90 days of live usage data. -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>manamana</title>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<!-- GA4 -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-S528P2LS3S"></script>
-<script>
-  window.dataLayer=window.dataLayer||[];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js',new Date());
-  gtag('config','G-S528P2LS3S');
-  function track(event,params){if(typeof gtag==='function')gtag('event',event,params||{});}
-</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mana-Mana ☕ Klang Valley train crowd check</title>
+<meta name="description" content="Jom check dulu — crowd levels for every LRT, Monorail (and soon MRT) line in the Klang Valley. Parking info & live commuter reports.">
+<link rel="canonical" href="https://manamana.io/">
+<meta property="og:site_name" content="Mana-Mana">
+<meta property="og:title" content="Mana-Mana — sesak ke tak? Klang Valley train crowd check">
+<meta property="og:description" content="Check which LRT & Monorail stations are packed, where got parking and harga, and report live from the platform. manamana.io">
+<meta property="og:url" content="https://manamana.io/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="en_MY">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Mana-Mana — sesak ke tak?">
+<meta name="twitter:description" content="Klang Valley train crowd check · parking · live reports. manamana.io">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Baloo+2:wght@400;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
-*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-font-smoothing:antialiased;}
+  :root{
+    --milo:#3B2314; --milo-deep:#28160B;
+    --teh:#F0932B; --teh-deep:#D97817;
+    --pandan:#5DB86A; --pandan-deep:#3E9A4C;
+    --kaya:#FFC93C; --bandung:#F7A8C4;
+    --santan:#FFF4DE; --kopi-cup:#FFFDF6;
+    --sesak:#E8503A; --biasa:#F0932B; --lengang:#5DB86A;
+    --bd:3px solid var(--milo-deep);
+    --shadow:6px 6px 0 var(--milo-deep);
+    --shadow-sm:4px 4px 0 var(--milo-deep);
+    --r:18px; --maxw:1040px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--santan);
+    background-image:radial-gradient(var(--kaya) 1.4px, transparent 1.4px);
+    background-size:26px 26px;
+    color:var(--milo);font-family:'Baloo 2',system-ui,sans-serif;
+    font-size:17px;line-height:1.5;overflow-x:hidden;
+  }
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 20px}
+  ::selection{background:var(--kaya)}
 
-:root{
-  --gold:#FFB800;
-  --gold-faint:rgba(255,184,0,.1);
-  --gold-border:rgba(255,184,0,.22);
-  --red:#FF4422;
-  --green:#3DD68C;
-  --blue:#5BAFFF;
-  --purple:#A78BFA;
-  --bg:#0D0800;
-  --s1:#1C1100;
-  --s2:#261800;
-  --s3:#301F00;
-  --cream:#FFF5E4;
-  --muted:#7A6555;
-  --muted2:#4A3828;
-}
+  .ticker{
+    background:var(--milo);color:var(--kaya);
+    font-family:'Space Mono',monospace;font-size:.78rem;font-weight:700;
+    padding:8px 0;overflow:hidden;white-space:nowrap;border-bottom:var(--bd);
+  }
+  .ticker-track{display:inline-block;animation:tick 24s linear infinite}
+  @keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 
-html,body{
-  height:100%;height:100dvh;
-  overflow:hidden;
-  background:var(--bg);
-  color:var(--cream);
-  font-family:'Space Grotesk',-apple-system,sans-serif;
-}
+  nav{position:sticky;top:0;z-index:60;background:var(--santan);border-bottom:var(--bd)}
+  .nav-inner{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 20px;max-width:var(--maxw);margin:0 auto}
+  .logo{font-family:'Lilita One',cursive;font-size:1.3rem;color:var(--milo);text-decoration:none;display:flex;align-items:center;gap:8px}
+  .logo .cup{
+    display:inline-grid;place-items:center;width:34px;height:34px;background:var(--teh);
+    border:var(--bd);border-radius:10px;box-shadow:3px 3px 0 var(--milo-deep);font-size:1rem;transform:rotate(-6deg);
+  }
+  .tabs{display:flex;gap:8px}
+  .tab{
+    font-weight:800;font-size:.85rem;color:var(--milo);text-decoration:none;
+    padding:8px 14px;border:var(--bd);border-radius:999px;background:var(--kopi-cup);
+    box-shadow:var(--shadow-sm);transition:transform .12s, box-shadow .12s, background .12s;white-space:nowrap;
+  }
+  .tab:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--milo-deep)}
+  .tab:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--milo-deep)}
+  .tab:focus-visible{outline:3px dashed var(--teh);outline-offset:3px}
+  .tab.t1:hover{background:var(--kaya)} .tab.t2:hover{background:var(--bandung)} .tab.t3:hover{background:var(--pandan);color:#fff}
 
-.screen{
-  position:fixed;inset:0;
-  display:flex;flex-direction:column;
-  opacity:0;pointer-events:none;
-  transition:opacity .3s ease,transform .3s ease;
-  transform:translateY(16px);
-}
-.screen.active{opacity:1;pointer-events:all;transform:translateY(0);}
-.screen.out{opacity:0;transform:translateY(-16px);}
+  header{padding:52px 0 26px;position:relative}
+  .sticker{
+    display:inline-block;font-family:'Space Mono',monospace;font-weight:700;font-size:.75rem;
+    background:var(--bandung);border:var(--bd);border-radius:999px;padding:6px 14px;
+    box-shadow:var(--shadow-sm);transform:rotate(-2deg);margin-bottom:18px;
+  }
+  h1{font-family:'Lilita One',cursive;font-weight:400;font-size:clamp(2.3rem,6.6vw,4.1rem);line-height:1.03;max-width:18ch}
+  h1 .hl{display:inline-block;background:var(--kaya);border:var(--bd);border-radius:12px;padding:0 12px;box-shadow:var(--shadow-sm);transform:rotate(-1.5deg)}
+  .hero-sub{margin-top:18px;font-size:1.08rem;font-weight:600;max-width:56ch;color:#5C4330}
+  .kao{font-family:'Space Mono',monospace;white-space:nowrap}
 
-/* ── SPLASH ── */
-#splash{
-  background:var(--bg);
-  justify-content:center;align-items:center;
-  text-align:center;
-  padding:32px 36px max(env(safe-area-inset-bottom,0px),48px);
-  cursor:pointer;overflow:hidden;
-}
-.sp-glow{
-  position:absolute;top:-20%;left:50%;transform:translateX(-50%);
-  width:110%;aspect-ratio:1;
-  background:radial-gradient(ellipse,rgba(255,184,0,.16) 0%,rgba(255,68,34,.06) 50%,transparent 72%);
-  pointer-events:none;
-}
-.sp-inner{
-  position:relative;z-index:2;
-  display:flex;flex-direction:column;align-items:center;gap:0;width:100%;
-}
-.sp-eyebrow{
-  font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;
-  color:var(--gold);margin-bottom:28px;opacity:.8;
-}
-.sp-logo{
-  font-size:clamp(68px,20vw,100px);
-  font-weight:800;line-height:.88;letter-spacing:-3px;color:var(--cream);
-}
-.sp-logo em{color:var(--gold);font-style:normal;}
-.sp-divider{width:32px;height:1px;background:var(--muted2);margin:28px 0;}
-.sp-tagline{
-  font-size:15px;font-weight:500;
-  color:var(--muted);line-height:1.6;max-width:260px;
-}
-.sp-tagline strong{color:var(--cream);font-weight:700;}
+  section{padding:54px 0 6px}
+  .sec-badge{
+    display:inline-block;font-family:'Lilita One',cursive;font-size:1rem;background:var(--teh);color:#fff;
+    border:var(--bd);border-radius:12px;padding:6px 16px;box-shadow:var(--shadow-sm);transform:rotate(-2deg);margin-bottom:14px;
+  }
+  h2{font-family:'Lilita One',cursive;font-weight:400;font-size:clamp(1.7rem,4vw,2.5rem);line-height:1.08}
+  .sec-sub{font-weight:600;color:#6B4E37;margin-top:8px;max-width:58ch}
+  .demo-chip{
+    display:inline-block;font-family:'Space Mono',monospace;font-size:.7rem;font-weight:700;
+    background:var(--kaya);border:2.5px solid var(--milo-deep);border-radius:999px;padding:4px 12px;margin-top:10px;
+  }
 
-/* Dietary toggle */
-.diet-wrap{margin-top:16px;display:flex;gap:6px;justify-content:center;}
-.diet-btn{
-  all:unset;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;
-  padding:7px 16px;border-radius:100px;cursor:pointer;
-  border:1px solid var(--s3);color:var(--muted);
-  transition:all .15s;
-}
-.diet-btn.active{border-color:var(--gold);color:var(--gold);background:var(--gold-faint);}
+  /* ===== line switcher ===== */
+  .line-switch{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+  .line-chip{
+    font-family:'Baloo 2';font-weight:800;font-size:.85rem;padding:9px 16px;cursor:pointer;
+    border:var(--bd);border-radius:999px;background:var(--kopi-cup);color:var(--milo);
+    box-shadow:var(--shadow-sm);display:flex;align-items:center;gap:8px;
+    transition:transform .15s cubic-bezier(.34,1.56,.64,1), box-shadow .15s;
+  }
+  .line-chip .swatch{width:14px;height:14px;border-radius:5px;border:2px solid var(--milo-deep);flex:none}
+  .line-chip:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--milo-deep)}
+  .line-chip:active{transform:translate(2px,2px);box-shadow:0 0 0 var(--milo-deep)}
+  .line-chip:focus-visible{outline:3px dashed var(--teh);outline-offset:3px}
+  .line-chip.on{background:var(--milo);color:var(--santan)}
+  .line-chip.soon{opacity:.65;cursor:not-allowed}
+  .line-chip.soon .soon-tag{
+    font-family:'Space Mono',monospace;font-size:.58rem;background:var(--kaya);color:var(--milo);
+    border:2px solid var(--milo-deep);border-radius:6px;padding:0 5px;
+  }
 
-.sp-moment{margin-top:10px;font-size:12px;color:var(--muted);font-weight:500;letter-spacing:.3px;}
-.sp-moment b{color:var(--gold);font-weight:700;}
-.sp-geo{
-  margin-top:10px;
-  font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;
-  color:var(--muted2);transition:color .3s;
-}
-.sp-geo.found{color:var(--green);}
+  .board{
+    background:var(--kopi-cup);border:var(--bd);border-radius:var(--r);
+    box-shadow:var(--shadow);padding:22px 18px 14px;margin-top:18px;position:relative;
+  }
+  /* ===== station tooltip: springs in, follows the hovered stop ===== */
+  .tip{
+    position:absolute;z-index:8;width:212px;
+    background:var(--kopi-cup);border:var(--bd);border-radius:14px;
+    box-shadow:var(--shadow-sm);padding:12px 14px;
+    opacity:0;pointer-events:none;
+    transform:translate(-50%,10px) scale(.85);transform-origin:bottom center;
+    transition:transform .28s cubic-bezier(.34,1.56,.64,1), opacity .18s, left .28s cubic-bezier(.34,1.4,.64,1);
+  }
+  .tip.show{opacity:1;pointer-events:auto;transform:translate(-50%,0) scale(1)}
+  .tip::after{
+    content:"";position:absolute;left:50%;bottom:-9px;width:14px;height:14px;
+    background:var(--kopi-cup);border-right:var(--bd);border-bottom:var(--bd);
+    transform:translateX(-50%) rotate(45deg);
+  }
+  .tip .t-name{font-family:'Lilita One',cursive;font-size:1rem;line-height:1.15}
+  .tip .t-crowd{display:inline-flex;align-items:center;gap:6px;margin-top:6px;font-weight:800;font-size:.78rem;border:2.5px solid var(--milo-deep);border-radius:999px;padding:2px 10px}
+  .tip .t-crowd.c-g{background:var(--pandan);color:#fff}
+  .tip .t-crowd.c-a{background:var(--kaya)}
+  .tip .t-crowd.c-r{background:var(--sesak);color:#fff}
+  .tip .t-park{
+    margin-top:9px;font-weight:700;font-size:.8rem;line-height:1.3;
+    border-top:2px dashed #E4CBA8;padding-top:8px;
+  }
+  .tip .t-park .no{color:#6B4E37;font-weight:600}
+  .tip .nav-btns{margin-top:10px}
+  .tip .nav-btn{font-size:.74rem;padding:6px 4px}
+  .board-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+  .board-title{font-family:'Lilita One',cursive;font-size:1.15rem;display:flex;align-items:center;gap:10px}
+  .board-title .swatch{width:18px;height:18px;border-radius:6px;border:2.5px solid var(--milo-deep)}
+  .board-meta{font-family:'Space Mono',monospace;font-size:.72rem;font-weight:700;color:#6B4E37}
+  .legend{display:flex;gap:10px;flex-wrap:wrap;font-weight:800;font-size:.78rem}
+  .legend span{display:flex;align-items:center;gap:6px;border:2.5px solid var(--milo-deep);border-radius:999px;padding:3px 11px;background:var(--santan)}
+  .dot{width:11px;height:11px;border-radius:50%;border:2px solid var(--milo-deep)}
+  .dot.g{background:var(--lengang)} .dot.a{background:var(--biasa)} .dot.r{background:var(--sesak)}
 
-/* Sedap/mehh feedback banner */
-.sedap-banner{
-  display:none;width:100%;
-  background:var(--s1);border:1px solid var(--s2);
-  border-radius:14px;padding:14px 18px;
-  text-align:center;margin-top:14px;
-}
-.sedap-banner.visible{display:block;}
-.sedap-q{font-size:13px;color:var(--cream);font-weight:600;margin-bottom:10px;line-height:1.5;}
-.sedap-q em{color:var(--gold);font-style:normal;}
-.sedap-btns{display:flex;gap:8px;justify-content:center;}
-.btn-sedap,.btn-mehh{
-  all:unset;font-size:14px;font-weight:700;
-  padding:8px 20px;border-radius:100px;cursor:pointer;border:1px solid;
-  transition:all .12s;font-family:inherit;
-}
-.btn-sedap{border-color:var(--green);color:var(--green);}
-.btn-sedap:active{background:rgba(61,214,140,.15);}
-.btn-mehh{border-color:var(--muted2);color:var(--muted);}
-.btn-mehh:active{background:rgba(255,255,255,.05);}
+  .strip-scroller{overflow-x:auto;padding-bottom:6px}
+  .strip{display:flex;align-items:flex-end;height:236px;position:relative;padding:0 4px}
+  .track-line{
+    position:absolute;left:0;right:0;bottom:84px;height:10px;
+    border:2.5px solid var(--milo-deep);border-radius:6px;z-index:0;
+  }
+  .stn{
+    flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;
+    position:relative;z-index:1;height:100%;min-width:46px;cursor:pointer;
+    background:none;border:none;font:inherit;color:inherit;
+  }
+  .glass{
+    width:22px;border:2.5px solid var(--milo-deep);border-radius:5px 5px 8px 8px;
+    background:var(--kopi-cup);position:relative;overflow:hidden;margin-bottom:6px;height:104px;flex:none;
+  }
+  .glass .fill{position:absolute;bottom:0;left:0;right:0;transition:height .6s cubic-bezier(.34,1.3,.64,1), background .3s}
+  .glass .foam{position:absolute;left:0;right:0;height:6px;background:#FFF0D0;border-bottom:2px solid var(--milo-deep);transition:bottom .6s cubic-bezier(.34,1.3,.64,1)}
+  .stn .face{font-size:.9rem;height:1.3em}
+  .stn .node{width:16px;height:16px;border-radius:50%;background:var(--kopi-cup);border:3.5px solid var(--milo-deep);margin:6px 0;flex:none;transition:transform .15s}
+  .stn:hover .node,.stn:focus-visible .node{transform:scale(1.35);background:var(--kaya)}
+  .stn:focus-visible{outline:3px dashed var(--teh);outline-offset:-3px;border-radius:10px}
+  .stn .name{
+    font-family:'Space Mono',monospace;font-size:.6rem;font-weight:700;line-height:1.1;color:#5C4330;
+    height:68px;writing-mode:vertical-rl;transform:rotate(180deg);display:flex;align-items:flex-start;
+  }
+  .stn.ic .name{color:var(--milo)}
+  .strip-ends{display:flex;justify-content:space-between;font-family:'Space Mono',monospace;font-size:.7rem;font-weight:700;color:#6B4E37;padding-top:6px}
+  .hint{
+    margin-top:16px;background:var(--kaya);border:var(--bd);border-radius:14px;
+    box-shadow:var(--shadow-sm);padding:12px 16px;font-weight:700;font-size:.95rem;transform:rotate(-.5deg);
+  }
 
-.sp-btn{
-  margin-top:28px;background:var(--gold);color:#000;
-  font-size:16px;font-weight:800;padding:18px 0;
-  border-radius:14px;border:none;cursor:pointer;font-family:inherit;
-  width:100%;letter-spacing:.5px;
-  transition:filter .12s,transform .1s;
-}
-.sp-btn:active{filter:brightness(.88);transform:scale(.98);}
-.sp-hint{margin-top:16px;font-size:11px;color:var(--muted2);letter-spacing:1.5px;text-transform:uppercase;}
-.sp-teaser{margin-top:6px;font-size:12px;color:var(--muted);font-weight:500;}
-.sp-teaser b{color:var(--gold);}
-.sp-profile-link{
-  margin-top:10px;font-size:11px;color:var(--muted2);
-  letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;
-  transition:color .15s;
-}
-.sp-profile-link:active{color:var(--muted);}
+  /* ===== parking ===== */
+  .free-banner{
+    margin-top:20px;background:var(--pandan);color:#fff;border:var(--bd);border-radius:14px;
+    box-shadow:var(--shadow-sm);padding:14px 18px;font-weight:800;font-size:1rem;transform:rotate(.4deg);
+  }
+  .park-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:20px}
+  .pk{background:var(--kopi-cup);border:var(--bd);border-radius:var(--r);box-shadow:var(--shadow);padding:18px;transition:transform .15s cubic-bezier(.34,1.56,.64,1)}
+  .pk:hover{transform:translate(-2px,-2px) rotate(.6deg)}
+  .pk .area{font-family:'Space Mono',monospace;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#6B4E37}
+  .pk h3{font-family:'Lilita One',cursive;font-weight:400;font-size:1.1rem;margin:4px 0 10px}
+  .pk .row{display:flex;justify-content:space-between;align-items:baseline;border-top:2px dashed #E4CBA8;padding:7px 0 3px;font-size:.9rem;font-weight:600}
+  .pk .row b{font-weight:800}
+  .pill{border:2.5px solid var(--milo-deep);border-radius:999px;padding:2px 10px;font-size:.76rem;font-weight:800}
+  .pill.free{background:var(--pandan);color:#fff}
+  .pill.paid{background:var(--sesak);color:#fff}
+  .pill.tba{background:var(--santan)}
+  .park-note{
+    margin-top:20px;background:var(--kopi-cup);border:var(--bd);border-radius:14px;
+    box-shadow:var(--shadow-sm);padding:16px 18px;font-weight:600;font-size:.92rem;color:#5C4330;
+  }
+  .nav-btns{display:flex;gap:8px;margin-top:12px}
+  .nav-btn{
+    flex:1;text-align:center;text-decoration:none;font-weight:800;font-size:.82rem;color:var(--milo);
+    border:2.5px solid var(--milo-deep);border-radius:999px;padding:7px 4px;
+    box-shadow:3px 3px 0 var(--milo-deep);
+    transition:transform .12s cubic-bezier(.34,1.56,.64,1), box-shadow .12s;
+  }
+  .nav-btn:hover{transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--milo-deep)}
+  .nav-btn:active{transform:translate(2px,2px);box-shadow:0 0 0 var(--milo-deep)}
+  .nav-btn:focus-visible{outline:3px dashed var(--teh);outline-offset:2px}
+  .nav-btn.gm{background:var(--kaya)}
+  .nav-btn.wz{background:#9FD9F6}
 
-/* ── QUIZ ── */
-#quiz{
-  background:var(--bg);
-  padding-top:max(env(safe-area-inset-top,0px),52px);
-  align-items:center;
-}
-.q-top{width:100%;max-width:400px;padding:0 28px 0;display:flex;flex-direction:column;align-items:center;gap:18px;}
-.prog{display:flex;gap:5px;width:100%;}
-.pseg{height:2px;flex:1;background:var(--s2);border-radius:2px;transition:background .35s;}
-.pseg.done{background:var(--gold);}
-.pseg.active{background:rgba(255,184,0,.35);}
-.q-num{font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--gold);opacity:.7;text-align:center;}
-.q-text{
-  width:100%;max-width:400px;padding:20px 28px 0;
-  font-size:clamp(24px,7.5vw,34px);font-weight:800;line-height:1.1;
-  letter-spacing:-.8px;color:var(--cream);text-align:center;
-}
-.q-opts{
-  flex:1;overflow-y:auto;width:100%;max-width:400px;
-  padding:22px 28px max(env(safe-area-inset-bottom,0px),28px);
-  display:flex;flex-direction:column;align-items:center;gap:10px;
-}
-.opt{
-  all:unset;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  padding:18px 22px;background:var(--s1);border:1px solid var(--s2);
-  border-radius:14px;cursor:pointer;width:100%;text-align:center;
-  transition:border-color .12s,background .12s,transform .1s;
-}
-.opt:active,.opt.sel{border-color:var(--gold);background:var(--gold-faint);transform:scale(.98);}
-.opt-label{font-size:16px;font-weight:700;color:var(--cream);letter-spacing:-.2px;line-height:1.2;}
-.opt-sub{font-size:12px;font-weight:500;color:var(--muted);margin-top:3px;}
-.opts-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;}
-.opts-row .opt{padding:22px 12px;}
-.opts-price{display:flex;flex-direction:column;gap:10px;width:100%;}
-.opt-jimat{border-color:#2a6640;}
-.opt-jimat:active,.opt-jimat.sel{border-color:var(--green);background:rgba(61,214,140,.08);}
-.opt-jimat .opt-label{color:var(--green);}
-.opt-jimat .opt-sub{color:rgba(61,214,140,.5);}
-.opt-mid{border-color:var(--s3);}
-.opt-mid:active,.opt-mid.sel{border-color:var(--gold);background:var(--gold-faint);}
-.opt-mid .opt-label{color:var(--cream);}
-.opt-splash{border-color:#3d2200;}
-.opt-splash:active,.opt-splash.sel{border-color:var(--red);background:rgba(255,68,34,.08);}
-.opt-splash .opt-label{color:var(--red);}
-.opt-splash .opt-sub{color:rgba(255,68,34,.5);}
+  /* ===== reports ===== */
+  .report-band{
+    margin-top:20px;background:var(--milo);color:var(--santan);border:var(--bd);
+    border-radius:var(--r);box-shadow:var(--shadow);padding:32px;
+    background-image:radial-gradient(rgba(255,201,60,.15) 1.4px, transparent 1.4px);background-size:22px 22px;
+  }
+  .report-grid{display:grid;grid-template-columns:1fr 1fr;gap:30px;align-items:center}
+  .report-band h2{color:var(--kaya)}
+  .report-band p{color:#EAD9C2;font-weight:600;margin-top:10px;max-width:44ch}
+  .vote{background:var(--santan);color:var(--milo);border:var(--bd);border-radius:var(--r);box-shadow:6px 6px 0 rgba(0,0,0,.35);padding:22px}
+  .vote label{font-weight:800;display:block;margin-bottom:8px}
+  .vote select{
+    width:100%;font-family:'Baloo 2';font-weight:700;font-size:1rem;padding:12px;
+    border:var(--bd);border-radius:12px;background:var(--kopi-cup);color:var(--milo);margin-bottom:14px;
+  }
+  .vq{font-weight:800;font-size:1rem}
+  .vq small{display:block;font-family:'Space Mono',monospace;font-weight:400;font-size:.68rem;color:#6B4E37;margin-top:2px}
+  .vbtns{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}
+  .vbtns button{
+    font-family:'Baloo 2';font-weight:800;font-size:.95rem;padding:16px 4px;cursor:pointer;
+    border:var(--bd);border-radius:16px;box-shadow:var(--shadow-sm);
+    transition:transform .15s cubic-bezier(.34,1.56,.64,1), box-shadow .15s;
+  }
+  .vbtns button:hover{transform:translate(-2px,-2px) scale(1.04);box-shadow:6px 6px 0 var(--milo-deep)}
+  .vbtns button:active{transform:translate(3px,3px);box-shadow:0 0 0 var(--milo-deep)}
+  .vbtns button:focus-visible{outline:3px dashed var(--milo);outline-offset:3px}
+  .vbtns .g{background:var(--pandan);color:#fff}
+  .vbtns .a{background:var(--kaya)}
+  .vbtns .r{background:var(--sesak);color:#fff}
+  .thanks{margin-top:12px;font-family:'Space Mono',monospace;font-size:.74rem;font-weight:700;min-height:1.3em;color:#3E9A4C}
 
-/* ── LOADING ── */
-#loading{background:var(--bg);justify-content:center;align-items:center;text-align:center;gap:28px;overflow:hidden;}
-.ld-glow{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,rgba(255,184,0,.09) 0%,transparent 60%);}
-.ld-title{position:relative;z-index:1;font-size:clamp(30px,9vw,42px);font-weight:800;line-height:1.1;letter-spacing:-1.2px;color:var(--cream);text-align:center;}
-.ld-title em{color:var(--gold);font-style:normal;}
-.ld-track{position:relative;z-index:1;width:160px;height:2px;background:var(--s2);border-radius:2px;overflow:hidden;}
-.ld-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--gold),var(--red));transition:width 2.7s cubic-bezier(.4,0,.2,1);}
-.ld-msg{position:relative;z-index:1;font-size:11px;color:var(--muted);font-weight:600;letter-spacing:2px;text-transform:uppercase;transition:opacity .25s;}
+  .train-track{
+    position:fixed;left:0;right:0;bottom:0;height:34px;z-index:70;pointer-events:none;
+    background:repeating-linear-gradient(90deg, transparent 0 22px, var(--milo-deep) 22px 26px);
+    background-position:bottom;background-size:100% 8px;background-repeat:repeat-x;
+  }
+  .train-track::before{content:"";position:absolute;left:0;right:0;bottom:6px;height:3px;background:var(--milo-deep)}
+  #train{position:absolute;bottom:7px;left:0;font-size:1.5rem;transform:scaleX(-1);filter:drop-shadow(2px 2px 0 rgba(40,22,11,.4))}
 
-/* ── REVEAL ── */
-#reveal{padding:0;overflow:hidden;}
-.rv-bg{position:absolute;inset:0;z-index:0;transition:background .5s;}
-.rv-bg::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(13,8,0,1) 35%,rgba(13,8,0,.6) 70%,rgba(13,8,0,.2) 100%);}
-.rv-top{
-  position:relative;z-index:3;
-  padding:max(env(safe-area-inset-top,0px),48px) 28px 0;
-  display:flex;justify-content:space-between;align-items:center;
-}
-.rv-logo{font-size:18px;font-weight:800;letter-spacing:-1px;color:var(--cream);}
-.rv-logo em{color:var(--gold);font-style:normal;}
-.rv-tag{
-  font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
-  background:var(--gold-faint);border:1px solid var(--gold-border);
-  color:var(--gold);padding:5px 12px;border-radius:100px;
-  transition:all .3s;
-}
-.rv-tag.alt{background:rgba(167,139,250,.1);border-color:rgba(167,139,250,.3);color:var(--purple);}
-.rv-body{
-  position:absolute;bottom:0;left:0;right:0;z-index:3;
-  padding:0 28px max(env(safe-area-inset-bottom,0px),36px);
-  display:flex;flex-direction:column;gap:13px;
-  transition:opacity .2s;
-}
-.rv-chips{display:flex;gap:7px;flex-wrap:wrap;}
-.ch-halal{display:inline-flex;align-items:center;gap:5px;background:rgba(61,214,140,.15);border:1px solid rgba(61,214,140,.3);color:var(--green);font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:5px 12px;border-radius:100px;}
-.ch-open{display:inline-flex;align-items:center;gap:5px;background:transparent;border:1px solid rgba(91,175,255,.4);color:var(--blue);font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:5px 12px;border-radius:4px;}
-.ch-open::before{content:'';display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--blue);animation:pulse 1.5s infinite;}
-.ch-open.closing{border-color:rgba(255,184,0,.4);color:var(--gold);}
-.ch-open.closing::before{background:var(--gold);animation:none;}
-.ch-open.h24{border-color:rgba(167,139,250,.4);color:var(--purple);}
-.ch-open.h24::before{background:var(--purple);animation:none;}
-.ch-open.soon{border-color:rgba(91,175,255,.3);color:var(--blue);opacity:.7;}
-.ch-open.soon::before{background:var(--blue);animation:none;}
-@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
-.ch-time{display:inline-flex;align-items:center;gap:5px;background:var(--gold-faint);border:1px solid var(--gold-border);color:var(--gold);font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:5px 12px;border-radius:100px;}
-.ch-wknd{display:inline-flex;align-items:center;gap:5px;background:rgba(255,68,34,.1);border:1px solid rgba(255,68,34,.3);color:var(--red);font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:5px 12px;border-radius:6px;}
-.ch-jimat{display:inline-flex;align-items:center;background:rgba(61,214,140,.08);border:1px solid rgba(61,214,140,.25);color:var(--green);font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:5px 12px;border-radius:100px;}
-.ch-mid{display:inline-flex;align-items:center;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);color:var(--muted);font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:5px 12px;border-radius:100px;}
-.ch-splash{display:inline-flex;align-items:center;background:rgba(255,68,34,.08);border:1px solid rgba(255,68,34,.25);color:var(--red);font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:5px 12px;border-radius:100px;}
-.ch-dist{display:inline-flex;align-items:center;background:rgba(167,139,250,.08);border:1px solid rgba(167,139,250,.25);color:var(--purple);font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:5px 12px;border-radius:100px;}
-.rv-eyebrow{font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--muted);}
-.rv-name{font-size:clamp(44px,14vw,72px);font-weight:800;line-height:.92;letter-spacing:-2px;color:var(--cream);}
-.rv-meta{font-size:13px;color:var(--muted);font-weight:500;letter-spacing:.2px;}
-.rv-why{font-size:15px;line-height:1.65;color:rgba(255,245,228,.6);border-left:2px solid var(--gold);padding-left:14px;}
-/* "atau ini pulak" subtle text-link */
-.btn-atau{
-  all:unset;display:block;text-align:center;
-  font-size:13px;font-weight:600;color:var(--muted);
-  letter-spacing:.3px;cursor:pointer;padding:4px 0;
-  transition:color .15s;
-}
-.btn-atau:active{color:var(--cream);}
-.btn-atau.hidden{display:none;}
-.btn-go{all:unset;display:block;width:100%;background:var(--gold);color:#000;padding:19px 24px;border-radius:14px;font-size:18px;font-weight:800;text-align:center;cursor:pointer;letter-spacing:-.2px;transition:filter .12s,transform .1s,background .3s,color .3s;font-family:inherit;}
-.btn-go:active{filter:brightness(.88);transform:scale(.98);}
-.btn-share{all:unset;display:block;width:100%;border:1px solid var(--s3);color:var(--muted);padding:15px 24px;border-radius:14px;font-size:14px;font-weight:700;text-align:center;cursor:pointer;letter-spacing:.2px;transition:border-color .12s,color .12s;font-family:inherit;}
-.btn-share:active{border-color:var(--muted2);color:var(--cream);}
+  footer{border-top:var(--bd);margin-top:60px;padding:34px 0 70px;background:var(--kopi-cup)}
+  .foot-grid{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;font-weight:600;font-size:.88rem;color:#6B4E37}
+  footer .fine{font-family:'Space Mono',monospace;font-size:.68rem;max-width:56ch;margin-top:10px}
+  footer a{color:var(--teh-deep);font-weight:800}
 
-/* ── SWIPE MECHANIC ── */
-.rv-body{touch-action:pan-y;will-change:transform;}
-.rv-hint-overlay{
-  position:absolute;top:-36px;left:0;right:0;
-  display:flex;justify-content:space-between;
-  padding:0 4px;pointer-events:none;
-}
-.rv-hint-left,.rv-hint-right{
-  opacity:0;
-  font-size:13px;font-weight:800;letter-spacing:2px;text-transform:uppercase;
-  padding:5px 12px;border-radius:8px;transition:opacity .08s;
-}
-.rv-hint-left{color:var(--muted);border:2px solid var(--muted2);}
-.rv-hint-right{color:var(--gold);border:2px solid rgba(255,184,0,.6);}
-.rv-swipe-hint{
-  text-align:center;font-size:12px;color:var(--muted2);
-  font-weight:600;letter-spacing:.3px;transition:color .3s,opacity .3s;
-  padding:2px 0;
-}
-.rv-swipe-hint.locked{color:rgba(255,184,0,.6);}
-.btn-restart{
-  all:unset;display:block;width:100%;text-align:center;
-  font-size:13px;font-weight:600;color:var(--muted2);
-  letter-spacing:.3px;cursor:pointer;padding:4px 0;
-  transition:color .15s;font-family:inherit;
-}
-.btn-restart:active{color:var(--cream);}
-
-/* ── PRICE PREF TOGGLE ── */
-.price-wrap{margin-top:8px;display:flex;gap:6px;justify-content:center;}
-.price-btn{
-  all:unset;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;
-  padding:7px 16px;border-radius:100px;border:1px solid var(--s3);
-  color:var(--muted);cursor:pointer;transition:all .15s;font-family:inherit;
-}
-.price-btn.active{border-color:var(--green);color:var(--green);background:rgba(61,214,140,.08);}
-
-/* ── PROFILE SCREEN ── */
-#profile{
-  background:var(--bg);
-  padding-top:max(env(safe-area-inset-top,0px),52px);
-  flex-direction:column;
-}
-.pf-header{
-  display:flex;align-items:center;gap:16px;
-  padding:0 28px 20px;flex-shrink:0;
-}
-.pf-back{
-  all:unset;font-size:14px;font-weight:700;
-  color:var(--muted);cursor:pointer;letter-spacing:.3px;
-  transition:color .15s;
-}
-.pf-back:active{color:var(--cream);}
-.pf-title{font-size:20px;font-weight:800;letter-spacing:-.5px;color:var(--cream);}
-.pf-body{
-  padding:0 28px max(env(safe-area-inset-bottom,0px),48px);
-  overflow-y:auto;flex:1;
-  display:flex;flex-direction:column;gap:16px;
-}
-.pf-stat{
-  font-size:11px;font-weight:700;letter-spacing:2px;
-  text-transform:uppercase;color:var(--gold);
-}
-.pf-insight{
-  font-size:16px;font-weight:700;color:var(--cream);
-  line-height:1.4;letter-spacing:-.2px;
-}
-.pf-section-title{
-  font-size:10px;font-weight:700;letter-spacing:3px;
-  text-transform:uppercase;color:var(--muted);margin-top:8px;
-}
-.pf-matches{display:flex;flex-direction:column;gap:10px;}
-.pf-match-row{
-  padding:14px 16px;background:var(--s1);
-  border-radius:12px;border:1px solid var(--s2);
-}
-.pf-match-name{font-size:15px;font-weight:700;color:var(--cream);}
-.pf-match-meta{font-size:12px;color:var(--muted);margin-top:3px;}
-.pf-empty{
-  font-size:14px;color:var(--muted);
-  text-align:center;padding:32px 0;line-height:1.8;
-}
-.btn-pf-delete{
-  all:unset;display:block;width:100%;text-align:center;
-  border:1px solid rgba(255,68,34,.3);color:var(--red);
-  padding:14px;border-radius:14px;font-size:14px;font-weight:700;
-  cursor:pointer;margin-top:8px;transition:background .12s;font-family:inherit;
-}
-.btn-pf-delete:active{background:rgba(255,68,34,.08);}
-.pf-delete-hint{font-size:11px;color:var(--muted2);text-align:center;}
+  @media (max-width:860px){
+    .park-grid{grid-template-columns:1fr 1fr}
+    .report-grid{grid-template-columns:1fr}
+    .tab{padding:7px 10px;font-size:.78rem}
+  }
+  @media (max-width:560px){.park-grid{grid-template-columns:1fr}}
+  @media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
 </style>
 </head>
 <body>
 
-<!-- SPLASH -->
-<div class="screen active" id="splash">
-  <div class="sp-glow"></div>
-  <div class="sp-inner">
-    <div class="sp-eyebrow">Made for Malaysia</div>
-    <div class="sp-logo">mana<em>mana</em></div>
-    <div class="sp-divider"></div>
-    <div class="sp-tagline">Tak tahu nak makan mana?<br><strong>We'll decide. You just eat.</strong></div>
-    <div class="diet-wrap">
-      <button class="diet-btn" id="dietHalal" onclick="setDiet('halal',event)">Halal</button>
-      <button class="diet-btn" id="dietNoPref" onclick="setDiet('no-pref',event)">Semua ok</button>
+<div class="ticker" aria-hidden="true">
+  <div class="ticker-track">
+    &nbsp;NOW COVERING 4 LRT LINES + MONORAIL&nbsp;&nbsp;·&nbsp;&nbsp;JOM CHECK DULU BEFORE YOU GO&nbsp;&nbsp;·&nbsp;&nbsp;LRT3 FREE RIDES UNTIL 31 JULY 🎉&nbsp;&nbsp;·&nbsp;&nbsp;FREE PARKING AT 6 LRT3 PARK N' RIDE&nbsp;&nbsp;·&nbsp;&nbsp;
+    NOW COVERING 4 LRT LINES + MONORAIL&nbsp;&nbsp;·&nbsp;&nbsp;JOM CHECK DULU BEFORE YOU GO&nbsp;&nbsp;·&nbsp;&nbsp;LRT3 FREE RIDES UNTIL 31 JULY 🎉&nbsp;&nbsp;·&nbsp;&nbsp;FREE PARKING AT 6 LRT3 PARK N' RIDE&nbsp;&nbsp;·&nbsp;&nbsp;
+  </div>
+</div>
+
+<nav>
+  <div class="nav-inner">
+    <a class="logo" href="#top"><span class="cup">🚈</span>Mana-Mana</a>
+    <div class="tabs">
+      <a class="tab t1" href="#live">Live Lines</a>
+      <a class="tab t2" href="#parking">Parking</a>
+      <a class="tab t3" href="#reports">Reports</a>
     </div>
-    <div class="price-wrap">
-      <button class="price-btn" id="priceJimat" onclick="setPrice('jimat',event)">Jimat je</button>
-      <button class="price-btn" id="priceSemua" onclick="setPrice('semua',event)">Semua harga</button>
+  </div>
+</nav>
+
+<header id="top">
+  <div class="wrap">
+    <span class="sticker">✦ seluruh Klang Valley punya crowd check ✦</span>
+    <h1>Every train line. One question: <span class="hl">sesak ke tak?</span></h1>
+    <p class="hero-sub">Kelana Jaya, Ampang, Sri Petaling, the new Shah Alam Line, Monorail — pick your line, see which stations are packed, where got parking, and report from the platform.</p>
+  </div>
+</header>
+
+<!-- ============ 1. LIVE LINES ============ -->
+<section id="live">
+  <div class="wrap">
+    <span class="sec-badge">01 · LIVE LINES</span>
+    <h2>Pick your line</h2>
+    <p class="sec-sub">Each station is a glass of teh tarik — the fuller the glass, the more sesak the platform. MRT lines coming soon, sabar ya.</p>
+    <span class="demo-chip">DEMO DATA · MON 6:05 PM</span>
+
+    <div class="line-switch" id="lineSwitch" role="tablist" aria-label="Choose a train line"></div>
+
+    <div class="board">
+      <div class="board-head">
+        <div class="board-title"><span class="swatch" id="boardSwatch"></span><span id="boardName"></span></div>
+        <div class="board-meta" id="boardMeta"></div>
+        <div class="legend">
+          <span><i class="dot g"></i>Lengang</span>
+          <span><i class="dot a"></i>Biasa</span>
+          <span><i class="dot r"></i>Sesak</span>
+        </div>
+      </div>
+      <div class="strip-scroller" id="scroller">
+        <div class="strip" id="strip" role="list" aria-label="Crowd level by station"></div>
+      </div>
+      <div class="tip" id="tip" role="status" aria-live="polite"></div>
+      <div class="strip-ends"><span id="endA"></span><span id="endB"></span></div>
     </div>
-    <div class="sp-moment" id="spMoment"></div>
-    <div class="sp-geo" id="spGeo">📍 Locating you...</div>
-    <div class="sedap-banner" id="sedapBanner">
-      <div class="sedap-q" id="sedapQ"></div>
-      <div class="sedap-btns">
-        <button class="btn-sedap" id="btnSedap">Sedap 😋</button>
-        <button class="btn-mehh" id="btnMehh">Mehh 😐</button>
+    <div class="hint" id="lineHint"></div>
+  </div>
+</section>
+
+<!-- ============ 2. PARKING ============ -->
+<section id="parking">
+  <div class="wrap">
+    <span class="sec-badge" style="background:var(--bandung);color:var(--milo)">02 · PARKING</span>
+    <h2 id="parkTitle">Where can park? How much? 🚗</h2>
+    <p class="sec-sub" id="parkSub"></p>
+
+    <div class="free-banner" id="freeBanner" hidden></div>
+
+    <div class="park-grid" id="parkGrid"></div>
+
+    <div class="park-note" id="parkNote"></div>
+  </div>
+</section>
+
+<!-- ============ 3. REPORTS ============ -->
+<section id="reports">
+  <div class="wrap">
+    <span class="sec-badge" style="background:var(--pandan)">03 · REPORTS</span>
+    <div class="report-band">
+      <div class="report-grid">
+        <div>
+          <h2>At the station? Tolong sikit lah.</h2>
+          <p>Your one tap overrides our forecast for 20 minutes and saves the next person's evening. Works on every line. No account, no typing — tap je.</p>
+        </div>
+        <div class="vote">
+          <label for="lineSelect">Which line?</label>
+          <select id="lineSelect" aria-label="Select your line"></select>
+          <label for="stationSelect">Which station?</label>
+          <select id="stationSelect" aria-label="Select your station"></select>
+          <div class="vq">How packed is it right now?<small>YOUR REPORT EXPIRES AFTER 20 MIN</small></div>
+          <div class="vbtns">
+            <button class="g" onclick="voted('Lengang')">Lengang<br>😌</button>
+            <button class="a" onclick="voted('Biasa')">Biasa<br>🙂</button>
+            <button class="r" onclick="voted('Sesak')">Sesak<br>🥵</button>
+          </div>
+          <div class="thanks" id="thanks"></div>
+        </div>
       </div>
     </div>
-    <button class="sp-btn" id="spBtn">Let's go lah</button>
-    <div class="sp-hint">tap anywhere to start</div>
-    <div class="sp-teaser" id="spTeaser"></div>
-    <div class="sp-profile-link" id="spProfileLink">Profile aku</div>
   </div>
-</div>
+</section>
 
-<!-- QUIZ -->
-<div class="screen" id="quiz">
-  <div class="q-top">
-    <div class="prog" id="prog"></div>
-    <div class="q-num" id="qNum"></div>
-  </div>
-  <div class="q-text" id="qText"></div>
-  <div class="q-opts" id="qOpts"></div>
-</div>
-
-<!-- LOADING -->
-<div class="screen" id="loading">
-  <div class="ld-glow"></div>
-  <div class="ld-title">Finding your<br><em>perfect makan...</em></div>
-  <div class="ld-track"><div class="ld-fill" id="lfill"></div></div>
-  <div class="ld-msg" id="lmsg">Reading your soul lah</div>
-</div>
-
-<!-- REVEAL -->
-<div class="screen" id="reveal">
-  <div class="rv-bg" id="rvbg"></div>
-  <div class="rv-top">
-    <div class="rv-logo">mana<em>mana</em></div>
-    <div class="rv-tag" id="rvtag">Matched</div>
-  </div>
-  <div class="rv-body" id="rvBody">
-    <div class="rv-hint-overlay">
-      <span class="rv-hint-left" id="rvHintLeft">← LAIN</span>
-      <span class="rv-hint-right" id="rvHintRight">PERGI →</span>
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <a class="logo" href="#top" style="font-size:1.1rem"><span class="cup" style="width:28px;height:28px;font-size:.85rem">🚈</span>Mana-Mana</a>
+        <div class="fine">Ridership data: data.gov.my · Parking info: Prasarana announcements, June 2026. Mana-Mana is an independent community project — not affiliated with Prasarana Malaysia or Rapid KL. Crowd levels shown are demo data. Station lists per official Rapid KL network.</div>
+      </div>
+      <div style="text-align:right">
+        <a href="https://manamana.io" rel="me">manamana.io</a> · <a href="#">GitHub</a> · <a href="#">Feedback</a><br>
+        <span class="fine">ANRA Collective 🇲🇾</span>
+      </div>
     </div>
-    <div class="rv-chips" id="rvchips"></div>
-    <div class="rv-eyebrow" id="rveyebrow">Malam ni, pergi ke</div>
-    <div class="rv-name" id="rvname"></div>
-    <div class="rv-meta" id="rvmeta"></div>
-    <div class="rv-why" id="rvwhy"></div>
-    <div class="rv-swipe-hint" id="rvSwipeHint">← geser untuk pilihan lain</div>
-    <button class="btn-go" id="btnGo">Pergi dah</button>
-    <button class="btn-restart" id="btnRestart">Mula balik →</button>
-    <button class="btn-share" id="btnShare">Share dengan kawan-kawan</button>
   </div>
-</div>
+</footer>
 
-<!-- PROFILE -->
-<div class="screen" id="profile">
-  <div class="pf-header">
-    <button class="pf-back" id="pfBack">← Balik</button>
-    <div class="pf-title">Profile aku</div>
-  </div>
-  <div class="pf-body" id="pfBody"></div>
-</div>
+<div class="train-track" aria-hidden="true"><span id="train">🚈</span></div>
 
 <script>
-/* ════════════════════════════════════════════
-   CONSTANTS & VERSION
-   ════════════════════════════════════════════ */
-const RESTAURANTS_VERSION = '2026-04-26';
-// localStorage keys
-const PREF_KEY     = 'mana_prefs_v1';
-const RECENT_KEY   = 'mana_recent_v1';
-const HISTORY_KEY  = 'mana_history_v1';
-const FEEDBACK_KEY = 'mana_feedback_v1';
-const LAST_KEY     = 'mana_last_v1';
-const NEG_KEY      = 'mana_neg_v1';
-const DIET_KEY     = 'mana_diet_v1';
-const VISITS_KEY   = 'mana_visits_v1';
-const PRICE_KEY    = 'mana_price_v1';
-
-/* ════════════════════════════════════════════
-   GEOLOCATION
-   ════════════════════════════════════════════ */
-let userLat=null,userLng=null;
-(function initGeo(){
-  if(!navigator.geolocation){setGeoUI(false);return;}
-  navigator.geolocation.getCurrentPosition(
-    pos=>{userLat=pos.coords.latitude;userLng=pos.coords.longitude;setGeoUI(true);},
-    ()=>setGeoUI(false),
-    {timeout:8000,maximumAge:60000}
-  );
-})();
-function setGeoUI(ok){
-  const el=document.getElementById('spGeo');
-  if(!el)return;
-  el.textContent=ok?'📍 Got your location':'📍 No location — showing all KL';
-  if(ok)el.classList.add('found');
-}
-
-/* ════════════════════════════════════════════
-   HAVERSINE
-   ════════════════════════════════════════════ */
-function distKm(lat1,lng1,lat2,lng2){
-  const R=6371,dLat=(lat2-lat1)*Math.PI/180,dLng=(lng2-lng1)*Math.PI/180;
-  const a=Math.sin(dLat/2)**2+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)**2;
-  return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
-}
-function fmtDist(km){return km<1?'<1 km':km.toFixed(1)+' km';}
-
-/* ════════════════════════════════════════════
-   MOMENT
-   ════════════════════════════════════════════ */
-function getMoment(){
-  const now=new Date(),h=now.getHours(),day=now.getDay();
-  const isWeekend=day===0||day===5||day===6;
-  let slot,label,eyebrow;
-  if(h>=6&&h<11){slot='breakfast';label='Breakfast time';eyebrow='Pagi ni, sarapan ke';}
-  else if(h>=11&&h<15){slot='lunch';label='Lunch hour';eyebrow='Tengahari ni, makan ke';}
-  else if(h>=15&&h<18){slot='tea';label='Tea time';eyebrow='Petang ni, teh ke';}
-  else if(h>=18&&h<22){slot='dinner';label='Dinner time';eyebrow='Malam ni, pergi ke';}
-  else{slot='supper';label='Supper time';eyebrow='Lewat ni, pergi ke';}
-  const days=['Ahad','Isnin','Selasa','Rabu','Khamis','Jumaat','Sabtu'];
-  return{h,slot,label,eyebrow,isWeekend,dayName:days[day]};
-}
-const M=getMoment();
-
-/* ════════════════════════════════════════════
-   QUESTIONS — 3 questions (HIGH-1: speed removed)
-   ════════════════════════════════════════════ */
-const QUESTIONS=[
-  {key:'occasion',num:'01 of 03',text:'What\'s the plan tonight?',layout:'stack',
-   opts:[{label:'Makan je lah',sub:'casual, no fuss',v:1},{label:'Work meal',sub:'business lunch or dinner',v:2},{label:'Date night',sub:'nak impress sikit',v:3},{label:'Brunch mode',sub:'weekend, relax je',v:4},{label:'Treat myself',sub:'duit bukan isu hari ni',v:5}]},
-  {key:'budget',num:'02 of 03',text:'Budget per person?',layout:'price',
-   opts:[{label:'Jimat',sub:'Bawah RM30',v:1,cls:'opt-jimat'},{label:'Mid-range',sub:'RM30 – RM80',v:2,cls:'opt-mid'},{label:'Splash out',sub:'RM80 ke atas',v:3,cls:'opt-splash'}]},
-  {key:'cuisine',num:'03 of 03',text:'Craving apa?',layout:'stack',
-   opts:[{label:'Malaysian & local',sub:'Nasi, mamak, nyonya, kopitiam',v:1},{label:'Asian vibes',sub:'Japanese, Korean, Thai, Indian',v:2},{label:'Western & cafe',sub:'Italian, French, steak, brunch',v:3}]}
-];
-
-/* ════════════════════════════════════════════
-   RESTAURANTS
-   NOTE: halalStatus defaults to 'pork-free' for all entries pending CRITICAL-2 audit.
-   Update each entry after founder verification. Set 'serves-pork' on confirmed entries
-   to have them filtered out in halal mode.
-   ════════════════════════════════════════════ */
-const RESTAURANTS=[
-  /* ── JIMAT ── */
-  {name:'Village Park',area:'Damansara Uptown',cat:'Nasi Lemak',price:1,lat:3.1479,lng:101.6267,
-   goodFor:[1,4],openHours:[{o:7,c:16}],bestFor:['breakfast','lunch','tea'],weekendBoost:true,
-   scores:{cuisine:[1]},bg:'linear-gradient(160deg,#0f2d1a,#0D0800)',
-   maps:'https://www.google.com/maps/search/Village+Park+Restaurant+Damansara+Uptown+KL',
-   why:'Nasi lemak terbaik KL. You said comfort — ini je jawapannya.',
-   momentCopy:{breakfast:'Pagi pagi makan nasi lemak. Hidup sempurna.',weekend:'Weekend nasi lemak hits different.'}},
-
-  {name:'Nasi Kandar Pelita',area:'Jalan Ampang',cat:'Nasi Kandar 24h',price:1,lat:3.1624,lng:101.7285,
-   goodFor:[1],openHours:[{o:0,c:24}],bestFor:['breakfast','lunch','dinner','supper'],weekendBoost:false,
-   scores:{cuisine:[1]},bg:'linear-gradient(160deg,#2d1a0a,#0D0800)',
-   maps:'https://www.google.com/maps/search/Pelita+Nasi+Kandar+Jalan+Ampang+KL',
-   why:'Open 24 jam, selalu penuh, selalu betul.',
-   momentCopy:{supper:'2 pagi pun boleh. Pelita selalu ada.'}},
-
-  {name:'Syed Bistro',area:'Chow Kit',cat:'Mamak 24h',price:1,lat:3.1724,lng:101.6931,
-   goodFor:[1],openHours:[{o:0,c:24}],bestFor:['supper','dinner','breakfast'],weekendBoost:false,
-   scores:{cuisine:[1]},bg:'linear-gradient(160deg,#000d2d,#0D0800)',
-   maps:'https://www.google.com/maps/search/Syed+Bistro+Chow+Kit+KL',
-   why:'Real mamak energy. Open late, no drama.',
-   momentCopy:{supper:'Lewat malam, masih lapar. Ini je lah.'}},
-
-  {name:'Nasi Lemak Wanjo',area:'Chow Kit',cat:'Nasi Lemak',price:1,lat:3.1718,lng:101.6991,
-   goodFor:[1,4],openHours:[{o:6,c:15}],bestFor:['breakfast','lunch'],weekendBoost:true,
-   scores:{cuisine:[1]},bg:'linear-gradient(160deg,#1a2d00,#0D0800)',
-   maps:'https://www.google.com/maps/search/Nasi+Lemak+Wanjo+Chow+Kit+KL',
-   why:'Old school nasi lemak. No frills, maximum satisfaction.',
-   momentCopy:{breakfast:'Pagi awal, nasi lemak, teh tarik. Perfect.',weekend:'Weekend breakfast yang betul-betul proper.'}},
-
-  {name:'Yusoof & Zakhir',area:'Masjid India',cat:'Nasi Kandar',price:1,lat:3.1486,lng:101.6935,
-   goodFor:[1],openHours:[{o:6,c:16}],bestFor:['breakfast','lunch'],weekendBoost:false,
-   scores:{cuisine:[1]},bg:'linear-gradient(160deg,#2d1500,#0D0800)',
-   maps:'https://www.google.com/maps/search/Restoran+Yusoof+Dan+Zakhir+Masjid+India+KL',
-   why:'Orang KL makan sini setiap hari. Itu dah cukup kata.',
-   momentCopy:{breakfast:'Sarapan klasik yang tak pernah mengecewakan.'}},
-
-  {name:'Ali, Muthu & Ah Hock',area:'Bangsar',cat:'Nasi Campur',price:1,lat:3.1278,lng:101.6745,
-   goodFor:[1],openHours:[{o:11,c:21}],bestFor:['lunch','dinner'],weekendBoost:false,
-   scores:{cuisine:[1]},bg:'linear-gradient(160deg,#2d1500,#0D0800)',
-   maps:'https://www.google.com/maps/search/Ali+Muthu+Ah+Hock+Bangsar+KL',
-   why:'Nasi campur paling iconic KL. Cepat, sedap, memang kena.',
-   momentCopy:{}},
-
-  {name:'MyBurgerLab',area:'TTDI',cat:'Smash Burger',price:1,lat:3.1357,lng:101.6382,
-   goodFor:[1],openHours:[{o:11,c:23}],bestFor:['lunch','dinner','supper'],weekendBoost:true,
-   scores:{cuisine:[3]},bg:'linear-gradient(160deg,#2d1800,#0D0800)',
-   maps:'https://www.google.com/maps/search/MyBurgerLab+Kuala+Lumpur',
-   why:'Smash burger Malaysia yang memang tak tipu. Satisfying gila.',
-   momentCopy:{supper:'Lewat malam dan lapar. Burger je lah.',weekend:'Weekend indulgence. Layak dapat.'}},
-
-  {name:'Restoran Sri Nirwana Maju',area:'Bangsar',cat:'Banana Leaf Rice',price:1,lat:3.1278,lng:101.6748,
-   goodFor:[1,4],openHours:[{o:11,c:22}],bestFor:['lunch','dinner'],weekendBoost:true,
-   scores:{cuisine:[1]},bg:'linear-gradient(160deg,#0d2d0a,#0D0800)',
-   maps:'https://www.google.com/maps/search/Sri+Nirwana+Maju+Bangsar+KL',
-   why:'Banana leaf rice yang ramai datang jauh untuk makan. Kenapa? Sebab memang sedap.',
-   momentCopy:{weekend:'Weekend banana leaf? Non-negotiable.'}},
-
-  {name:"Pak Nasser's Nasi Lemak",area:'Jalan Bellamy',cat:'Nasi Lemak',price:1,lat:3.1428,lng:101.6868,
-   goodFor:[1,4],openHours:[{o:7,c:14}],bestFor:['breakfast','lunch'],weekendBoost:true,
-   scores:{cuisine:[1]},bg:'linear-gradient(160deg,#1a2d00,#0D0800)',
-   maps:'https://www.google.com/maps/search/Pak+Nasser+Nasi+Lemak+Jalan+Bellamy+KL',
-   why:'Ikat dalam daun pisang. Makan tepi jalan. Rasa macam dah win the day.',
-   momentCopy:{breakfast:'Morning nasi lemak wrapped in banana leaf. Nothing better.'}},
-
-  {name:'Sup Utara',area:'Masjid India',cat:'Northern Soup',price:1,lat:3.1486,lng:101.6925,
-   goodFor:[1],openHours:[{o:10,c:22}],bestFor:['lunch','dinner','supper'],weekendBoost:false,
-   scores:{cuisine:[1]},bg:'linear-gradient(160deg,#2d1a00,#0D0800)',
-   maps:'https://www.google.com/maps/search/Sup+Utara+Masjid+India+KL',
-   why:'Sup tulang, roti canai, vibes Kedah kat tengah KL. Warm, filling, the real deal.',
-   momentCopy:{supper:'Malam-malam, sup panas. Comfort tak ada tandingan.'}},
-
-  {name:'Nasi Padang Minang',area:'Brickfields',cat:'Nasi Padang',price:1,lat:3.1378,lng:101.6888,
-   goodFor:[1],openHours:[{o:11,c:21}],bestFor:['lunch','dinner'],weekendBoost:false,
-   scores:{cuisine:[1]},bg:'linear-gradient(160deg,#2d1000,#0D0800)',
-   maps:'https://www.google.com/maps/search/Nasi+Padang+Minang+Brickfields+KL',
-   why:'Rendang, gulai, sambal — ambil berapa lauk pun boleh. Padang-style, KL location.',
-   momentCopy:{}},
-
-  {name:'Saravanaa Bhavan',area:'Brickfields',cat:'South Indian Veg',price:1,lat:3.1368,lng:101.6878,
-   goodFor:[1],openHours:[{o:8,c:22}],bestFor:['breakfast','lunch','dinner'],weekendBoost:false,
-   scores:{cuisine:[1]},bg:'linear-gradient(160deg,#2d1500,#0D0800)',
-   maps:'https://www.google.com/maps/search/Saravanaa+Bhavan+Brickfields+KL',
-   why:'Thosai, idli, banana leaf set. Pure South Indian, purely halal. Reliable tiap-tiap kali.',
-   momentCopy:{breakfast:'Breakfast thosai. Under-rated and over-delicious.'}},
-
-  {name:'Muhibbah Nasi Lemak',area:'TTDI',cat:'Nasi Lemak',price:1,lat:3.1358,lng:101.6368,
-   goodFor:[1,4],openHours:[{o:6,c:14}],bestFor:['breakfast','lunch'],weekendBoost:true,
-   scores:{cuisine:[1]},bg:'linear-gradient(160deg,#1a2d00,#0D0800)',
-   maps:'https://www.google.com/maps/search/Muhibbah+Nasi+Lemak+TTDI+KL',
-   why:'TTDI locals punya nasi lemak. Sambal yang kena, ayam goreng yang betul. No detour required.',
-   momentCopy:{breakfast:'Pagi TTDI, nasi lemak Muhibbah. That\'s the ritual.',weekend:'Weekend breakfast kat TTDI. Ini je lah.'}},
-
-  {name:'Kanna Curry House',area:'SS2 PJ',cat:'South Indian',price:1,lat:3.1065,lng:101.6225,
-   goodFor:[1,4],openHours:[{o:7,c:17}],bestFor:['breakfast','lunch'],weekendBoost:true,
-   scores:{cuisine:[1]},bg:'linear-gradient(160deg,#1a0800,#0D0800)',
-   maps:'https://www.google.com/maps/search/Kanna+Curry+House+SS2+Petaling+Jaya',
-   why:'SS2 legend. Roti canai dan curry pagi yang tak ada tandingan kat PJ. Queue tu berbaloi.',
-   momentCopy:{breakfast:'Pagi awal, roti canai kat SS2. Ini ritual KL.',weekend:'Weekend roti canai yang wajib. Kanna.'}},
-
-  /* ── MID-RANGE ── */
-  {name:'Wondermama',area:'Bangsar Village',cat:'Malaysian Comfort',price:2,lat:3.1268,lng:101.6748,
-   goodFor:[1,4],openHours:[{o:10,c:22}],bestFor:['lunch','tea','dinner'],weekendBoost:true,
-   scores:{cuisine:[1]},bg:'linear-gradient(160deg,#1a0d2d,#0D0800)',
-   maps:'https://www.google.com/maps/search/Wondermama+Bangsar+KL',
-   why:'Malaysian comfort food yang rasa macam peluk dari ibu.',
-   momentCopy:{tea:'Tea time dan comfort food. Combination terbaik.',weekend:'Weekend comfort? Wondermama. Senang cerita.'}},
-
-  {name:'Plan B',area:'Bangsar',cat:'All-Day Dining',price:2,lat:3.1258,lng:101.6738,
-   goodFor:[1,4],openHours:[{o:9,c:22}],bestFor:['breakfast','lunch','tea','dinner'],weekendBoost:false,
-   scores:{cuisine:[3]},bg:'linear-gradient(160deg,#0d1a2d,#0D0800)',
-   maps:'https://www.google.com/maps/search/Plan+B+Restaurant+Kuala+Lumpur',
-   why:'All-day, always reliable, good for any mood.',
-   momentCopy:{breakfast:'Brunch done properly. No drama.',tea:'Petang-petang, kopi dan rehat.'}},
-
-  {name:'Absolute Thai',area:'Sri Hartamas',cat:'Thai',price:2,lat:3.1685,lng:101.6528,
-   goodFor:[1,2],openHours:[{o:11,c:22}],bestFor:['lunch','dinner'],weekendBoost:false,
-   scores:{cuisine:[2]},bg:'linear-gradient(160deg,#002d0a,#0D0800)',
-   maps:'https://www.google.com/maps/search/Absolute+Thai+Sri+Hartamas+KL',
-   why:'Berbeza tapi tak pelik. Reliable tapi tak boring.',momentCopy:{}},
-
-  {name:'The Bird',area:'Solaris Mont Kiara',cat:'Rotisserie Chicken',price:2,lat:3.1718,lng:101.6488,
-   goodFor:[1],openHours:[{o:11,c:22}],bestFor:['lunch','dinner'],weekendBoost:false,
-   scores:{cuisine:[3]},bg:'linear-gradient(160deg,#2d0f00,#0D0800)',
-   maps:'https://www.google.com/maps/search/The+Bird+Restaurant+Mont+Kiara+KL',
-   why:'Rotisserie chicken, kulit rangup, sides yang betul.',momentCopy:{}},
-
-  {name:"Madam Kwan's",area:'KLCC',cat:'Malaysian',price:2,lat:3.1578,lng:101.7134,
-   goodFor:[1,2],openHours:[{o:11,c:22}],bestFor:['lunch','dinner'],weekendBoost:false,
-   scores:{cuisine:[1]},bg:'linear-gradient(160deg,#2d2200,#0D0800)',
-   maps:'https://www.google.com/maps/search/Madam+Kwans+KLCC+KL',
-   why:'Nasi bojari, portion banyak, tak pernah kecewa.',momentCopy:{}},
-
-  {name:'The Rebung',area:'Bangsar',cat:'Buffet Melayu',price:2,lat:3.1168,lng:101.6758,
-   goodFor:[1,2,4],openHours:[{o:12,c:22}],bestFor:['lunch','dinner'],weekendBoost:true,
-   scores:{cuisine:[1]},bg:'linear-gradient(160deg,#0d2d00,#0D0800)',
-   maps:'https://www.google.com/maps/search/The+Rebung+Restaurant+Bangsar+KL',
-   why:"Chef Ismail's legendary buffet. Resepi turun-temurun.",
-   momentCopy:{weekend:'Weekend buffet energy. Ambil masa, enjoy.'}},
-
-  {name:'Dancing Fish',area:'Mont Kiara',cat:'Nyonya / Melayu',price:2,lat:3.1718,lng:101.6562,
-   goodFor:[1,3],openHours:[{o:11,c:22}],bestFor:['lunch','dinner'],weekendBoost:false,
-   scores:{cuisine:[1]},bg:'linear-gradient(160deg,#2d0a0a,#0D0800)',
-   maps:'https://www.google.com/maps/search/Dancing+Fish+Restaurant+Mont+Kiara+KL',
-   why:'Asam pedas yang memang kena. You said adventure — trust the process.',momentCopy:{}},
-
-  {name:'Jibril',area:'Bukit Damansara',cat:'Middle Eastern',price:2,lat:3.1348,lng:101.6651,
-   goodFor:[1,3],openHours:[{o:12,c:23}],bestFor:['lunch','dinner'],weekendBoost:true,
-   scores:{cuisine:[2]},bg:'linear-gradient(160deg,#2d1f00,#0D0800)',
-   maps:'https://www.google.com/maps/search/Jibril+Restaurant+Bukit+Damansara+KL',
-   why:'Mezze dan grill Lebanon yang proper. Berbeza dalam cara yang betul.',
-   momentCopy:{weekend:'Weekend, nak benda exotic. Jibril deliver.'}},
-
-  {name:'Elemen',area:'Pavilion KL',cat:'Plant-Based',price:2,lat:3.1488,lng:101.7134,
-   goodFor:[1,3],openHours:[{o:11,c:22}],bestFor:['lunch','dinner'],weekendBoost:false,
-   scores:{cuisine:[1,3]},bg:'linear-gradient(160deg,#003d1a,#0D0800)',
-   maps:'https://www.google.com/maps/search/Elemen+Restaurant+Pavilion+KL',
-   why:'Plant-based dengan jiwa Malaysia. Mengejutkan dalam cara yang bagus.',momentCopy:{}},
-
-  {name:'PAUL Bakery',area:'Pavilion KL',cat:'French Cafe',price:2,lat:3.1488,lng:101.7128,
-   goodFor:[1,4],openHours:[{o:8,c:22}],bestFor:['breakfast','lunch','tea'],weekendBoost:false,
-   scores:{cuisine:[3]},bg:'linear-gradient(160deg,#2d2500,#0D0800)',
-   maps:'https://www.google.com/maps/search/PAUL+Bakery+Pavilion+KL',
-   why:'Croissant, kopi, vibes Paris tapi address KL.',
-   momentCopy:{breakfast:'Sarapan croissant. Good life.',tea:'Petang-petang, pause sekejap. Deserved.'}},
-
-  {name:"Merchant's Lane",area:'Pudu',cat:'Heritage Cafe',price:2,lat:3.1428,lng:101.7038,
-   goodFor:[1,4],openHours:[{o:10,c:17}],bestFor:['breakfast','lunch','tea'],weekendBoost:true,
-   scores:{cuisine:[3]},bg:'linear-gradient(160deg,#2d1800,#0D0800)',
-   maps:'https://www.google.com/maps/search/Merchants+Lane+Pudu+KL',
-   why:'Shophouse cafe yang aesthetic tapi makanan dia pun betul. Hidden gem Pudu.',
-   momentCopy:{weekend:'Weekend brunch yang worth the gram.',tea:'Afternoon tea, old KL vibes.'}},
-
-  {name:'Feeka Coffee Roasters',area:'Bukit Bintang',cat:'Specialty Coffee',price:2,lat:3.1498,lng:101.7018,
-   goodFor:[1,4],openHours:[{o:9,c:18}],bestFor:['breakfast','lunch','tea'],weekendBoost:false,
-   scores:{cuisine:[3]},bg:'linear-gradient(160deg,#1a0d00,#0D0800)',
-   maps:'https://www.google.com/maps/search/Feeka+Coffee+Roasters+KL',
-   why:'Serious coffee, serious food, serious vibes. KL\'s go-to for the coffee crowd.',
-   momentCopy:{tea:'Coffee o\'clock. This is the spot.'}},
-
-  {name:'Hao You Le',area:'Desa Sri Hartamas',cat:'Chinese Muslim',price:2,lat:3.1648,lng:101.6535,
-   goodFor:[1,2],openHours:[{o:11,c:22}],bestFor:['lunch','dinner'],weekendBoost:false,
-   scores:{cuisine:[1]},bg:'linear-gradient(160deg,#2d0a00,#0D0800)',
-   maps:'https://www.google.com/maps/search/Hao+You+Le+Desa+Sri+Hartamas+KL',
-   why:'Chinese Muslim cooking done right. Char kway teow, claypot, the works — semua halal.',
-   momentCopy:{}},
-
-  {name:"Nando's",area:'Pavilion KL',cat:'Portuguese Chicken',price:2,lat:3.1488,lng:101.7138,
-   goodFor:[1],openHours:[{o:11,c:22}],bestFor:['lunch','dinner'],weekendBoost:false,
-   scores:{cuisine:[3]},bg:'linear-gradient(160deg,#2d0800,#0D0800)',
-   maps:'https://www.google.com/maps/search/Nandos+Pavilion+KL',
-   why:'PERi-PERi chicken yang halal certified. Reliable hit, every single time.',momentCopy:{}},
-
-  {name:'Three Little Birds',area:'Bangsar',cat:'All-Day Cafe',price:2,lat:3.1248,lng:101.6728,
-   goodFor:[1,4],openHours:[{o:9,c:18}],bestFor:['breakfast','lunch','tea'],weekendBoost:true,
-   scores:{cuisine:[3]},bg:'linear-gradient(160deg,#0d1a1a,#0D0800)',
-   maps:'https://www.google.com/maps/search/Three+Little+Birds+Bangsar+KL',
-   why:'Chill Bangsar cafe, good eggs, good coffee. Weekend morning sorted.',
-   momentCopy:{breakfast:'Slow morning, good eggs. Exactly this.',weekend:'Weekend breakfast done properly.'}},
-
-  {name:'Atas Modern Malaysian',area:'The Row KL',cat:'Modern Malaysian',price:2,lat:3.1528,lng:101.6968,
-   goodFor:[1,2,4],openHours:[{o:11,c:22}],bestFor:['lunch','dinner'],weekendBoost:true,
-   scores:{cuisine:[1]},bg:'linear-gradient(160deg,#1a0a2d,#0D0800)',
-   maps:'https://www.google.com/maps/search/Atas+Modern+Malaysian+Eatery+KL',
-   why:'Malaysian classics dengan twist yang masuk akal. Sedap tanpa perlu pretentious.',
-   momentCopy:{weekend:'Modern Malaysian pada weekend. This is how you do it.'}},
-
-  {name:'Sitka',area:'Publika',cat:'Modern Cafe',price:2,lat:3.1718,lng:101.6498,
-   goodFor:[1,4],openHours:[{o:9,c:18}],bestFor:['breakfast','lunch','tea'],weekendBoost:true,
-   scores:{cuisine:[3]},bg:'linear-gradient(160deg,#0a1a2d,#0D0800)',
-   maps:'https://www.google.com/maps/search/Sitka+Publika+KL',
-   why:'Publika\'s best kept secret. Simple menu, done exceptionally well.',
-   momentCopy:{weekend:'Lazy weekend lunch at Sitka. The move.',tea:'Coffee and cake in the afternoon. Deserved.'}},
-
-  {name:'Ante Kitchen & Bar',area:'TTDI',cat:'Modern Grill',price:2,lat:3.1285,lng:101.6278,
-   goodFor:[1,2],openHours:[{o:11,c:22}],bestFor:['lunch','dinner'],weekendBoost:false,
-   scores:{cuisine:[3]},bg:'linear-gradient(160deg,#1a1a00,#0D0800)',
-   maps:'https://www.google.com/maps/search/Ante+Kitchen+Bar+TTDI+KL',
-   why:'Grill-forward, flavour-first. TTDI crowd knows. Now you do too.',momentCopy:{}},
-
-  {name:'Botanica+CO',area:'TTDI',cat:'Garden Cafe',price:2,lat:3.1268,lng:101.6278,
-   goodFor:[1,4],openHours:[{o:9,c:18}],bestFor:['breakfast','lunch','tea'],weekendBoost:true,
-   scores:{cuisine:[3]},bg:'linear-gradient(160deg,#0d2d0d,#0D0800)',
-   maps:'https://www.google.com/maps/search/Botanica+CO+TTDI+KL',
-   why:'Garden setting, healthy-ish food, genuinely good coffee. Guilt-free makan.',
-   momentCopy:{weekend:'Sunday brunch in a garden. Rare but available.',tea:'Afternoon refresh. Botanica delivers.'}},
-
-  {name:'Breakfast Thieves',area:'TTDI',cat:'Australian Brunch',price:2,lat:3.1268,lng:101.6288,
-   goodFor:[1,4],openHours:[{o:8,c:16}],bestFor:['breakfast','lunch'],weekendBoost:true,
-   scores:{cuisine:[3]},bg:'linear-gradient(160deg,#0a1a0a,#0D0800)',
-   maps:'https://www.google.com/maps/search/Breakfast+Thieves+TTDI+KL',
-   why:'Avocado toast dan eggs yang serious. TTDI brunch institution.',
-   momentCopy:{breakfast:'Proper brunch energy. Breakfast Thieves delivers.',weekend:'Weekend brunch benchmark in TTDI.'}},
-
-  {name:'Burger Junkyard',area:'Bangsar',cat:'Gourmet Burger',price:2,lat:3.1268,lng:101.6738,
-   goodFor:[1],openHours:[{o:11,c:22}],bestFor:['lunch','dinner','supper'],weekendBoost:true,
-   scores:{cuisine:[3]},bg:'linear-gradient(160deg,#2d1000,#0D0800)',
-   maps:'https://www.google.com/maps/search/Burger+Junkyard+Bangsar+KL',
-   why:'Messy, beefy, 100% worth it. Bangsar\'s answer to serious burger cravings.',
-   momentCopy:{supper:'Late night burger yang tak tipu.',weekend:'Weekend cheat meal. No regrets.'}},
-
-  {name:'Delicious',area:'Bangsar Village',cat:'Contemporary Cafe',price:2,lat:3.1278,lng:101.6748,
-   goodFor:[1,4],openHours:[{o:10,c:22}],bestFor:['breakfast','lunch','tea','dinner'],weekendBoost:false,
-   scores:{cuisine:[3]},bg:'linear-gradient(160deg,#1a1500,#0D0800)',
-   maps:'https://www.google.com/maps/search/Delicious+Bangsar+Village+KL',
-   why:'Bangsar staple for over a decade. Always consistent, always a good shout.',
-   momentCopy:{tea:'Coffee and cake in Bangsar. Classic move.'}},
-
-  {name:'Sushi Zanmai',area:'KLCC',cat:'Japanese (Halal)',price:2,lat:3.1578,lng:101.7134,
-   goodFor:[1,2],openHours:[{o:11,c:22}],bestFor:['lunch','dinner'],weekendBoost:false,
-   scores:{cuisine:[2]},bg:'linear-gradient(160deg,#00152d,#0D0800)',
-   maps:'https://www.google.com/maps/search/Sushi+Zanmai+KLCC+KL',
-   why:'Halal-certified Japanese kat KLCC. Sushi conveyor belt yang tak menipu.',momentCopy:{}},
-
-  {name:'Limapulo',area:'Bukit Bintang',cat:'Peranakan Nyonya',price:2,lat:3.1448,lng:101.7108,
-   goodFor:[1,3],openHours:[{o:11,c:22}],bestFor:['lunch','dinner'],weekendBoost:false,
-   scores:{cuisine:[1]},bg:'linear-gradient(160deg,#2d0a2d,#0D0800)',
-   maps:'https://www.google.com/maps/search/Limapulo+Baba+Can+Cook+KL',
-   why:'Nyonya cooking yang rasa macam rumah nenek tapi presentation lebih proper.',
-   momentCopy:{weekend:'Weekend Nyonya lunch. This is culture.'}},
-
-  {name:'Tarbush',area:'Bukit Bintang',cat:'Lebanese',price:2,lat:3.1468,lng:101.7118,
-   goodFor:[1,2,3],openHours:[{o:11,c:23}],bestFor:['lunch','dinner'],weekendBoost:false,
-   scores:{cuisine:[2]},bg:'linear-gradient(160deg,#2d1a00,#0D0800)',
-   maps:'https://www.google.com/maps/search/Tarbush+Restaurant+Bukit+Bintang+KL',
-   why:'Lebanese meze, shawarma dan mixed grill. Proper Middle Eastern kat tengah KL.',momentCopy:{}},
-
-  {name:'Restoran Nelayan',area:'Titiwangsa',cat:'Malay Seafood Buffet',price:2,lat:3.1788,lng:101.7038,
-   goodFor:[1,2,4],openHours:[{o:12,c:22}],bestFor:['lunch','dinner'],weekendBoost:true,
-   scores:{cuisine:[1]},bg:'linear-gradient(160deg,#001a2d,#0D0800)',
-   maps:'https://www.google.com/maps/search/Restoran+Nelayan+Titiwangsa+KL',
-   why:'Seafood buffet tepi tasik. Ambil banyak-banyak, bayar sekali. Berbaloi.',
-   momentCopy:{weekend:'Weekend seafood spread. The ultimate KL move.'}},
-
-  {name:'Yarl Restaurant',area:'Wangsa Maju',cat:'Sri Lankan',price:2,lat:3.2028,lng:101.7348,
-   goodFor:[1,3],openHours:[{o:11,c:22}],bestFor:['lunch','dinner'],weekendBoost:false,
-   scores:{cuisine:[2]},bg:'linear-gradient(160deg,#2d0000,#0D0800)',
-   maps:'https://www.google.com/maps/search/Yarl+Restaurant+Wangsa+Maju+KL',
-   why:'Sri Lankan curry yang authentic dan halal. Rare find, worth the trip.',momentCopy:{}},
-
-  {name:'The Good Batch',area:'Bangsar',cat:'Craft Coffee & Food',price:2,lat:3.1258,lng:101.6748,
-   goodFor:[1,4],openHours:[{o:9,c:18}],bestFor:['breakfast','lunch','tea'],weekendBoost:true,
-   scores:{cuisine:[3]},bg:'linear-gradient(160deg,#1a0d00,#0D0800)',
-   maps:'https://www.google.com/maps/search/The+Good+Batch+Bangsar+KL',
-   why:'Small menu, big flavour. Bangsar neighbourhood cafe yang betul-betul good.',
-   momentCopy:{breakfast:'Morning done right. Good Batch style.',weekend:'Chill Saturday morning sorted.'}},
-
-  {name:'Chagaloo',area:'Sri Petaling',cat:'Modern Cafe',price:2,lat:3.0868,lng:101.6948,
-   goodFor:[1,4],openHours:[{o:10,c:22}],bestFor:['lunch','tea','dinner'],weekendBoost:true,
-   scores:{cuisine:[3]},bg:'linear-gradient(160deg,#0d1a0d,#0D0800)',
-   maps:'https://www.google.com/maps/search/Chagaloo+Sri+Petaling+KL',
-   why:'Sri Petaling gem yang ramai tak tau. Good food, good coffee, no queue.',momentCopy:{}},
-
-  {name:'Sangkaya',area:'Bukit Bintang',cat:'Coconut Ice Cream & Light Meals',price:2,lat:3.1458,lng:101.7108,
-   goodFor:[1,4],openHours:[{o:12,c:22}],bestFor:['lunch','tea','dinner'],weekendBoost:true,
-   scores:{cuisine:[1]},bg:'linear-gradient(160deg,#1a2d00,#0D0800)',
-   maps:'https://www.google.com/maps/search/Sangkaya+Bukit+Bintang+KL',
-   why:'Coconut ice cream yang original dan Malaysian. Light meals pun ada untuk yang lapar sikit.',
-   momentCopy:{tea:'Petang-petang, ice cream coconut. Happiness is simple.'}},
-
-  {name:'The Larder',area:'TTDI',cat:'Craft Coffee & Brunch',price:2,lat:3.1348,lng:101.6378,
-   goodFor:[1,4],openHours:[{o:8,c:17}],bestFor:['breakfast','lunch','tea'],weekendBoost:true,
-   scores:{cuisine:[3]},bg:'linear-gradient(160deg,#0d1a0d,#0D0800)',
-   maps:'https://www.google.com/maps/search/The+Larder+TTDI+Kuala+Lumpur',
-   why:'TTDI neighbourhood cafe yang paling cosy. Coffee serius, brunch menu yang honest.',
-   momentCopy:{breakfast:'Morning kopi dan eggs. Larder je.',weekend:'Weekend slow morning. TTDI best kept secret.'}},
-
-  {name:'El Greco',area:'TTDI',cat:'Mediterranean',price:2,lat:3.1345,lng:101.6390,
-   goodFor:[1,3],openHours:[{o:11,c:22}],bestFor:['lunch','dinner'],weekendBoost:false,
-   scores:{cuisine:[3]},bg:'linear-gradient(160deg,#001a1a,#0D0800)',
-   maps:'https://www.google.com/maps/search/El+Greco+TTDI+Kuala+Lumpur',
-   why:'Mediterranean yang real kat TTDI. Lamb chops, mezze, dan vibes yang tenang. Tempat yang orang TTDI simpan sendiri.',
-   momentCopy:{dinner:'Dinner yang lain dari biasa. El Greco deliver.'}},
-
-  {name:'Zende Persian',area:'TTDI',cat:'Persian',price:2,lat:3.1338,lng:101.6375,
-   goodFor:[1,3],openHours:[{o:12,c:22}],bestFor:['lunch','dinner'],weekendBoost:false,
-   scores:{cuisine:[2]},bg:'linear-gradient(160deg,#2d1500,#0D0800)',
-   maps:'https://www.google.com/maps/search/Zende+Persian+Restaurant+TTDI+KL',
-   why:'Persian yang authentic kat KL. Lamb koobideh, saffron rice, pomegranate stew. Rare find, massive payoff.',
-   momentCopy:{}},
-
-  {name:'Piu Piu Piu',area:'Bangsar',cat:'Italian Casual',price:2,lat:3.1248,lng:101.6735,
-   goodFor:[1,3,4],openHours:[{o:12,c:22}],bestFor:['lunch','dinner'],weekendBoost:true,
-   scores:{cuisine:[3]},bg:'linear-gradient(160deg,#1a0000,#0D0800)',
-   maps:'https://www.google.com/maps/search/Piu+Piu+Piu+Bangsar+KL',
-   why:'Italian kat Bangsar yang betul-betul alive. Pizza from a proper oven, pasta yang tak tipu.',
-   momentCopy:{weekend:'Weekend pasta night. Piu Piu Piu delivers.',dinner:'Casual Italian dengan vibes. Exactly right.'}},
-
-  {name:'La Bodega',area:'Bangsar',cat:'Spanish Tapas',price:2,lat:3.1255,lng:101.6740,
-   goodFor:[1,3,4],openHours:[{o:11,c:23}],bestFor:['lunch','dinner'],weekendBoost:true,
-   scores:{cuisine:[3]},bg:'linear-gradient(160deg,#1a0500,#0D0800)',
-   maps:'https://www.google.com/maps/search/La+Bodega+Bangsar+KL',
-   why:'Bangsar tapas institution. Patatas bravas, gambas al ajillo, croquetas — semua kena makan sikit sikit.',
-   momentCopy:{weekend:'Tapas dan chill. Bangsar Friday night done right.',dinner:'Date makan dengan tapas. Perfect pacing.'}},
-
-  {name:"Nathalie's Gourmet Studio",area:'Bangsar',cat:'French Patisserie',price:2,lat:3.1252,lng:101.6742,
-   goodFor:[1,4],openHours:[{o:10,c:19}],bestFor:['breakfast','lunch','tea'],weekendBoost:true,
-   scores:{cuisine:[3]},bg:'linear-gradient(160deg,#0a0a1a,#0D0800)',
-   maps:'https://www.google.com/maps/search/Nathalies+Gourmet+Studio+Bangsar+KL',
-   why:'French pastry yang betul-betul serious kat Bangsar. Croissant, tart, quiche — all made with care.',
-   momentCopy:{tea:'Petang dan pastry. Nothing more needed.',breakfast:'Sarapan croissant yang proper. Earned.',weekend:'Weekend patisserie treat. This is it.'}},
-
-  {name:'Kin by Kindred',area:'SS2 PJ',cat:'Modern Malaysian',price:2,lat:3.1055,lng:101.6238,
-   goodFor:[1,4],openHours:[{o:10,c:22}],bestFor:['lunch','tea','dinner'],weekendBoost:true,
-   scores:{cuisine:[1]},bg:'linear-gradient(160deg,#0d1a2d,#0D0800)',
-   maps:'https://www.google.com/maps/search/Kin+by+Kindred+SS2+PJ',
-   why:'Modern Malaysian kat SS2 yang betul-betul kena. Flavour betul, presentation betul, jiwa betul.',
-   momentCopy:{weekend:'PJ hidden gem. Worth every km.',dinner:'Malaysian modern yang tak perlu justify.'}},
-
-  {name:'Subak',area:'Section 17 PJ',cat:'Korean BBQ',price:2,lat:3.0978,lng:101.6318,
-   goodFor:[1,3],openHours:[{o:11,c:22}],bestFor:['lunch','dinner'],weekendBoost:true,
-   scores:{cuisine:[2]},bg:'linear-gradient(160deg,#00002d,#0D0800)',
-   maps:'https://www.google.com/maps/search/Subak+Korean+Restaurant+Section+17+PJ',
-   why:'Korean BBQ kat PJ yang authentic. Daging, banchan, dan vibes yang betul. Pergi ramai-ramai lagi best.',
-   momentCopy:{weekend:'Korean BBQ weekend. This is the one.',dinner:'Group dinner Korean style. Subak.'}},
-
-  {name:'Mano Plus',area:'Jaya One PJ',cat:'Specialty Coffee & Food',price:2,lat:3.1048,lng:101.6355,
-   goodFor:[1,4],openHours:[{o:9,c:18}],bestFor:['breakfast','lunch','tea'],weekendBoost:true,
-   scores:{cuisine:[3]},bg:'linear-gradient(160deg,#0d0d1a,#0D0800)',
-   maps:'https://www.google.com/maps/search/Mano+Plus+Jaya+One+PJ',
-   why:'PJ\'s most serious coffee destination. Food pun sama serius. Small batch, big flavour.',
-   momentCopy:{tea:'Coffee nerd paradise. Mano Plus is it.',weekend:'Weekend coffee pilgrimage to PJ.'}},
-
-  {name:'Souled Out',area:'Sri Hartamas',cat:'Western Grill',price:2,lat:3.1652,lng:101.6535,
-   goodFor:[1,2],openHours:[{o:11,c:23}],bestFor:['lunch','dinner','supper'],weekendBoost:true,
-   scores:{cuisine:[3]},bg:'linear-gradient(160deg,#2d1000,#0D0800)',
-   maps:'https://www.google.com/maps/search/Souled+Out+Sri+Hartamas+KL',
-   why:'KL institution untuk sebab yang betul. Half chicken, ribs, sangat consistent. Tak pernah fail.',
-   momentCopy:{supper:'Late night Souled Out. Classic KL move.',weekend:'Weekend group dinner. Guaranteed hit.'}},
-
-  {name:'Kampo',area:'Mont Kiara',cat:'Japanese Izakaya',price:2,lat:3.1728,lng:101.6475,
-   goodFor:[1,3],openHours:[{o:11,c:23}],bestFor:['lunch','dinner','supper'],weekendBoost:false,
-   scores:{cuisine:[2]},bg:'linear-gradient(160deg,#00001a,#0D0800)',
-   maps:'https://www.google.com/maps/search/Kampo+Japanese+Restaurant+Mont+Kiara+KL',
-   why:'Japanese izakaya energy kat Mont Kiara. Yakitori, ramen, Japanese soul food yang selesa.',
-   momentCopy:{supper:'Late Japanese supper. Kampo comes through.',dinner:'Izakaya night in MK. This is the move.'}},
-
-  {name:'Kafka Espresso',area:'Mont Kiara',cat:'Specialty Coffee',price:2,lat:3.1715,lng:101.6498,
-   goodFor:[1,4],openHours:[{o:8,c:18}],bestFor:['breakfast','lunch','tea'],weekendBoost:false,
-   scores:{cuisine:[3]},bg:'linear-gradient(160deg,#0a0a0a,#0D0800)',
-   maps:'https://www.google.com/maps/search/Kafka+Espresso+Mont+Kiara+KL',
-   why:'Serious coffee, clean space, no fuss. MK morning ritual yang orang situ semua tau.',
-   momentCopy:{breakfast:'Coffee first. Kafka delivers.',tea:'Mid-day coffee reset. Right here.'}},
-
-  {name:'Chakri Palace',area:'Bangsar',cat:'Royal Thai',price:2,lat:3.1245,lng:101.6728,
-   goodFor:[1,2],openHours:[{o:11,c:22}],bestFor:['lunch','dinner'],weekendBoost:false,
-   scores:{cuisine:[2]},bg:'linear-gradient(160deg,#002d00,#0D0800)',
-   maps:'https://www.google.com/maps/search/Chakri+Palace+Bangsar+KL',
-   why:'Thai yang slightly elevated, tak pretentious. Tom yam, pad thai, mango sticky rice — all done properly.',
-   momentCopy:{}},
-
-  /* ── SPLASH ── */
-  {name:'Bijan',area:'Bukit Bintang',cat:'Fine Malaysian',price:3,lat:3.1448,lng:101.7118,
-   goodFor:[2,3,5],openHours:[{o:12,c:23}],bestFor:['lunch','dinner'],weekendBoost:true,
-   scores:{cuisine:[1]},bg:'linear-gradient(160deg,#0a0a2d,#0D0800)',
-   maps:'https://www.google.com/maps/search/Bijan+Bar+Restaurant+Kuala+Lumpur',
-   why:'Malaysian fine dining yang betul-betul finest. You said treat yourself — kita ambil serius tu.',
-   momentCopy:{weekend:'Weekend, belanja diri sendiri. Bijan. Done.'}},
-
-  {name:'Zipangu',area:'Hilton KL',cat:'Japanese Fine Dining',price:3,lat:3.1418,lng:101.7098,
-   goodFor:[2,3,5],openHours:[{o:12,c:22}],bestFor:['lunch','dinner'],weekendBoost:true,
-   scores:{cuisine:[2]},bg:'linear-gradient(160deg,#00152d,#0D0800)',
-   maps:'https://www.google.com/maps/search/Zipangu+Hilton+Kuala+Lumpur',
-   why:'Hotel Japanese yang serious. Grown-up eating. Worth every ringgit.',
-   momentCopy:{weekend:'Weekend splurge. Tak rugi pun.'}},
-
-  {name:'Dewakan',area:'KL City Centre',cat:'Modern Malaysian',price:3,lat:3.1578,lng:101.7048,
-   goodFor:[3,5],openHours:[{o:12,c:22}],bestFor:['lunch','dinner'],weekendBoost:true,
-   scores:{cuisine:[1]},bg:'linear-gradient(160deg,#1a001a,#0D0800)',
-   maps:'https://www.google.com/maps/search/Dewakan+Restaurant+KL',
-   why:'Yang terbaik yang Malaysia ada. Dewakan adalah jawapannya.',
-   momentCopy:{weekend:'Occasion special, hari biasa. Pergi je.'}},
-
-  {name:'Rahsia',area:'Roof Garden, Bangsar',cat:'Malaysian Rooftop',price:3,lat:3.1168,lng:101.6758,
-   goodFor:[3,5],openHours:[{o:18,c:24}],bestFor:['dinner','supper'],weekendBoost:true,
-   scores:{cuisine:[1]},bg:'linear-gradient(160deg,#1a0a2d,#0D0800)',
-   maps:'https://www.google.com/maps/search/Rahsia+Restaurant+Bangsar+KL',
-   why:'Rooftop, Malaysian modern, angin malam. Scene yang betul-betul kena.',
-   momentCopy:{supper:'Malam, rooftop, mood. Perfect.',weekend:'Friday night done dengan proper.'}},
-
-  {name:'Fuego',area:'Troika Sky Dining',cat:'Latin Rooftop',price:3,lat:3.1578,lng:101.7188,
-   goodFor:[3,5],openHours:[{o:18,c:24}],bestFor:['dinner','supper'],weekendBoost:true,
-   scores:{cuisine:[3]},bg:'linear-gradient(160deg,#2d0500,#0D0800)',
-   maps:'https://www.google.com/maps/search/Fuego+Troika+Sky+Dining+KL',
-   why:'Rooftop, Latin heat, skyline KL malam hari. You said treat myself — say less.',
-   momentCopy:{weekend:"Friday/Saturday at Fuego. That's the move.",dinner:'Sunset kat Troika memang lain.'}},
-
-  {name:'Al-Amar',area:'KLCC',cat:'Lebanese Fine Dining',price:3,lat:3.1578,lng:101.7148,
-   goodFor:[2,3,5],openHours:[{o:12,c:23}],bestFor:['lunch','dinner'],weekendBoost:true,
-   scores:{cuisine:[2]},bg:'linear-gradient(160deg,#1a0d00,#0D0800)',
-   maps:'https://www.google.com/maps/search/Al-Amar+Lebanese+Restaurant+KLCC+KL',
-   why:'Lebanese fine dining kat KLCC. Mezze, lamb, baklava — semua kelas atas.',
-   momentCopy:{weekend:'Date night Lebanese style. Impress guaranteed.'}},
-
-  {name:'Skillet at 163',area:'Ampang Hilir',cat:'Modern European',price:3,lat:3.1628,lng:101.7248,
-   goodFor:[2,3,5],openHours:[{o:12,c:22}],bestFor:['lunch','dinner'],weekendBoost:true,
-   scores:{cuisine:[3]},bg:'linear-gradient(160deg,#0a1a1a,#0D0800)',
-   maps:'https://www.google.com/maps/search/Skillet+at+163+Ampang+KL',
-   why:'Fine dining yang tak pretentious. Chef-driven, ingredient-focused, consistently excellent.',
-   momentCopy:{weekend:'Special occasion dinner. Skillet delivers every time.'}},
-
-  {name:'Entier',area:'Bangsar South',cat:'French Fine Dining',price:3,lat:3.1068,lng:101.6748,
-   goodFor:[3,5],openHours:[{o:12,c:22}],bestFor:['lunch','dinner'],weekendBoost:true,
-   scores:{cuisine:[3]},bg:'linear-gradient(160deg,#0d0a1a,#0D0800)',
-   maps:'https://www.google.com/maps/search/Entier+French+Dining+Bangsar+South+KL',
-   why:'French fine dining yang proper kat KL. Tasting menu, wine pairing, the whole experience.',
-   momentCopy:{weekend:'Treat yourself properly. Entier is that meal.'}},
-
-  {name:'Nero Nero',area:'Bangsar',cat:'Italian Fine Dining',price:3,lat:3.1258,lng:101.6748,
-   goodFor:[3,5],openHours:[{o:12,c:22}],bestFor:['lunch','dinner'],weekendBoost:true,
-   scores:{cuisine:[3]},bg:'linear-gradient(160deg,#0a0a0a,#0D0800)',
-   maps:'https://www.google.com/maps/search/Nero+Nero+Restaurant+Bangsar+KL',
-   why:'Italian fine dining kat Bangsar yang tak perlu explain diri. Truffle pasta, wagyu, wine list yang serious.',
-   momentCopy:{weekend:'Special dinner. Italian at its peak.',dinner:'Romantic Italian night. Nero Nero level.'}},
-
-  {name:'Meatworks',area:'Mont Kiara',cat:'Steakhouse',price:3,lat:3.1725,lng:101.6495,
-   goodFor:[2,3,5],openHours:[{o:12,c:22}],bestFor:['lunch','dinner'],weekendBoost:true,
-   scores:{cuisine:[3]},bg:'linear-gradient(160deg,#1a0000,#0D0800)',
-   maps:'https://www.google.com/maps/search/Meatworks+Restaurant+Mont+Kiara+KL',
-   why:'Steak yang betul. Char-grilled, no pretence, full commitment to the meat. MK carnivores know.',
-   momentCopy:{weekend:'Weekend steak. You earned it, spend it.',dinner:'Splash on a proper steak dinner.'}},
-
-  {name:'Opus Bistro',area:'Mont Kiara',cat:'Modern Fine Dining',price:3,lat:3.1732,lng:101.6488,
-   goodFor:[3,5],openHours:[{o:12,c:22}],bestFor:['lunch','dinner'],weekendBoost:true,
-   scores:{cuisine:[3]},bg:'linear-gradient(160deg,#0a1a1a,#0D0800)',
-   maps:'https://www.google.com/maps/search/Opus+Bistro+Mont+Kiara+KL',
-   why:'Modern fine dining kat MK yang creative dan well-executed. Chef-driven, worth the occasion.',
-   momentCopy:{weekend:'Upscale dinner malam ni. Opus Bistro.',dinner:'Dinner yang betul-betul memorable.'}}
-];
-
-/* ════════════════════════════════════════════
-   LOCALSTORAGE HELPERS
-   ════════════════════════════════════════════ */
-function lsGet(key,def){try{const v=localStorage.getItem(key);return v===null?def:JSON.parse(v);}catch{return def;}}
-function lsSet(key,val){try{localStorage.setItem(key,JSON.stringify(val));}catch{}}
-
-/* Prefs */
-function loadPrefs(){return lsGet(PREF_KEY,{});}
-function savePrefs(r){
-  try{
-    const p=loadPrefs();
-    const c=r.scores.cuisine[0];
-    p.cuisine=p.cuisine||{};p.cuisine[c]=(p.cuisine[c]||0)+1;
-    p.price=p.price||{};p.price[r.price]=(p.price[r.price]||0)+1;
-    const aKey=r.area.split(' ')[0];
-    p.area=p.area||{};p.area[aKey]=(p.area[aKey]||0)+1;
-    if(answers.occasion){p.occ=p.occ||{};p.occ[answers.occasion]=(p.occ[answers.occasion]||0)+1;}
-    lsSet(PREF_KEY,p);
-  }catch{}
-}
-
-/* Recency (HIGH-5) */
-function loadRecent(){return lsGet(RECENT_KEY,[]);}
-function saveRecent(name){
-  try{
-    let r=loadRecent().filter(e=>e.n!==name);
-    r.unshift({n:name,t:Date.now()});
-    lsSet(RECENT_KEY,r.slice(0,10));
-  }catch{}
-}
-function recencyPenalty(r){
-  const rec=loadRecent();
-  const e=rec.find(x=>x.n===r.name);
-  if(!e)return 0;
-  const days=(Date.now()-e.t)/864e5;
-  if(days<=7)return -5;
-  if(days<=30)return -2;
-  return 0;
-}
-
-/* History */
-function loadHistory(){return lsGet(HISTORY_KEY,[]);}
-function saveToHistory(r,mapsClicked){
-  try{
-    const h=loadHistory();
-    h.unshift({name:r.name,area:r.area,cat:r.cat,price:r.price,slot:M.slot,ts:Date.now(),mapsClicked:!!mapsClicked});
-    lsSet(HISTORY_KEY,h.slice(0,50));
-  }catch{}
-}
-
-/* Feedback (MEDIUM-3) */
-function loadFeedback(){return lsGet(FEEDBACK_KEY,[]);}
-function saveFeedback(matchData,rating){
-  try{
-    const fb=loadFeedback().filter(e=>e.n!==matchData.n);
-    fb.unshift({n:matchData.n,ts:Date.now(),rating});
-    lsSet(FEEDBACK_KEY,fb.slice(0,20));
-    if(rating==='sedap'){
-      const p=loadPrefs();
-      p.cuisine=p.cuisine||{};p.cuisine[matchData.cuisine]=(p.cuisine[matchData.cuisine]||0)+1;
-      p.price=p.price||{};p.price[matchData.price]=(p.price[matchData.price]||0)+1;
-      const aKey=(matchData.area||'').split(' ')[0];
-      if(aKey){p.area=p.area||{};p.area[aKey]=(p.area[aKey]||0)+1;}
-      lsSet(PREF_KEY,p);
-    }else if(rating==='mehh'){
-      const neg=lsGet(NEG_KEY,{});
-      neg.cuisine=neg.cuisine||{};neg.cuisine[matchData.cuisine]=(neg.cuisine[matchData.cuisine]||0)+1;
-      neg.price=neg.price||{};neg.price[matchData.price]=(neg.price[matchData.price]||0)+1;
-      lsSet(NEG_KEY,neg);
-    }
-    const days=matchData.ts?((Date.now()-matchData.ts)/864e5).toFixed(1):null;
-    track('match_feedback',{restaurant:matchData.n,rating,days_since_match:days});
-    lsSet(LAST_KEY,null);
-  }catch{}
-}
-
-/* Dietary mode (CRITICAL-4) */
-function getDiet(){return localStorage.getItem(DIET_KEY)||'halal';}
-function setDiet(mode,e){
-  if(e)e.stopPropagation();
-  localStorage.setItem(DIET_KEY,mode);
-  updateDietUI();
-  track('diet_mode_changed',{mode});
-}
-function updateDietUI(){
-  const d=getDiet();
-  document.getElementById('dietHalal').classList.toggle('active',d==='halal');
-  document.getElementById('dietNoPref').classList.toggle('active',d==='no-pref');
-}
-
-/* Price preference */
-function getPrice(){return localStorage.getItem(PRICE_KEY)||'semua';}
-function setPrice(mode,e){
-  if(e)e.stopPropagation();
-  localStorage.setItem(PRICE_KEY,mode);
-  updatePriceUI();
-  track('price_pref_changed',{mode});
-}
-function updatePriceUI(){
-  const p=getPrice();
-  document.getElementById('priceJimat').classList.toggle('active',p==='jimat');
-  document.getElementById('priceSemua').classList.toggle('active',p==='semua');
-}
-
-/* Visit counter */
-function incVisit(){
-  const v=(parseInt(localStorage.getItem(VISITS_KEY)||'0'))+1;
-  localStorage.setItem(VISITS_KEY,String(v));
-  return v;
-}
-
-/* Helpers */
-function getTopKey(obj){
-  if(!obj)return null;
-  const e=Object.entries(obj);
-  if(!e.length)return null;
-  return e.sort((a,b)=>b[1]-a[1])[0][0];
-}
-function sumObj(obj){return obj?Object.values(obj).reduce((a,b)=>a+b,0):0;}
-
-/* ════ OPEN SIGNAL (MEDIUM-2) ════ */
-function openSignal(r){
-  const h=M.h;
-  for(const w of r.openHours){
-    if(w.o===0&&w.c===24)return '24h';
-    if(h>=w.o&&h<w.c){
-      if(w.c-h<=1)return 'closing-soon';
-      return 'open';
-    }
-    if(w.o>h&&(w.o-h)<=0.5)return 'opening-soon';
+  // =============== NETWORK DATA ===============
+  // interchange stations get a natural crowd boost in the demo model
+  const IC = new Set(["Masjid Jamek","KL Sentral","Hang Tuah","Titiwangsa","Chan Sow Lin","Putra Heights",
+    "Bandar Utama","Glenmarie 2","Glenmarie","Ampang Park","Pasar Seni","Bandar Tasik Selatan","Subang Jaya","Sungai Besi","Sri Rampai"]);
+
+  const LINES = [
+    {
+      id:"sa", name:"LRT3 Shah Alam", color:"#2FA3DC", tag:"11",
+      stations:["Bandar Utama","Kayu Ara","BU 11","Damansara Idaman","Subang","Glenmarie 2","Kerjaya","Stadium Shah Alam","Dato' Menteri","UiTM Shah Alam","Seksyen 7","Bandar Baru Klang","Pasar Klang","Jalan Meru","Jambatan Kota","Taman Selatan","Seri Andalas","Klang Jaya","Bandar Bukit Tinggi","Johan Setia"],
+      hint:"💡 UiTM Shah Alam sesak gila right now — Dato' Menteri is one stop away and steady je."
+    },
+    {
+      id:"kj", name:"LRT Kelana Jaya", color:"#D5223E", tag:"5",
+      stations:["Gombak","Taman Melati","Wangsa Maju","Sri Rampai","Setiawangsa","Jelatek","Dato' Keramat","Damai","Ampang Park","KLCC","Kampung Baru","Dang Wangi","Masjid Jamek","Pasar Seni","KL Sentral","Bangsar","Abdullah Hukum","Kerinchi","Universiti","Taman Jaya","Asia Jaya","Taman Paramount","Taman Bahagia","Kelana Jaya","Lembah Subang","Ara Damansara","Glenmarie","Subang Jaya","SS 15","SS 18","USJ 7","Taipan","Wawasan","USJ 21","Alam Megah","Subang Alam","Putra Heights"],
+      hint:"💡 KLCC & Masjid Jamek are the usual culprits at this hour — Kampung Baru and Dang Wangi are a short walk away and much calmer."
+    },
+    {
+      id:"ag", name:"LRT Ampang", color:"#F0932B", tag:"3",
+      stations:["Sentul Timur","Sentul","Titiwangsa","PWTC","Sultan Ismail","Bandaraya","Masjid Jamek","Plaza Rakyat","Hang Tuah","Pudu","Chan Sow Lin","Miharja","Maluri","Pandan Jaya","Pandan Indah","Cempaka","Cahaya","Ampang"],
+      hint:"💡 Masjid Jamek interchange is squeeze-city at rush hour — Bandaraya is one stop up and breathing room galore."
+    },
+    {
+      id:"sp", name:"LRT Sri Petaling", color:"#8A2A44", tag:"4",
+      stations:["Sentul Timur","Sentul","Titiwangsa","PWTC","Sultan Ismail","Bandaraya","Masjid Jamek","Plaza Rakyat","Hang Tuah","Pudu","Chan Sow Lin","Cheras","Salak Selatan","Bandar Tun Razak","Bandar Tasik Selatan","Sungai Besi","Bukit Jalil","Sri Petaling","Awan Besar","Muhibbah","Alam Sutera","Kinrara BK5","IOI Puchong Jaya","Pusat Bandar Puchong","Taman Perindustrian Puchong","Bandar Puteri","Puchong Perdana","Puchong Prima","Putra Heights"],
+      hint:"💡 Bukit Jalil goes full sesak on match & concert nights — check before big events, or hop off at Sri Petaling."
+    },
+    {
+      id:"mr", name:"KL Monorail", color:"#7DC242", tag:"8",
+      stations:["KL Sentral","Tun Sambanthan","Maharajalela","Hang Tuah","Imbi","Bukit Bintang","Raja Chulan","Bukit Nanas","Medan Tuanku","Chow Kit","Titiwangsa"],
+      hint:"💡 Monorail trains are the smallest in the network — Bukit Bintang at peak is a hug you didn't ask for. Raja Chulan is calmer."
+    },
+    { id:"kg", name:"MRT Kajang", color:"#1B7C4D", tag:"9", soon:true },
+    { id:"py", name:"MRT Putrajaya", color:"#C8A415", tag:"12", soon:true }
+  ];
+
+  const col = c => c > 0.75 ? "var(--sesak)" : c > 0.5 ? "var(--biasa)" : "var(--lengang)";
+  const lvl = c => c > 0.75 ? "Sesak" : c > 0.5 ? "Biasa" : "Lengang";
+  const face = c => c > 0.75 ? "🥵" : c > 0.5 ? "🙂" : "😌";
+
+  // --- map deep links: no API key needed, opens the Maps/Waze app on mobile ---
+  function stationQuery(name, line){
+    const kind = line && line.id === "mr" ? "Monorail station" : "LRT station";
+    return encodeURIComponent(name + " " + kind + " Malaysia");
   }
-  return 'closed';
-}
-function isOpen(r){return['open','closing-soon','24h'].includes(openSignal(r));}
+  const mapsUrl = (name, line) => "https://www.google.com/maps/search/?api=1&query=" + stationQuery(name, line);
+  const wazeUrl = (name, line) => "https://waze.com/ul?q=" + stationQuery(name, line) + "&navigate=yes";
 
-/* ════ SCORING ════ */
-function moodScore(r,a){
-  let s=0;
-  if(r.goodFor.includes(a.occasion))s+=5;
-  if(r.price===a.budget)s+=4;
-  else if(Math.abs(r.price-a.budget)===1)s+=1;
-  if(r.scores.cuisine.includes(a.cuisine))s+=3;
-  return s;
-}
-function momentScore(r){
-  let s=0;
-  if(r.bestFor.includes(M.slot))s+=3;
-  if(r.weekendBoost&&M.isWeekend)s+=2;
-  const lateNight=M.h>=22||M.h<6;
-  if(lateNight&&openSignal(r)==='24h')s+=3;
-  return s;
-}
-function prefScore(r){
-  const p=loadPrefs(),neg=lsGet(NEG_KEY,{});
-  let s=0;
-  if(p.cuisine&&sumObj(p.cuisine)>0){
-    const c=r.scores.cuisine[0],pos=p.cuisine[c]||0,negC=(neg.cuisine&&neg.cuisine[c])||0;
-    s+=Math.max(0,(pos-negC*0.5)/sumObj(p.cuisine))*0.7;
-  }
-  if(p.price&&sumObj(p.price)>0){
-    const pos=p.price[r.price]||0,negP=(neg.price&&neg.price[r.price])||0;
-    s+=Math.max(0,(pos-negP*0.5)/sumObj(p.price))*0.6;
-  }
-  if(p.area&&sumObj(p.area)>0){
-    const aKey=r.area.split(' ')[0];
-    s+=((p.area[aKey]||0)/sumObj(p.area))*0.4;
-  }
-  // Persistent price preference boost
-  const pricePref=getPrice();
-  if(pricePref==='jimat'){
-    if(r.price===1)s+=2;
-    else if(r.price===3)s-=1;
-  }
-  return s;
-}
+  // =============== per-station parking lookup (verified sources) ===============
+  // Sources: Prasarana LRT3 launch info (Jun 2026); Rapid KL RM4/entry announcement (LEP
+  // stations); Prasarana statement on Puchong LEP stations; MyRapid Park N' Ride page.
+  const PARKINFO = {
+    // LRT3 — verified bays, free until 31 Jul 2026
+    "Kayu Ara":{bays:"350 bays",price:"FREE til 31 Jul"},
+    "Damansara Idaman":{bays:"150 bays",price:"FREE til 31 Jul"},
+    "Pasar Klang":{bays:"100 bays",price:"FREE til 31 Jul"},
+    "Seri Andalas":{bays:"550 bays",price:"FREE til 31 Jul"},
+    "Bandar Bukit Tinggi":{bays:"600 bays",price:"FREE til 31 Jul"},
+    "Johan Setia":{bays:"550 bays",price:"FREE til 31 Jul"},
+    "Bandar Utama":{bays:"Park N' Ride",price:"Existing rates"},
+    "Glenmarie 2":{bays:"Park N' Ride",price:"Existing rates"},
+    // Kelana Jaya Line — officially RM4/entry at LEP stations; moto & bicycle bays free
+    "Gombak":{bays:"Multi-storey P+R",price:"Check on site"},
+    "Kelana Jaya":{bays:"Park N' Ride",price:"Check on site"},
+    "Lembah Subang":{bays:"Park N' Ride",price:"Check on site"},
+    "Ara Damansara":{bays:"Park N' Ride",price:"RM4/entry"},
+    "Glenmarie":{bays:"Park N' Ride",price:"RM4/entry"},
+    "USJ 21":{bays:"Park N' Ride",price:"RM4/entry"},
+    "Alam Megah":{bays:"Park N' Ride",price:"RM4/entry"},
+    "Subang Alam":{bays:"Park N' Ride",price:"RM4/entry"},
+    "Putra Heights":{bays:"Park N' Ride",price:"RM4/entry"},
+    // Sri Petaling Line — Prasarana-stated bay counts at Puchong LEP stations
+    "Awan Besar":{bays:"Park N' Ride",price:"ref RM4/entry"},
+    "IOI Puchong Jaya":{bays:"470 bays + 95 moto",price:"ref RM4/entry"},
+    "Pusat Bandar Puchong":{bays:"122 bays + 90 moto",price:"ref RM4/entry"},
+    "Taman Perindustrian Puchong":{bays:"350 bays + 164 moto",price:"ref RM4/entry"}
+  };
 
-/* ════ CHIP BUILDERS ════ */
-function buildOpenChip(sig,r){
-  if(sig==='24h')return`<span class="ch-open h24">24 Hours</span>`;
-  if(sig==='open')return`<span class="ch-open">Open now</span>`;
-  if(sig==='closing-soon'){
-    let minsLeft='';
-    for(const w of(r||{openHours:[]}).openHours){
-      if(M.h>=w.o&&M.h<w.c){minsLeft=` · ${Math.round((w.c-M.h)*60)}min`;break;}
-    }
-    return`<span class="ch-open closing">Closing soon${minsLeft}</span>`;
+  // deterministic-ish demo crowd model: interchanges busier, evening-peak flavour
+  function crowdFor(name, i, total){
+    let c = 0.3 + 0.35*Math.abs(Math.sin(i*2.7 + name.length));
+    if(IC.has(name)) c += 0.3;
+    return Math.min(0.97, c);
   }
-  if(sig==='opening-soon')return`<span class="ch-open soon">Opening soon</span>`;
-  return'';
-}
-function buildPriceChip(price){
-  if(price===1)return`<span class="ch-jimat">Jimat</span>`;
-  if(price===2)return`<span class="ch-mid">Mid-range</span>`;
-  return`<span class="ch-splash">Splash out</span>`;
-}
 
-/* ════ STATE ════ */
-let answers={},qIdx=0,ranked=[];
-let rerollsUsed=0,revealIdx=0,revealTs=0,revealCleanup=null;
-const RADIUS_KM=15;
-const MAX_SWIPES=3;
-
-/* ════ TRANSITIONS ════ */
-function go(id){
-  const cur=document.querySelector('.screen.active');
-  if(cur){cur.classList.add('out');setTimeout(()=>cur.classList.remove('active','out'),300);}
-  setTimeout(()=>document.getElementById(id).classList.add('active'),155);
-}
-
-/* ════ QUIZ ════ */
-function renderQ(i){
-  const q=QUESTIONS[i];
-  document.getElementById('prog').innerHTML=
-    QUESTIONS.map((_,j)=>`<div class="pseg ${j<i?'done':j===i?'active':''}"></div>`).join('');
-  document.getElementById('qNum').textContent=q.num;
-  document.getElementById('qText').textContent=q.text;
-  const container=document.getElementById('qOpts');
-  if(q.layout==='row'){
-    container.innerHTML=`<div class="opts-row">${q.opts.map(o=>`<button class="opt" onclick="pick('${q.key}',${o.v},this)"><span class="opt-label">${o.label}</span><span class="opt-sub">${o.sub}</span></button>`).join('')}</div>`;
-  }else if(q.layout==='price'){
-    container.innerHTML=`<div class="opts-price">${q.opts.map(o=>`<button class="opt ${o.cls}" onclick="pick('${q.key}',${o.v},this)"><span class="opt-label">${o.label}</span><span class="opt-sub">${o.sub}</span></button>`).join('')}</div>`;
-  }else{
-    container.innerHTML=q.opts.map(o=>`<button class="opt" onclick="pick('${q.key}',${o.v},this)"><span class="opt-label">${o.label}</span><span class="opt-sub">${o.sub}</span></button>`).join('');
-  }
-}
-function pick(key,val,btn){
-  btn.classList.add('sel');
-  answers[key]=val;
-  const qLabel=QUESTIONS.find(q=>q.key===key);
-  const optLabel=qLabel?.opts.find(o=>o.v===val)?.label||val;
-  track('question_answered',{question:key,answer:optLabel,step:qIdx+1});
-  setTimeout(()=>{
-    qIdx++;
-    if(qIdx<QUESTIONS.length){
-      const q=document.getElementById('quiz');
-      q.style.cssText='opacity:0;transform:translateY(-10px);transition:opacity .15s,transform .15s';
-      setTimeout(()=>{renderQ(qIdx);q.style.cssText='opacity:1;transform:translateY(0);transition:opacity .2s,transform .2s';setTimeout(()=>q.style.cssText='',200);},150);
-    }else{startLoading();}
-  },160);
-}
-
-/* ════ LOADING + MATCHING ════ */
-function buildWhy(r){
-  const mc=r.momentCopy||{};
-  const add=mc[M.slot]||(M.isWeekend&&mc.weekend)||null;
-  return r.why+(add?'\n\n'+add:'');
-}
-function startLoading(){
-  go('loading');
-  const msgs=['Reading your soul lah','Scanning spots near you','Checking the vibes','Almost ready dah...'];
-  let mi=0;
-  const lmsg=document.getElementById('lmsg');
-  setTimeout(()=>{document.getElementById('lfill').style.width='100%';},80);
-  const iv=setInterval(()=>{
-    mi++;
-    if(mi<msgs.length){lmsg.style.opacity='0';setTimeout(()=>{lmsg.textContent=msgs[mi];lmsg.style.opacity='1';},210);}
-  },700);
-  setTimeout(()=>{
-    clearInterval(iv);
-    let pool;
-    if(userLat!==null){
-      const withDist=RESTAURANTS.map(r=>({...r,_dist:distKm(userLat,userLng,r.lat,r.lng)}));
-      const nearby=withDist.filter(r=>r._dist<=RADIUS_KM);
-      const nearbyOpen=nearby.filter(isOpen);
-      pool=nearbyOpen.length>=3?nearbyOpen:nearby.length>=3?nearby:withDist;
+  // =============== line switcher ===============
+  const sw = document.getElementById("lineSwitch");
+  let currentLine = LINES[0];
+  LINES.forEach(L=>{
+    const b = document.createElement("button");
+    b.className = "line-chip" + (L.soon ? " soon" : "");
+    b.setAttribute("role","tab");
+    b.innerHTML = '<span class="swatch" style="background:'+L.color+'"></span>'+L.name+
+      (L.soon ? ' <span class="soon-tag">SOON</span>' : '');
+    if(!L.soon){
+      b.addEventListener("click", ()=>{ currentLine = L; renderLine(); highlight(); });
     }else{
-      const open=RESTAURANTS.filter(isOpen);
-      pool=(open.length>=3?open:RESTAURANTS).map(r=>({...r,_dist:null}));
+      b.title = "Coming soon";
+      b.disabled = true;
+      b.setAttribute("aria-disabled","true");
     }
-    const diet=getDiet();
-    if(diet==='halal'){
-      const filtered=pool.filter(r=>(r.halalStatus||'pork-free')!=='serves-pork');
-      if(filtered.length>=3)pool=filtered;
-    }
-    ranked=pool
-      .map(r=>({
-        ...r,
-        _s:moodScore(r,answers)+momentScore(r)+prefScore(r)+recencyPenalty(r),
-        _smood:moodScore(r,answers),_smoment:momentScore(r),
-        _spref:prefScore(r),_srecency:recencyPenalty(r)
-      }))
-      .sort((a,b)=>b._s-a._s);
-    showReveal();
-  },2900);
-}
-
-/* ════ REVEAL ════ */
-function populateReveal(r,isAlt){
-  const sig=openSignal(r);
-  const distChip=r._dist!=null?`<span class="ch-dist">${fmtDist(r._dist)}</span>`:'';
-  document.getElementById('rvbg').style.background=r.bg;
-  const tagEl=document.getElementById('rvtag');
-  if(isAlt){tagEl.textContent='Cadangan lain';tagEl.classList.add('alt');}
-  else{tagEl.textContent='Matched';tagEl.classList.remove('alt');}
-  document.getElementById('rveyebrow').textContent=M.eyebrow;
-  document.getElementById('rvname').textContent=r.name;
-  document.getElementById('rvmeta').textContent=r.area+' · '+r.cat;
-  document.getElementById('rvwhy').textContent=buildWhy(r);
-  document.getElementById('rvchips').innerHTML=[
-    `<span class="ch-halal">Halal</span>`,distChip,buildOpenChip(sig,r),
-    r.bestFor.includes(M.slot)?`<span class="ch-time">${M.label}</span>`:'',
-    r.weekendBoost&&M.isWeekend?`<span class="ch-wknd">Weekend pick</span>`:'',
-    buildPriceChip(r.price),
-  ].join('');
-  const closing=sig==='closing-soon';
-  document.getElementById('btnGo').textContent=isAlt?(closing?'Pergi cepat ⚡':'Pergi sini pulak'):(closing?'Pergi cepat ⚡':'Pergi dah');
-}
-function showReveal(){
-  rerollsUsed=0;revealIdx=0;revealTs=Date.now();
-  const r=ranked[0];if(!r)return;
-  saveToHistory(r,false);
-  populateReveal(r,false);
-  updateSwipeHint();
-  track('reveal_shown',{
-    restaurant:r.name,area:r.area,price_tier:r.price,
-    score_total:r._s?.toFixed(2),score_mood:r._smood,score_moment:r._smoment,
-    score_pref:r._spref?.toFixed(2),score_recency:r._srecency,
-    has_alternate:ranked.length>1,dataset_version:RESTAURANTS_VERSION
+    b.dataset.id = L.id;
+    sw.appendChild(b);
   });
-  if(revealCleanup)document.removeEventListener('visibilitychange',revealCleanup);
-  revealCleanup=()=>{
-    if(document.hidden){
-      track('reveal_abandoned',{restaurant:r.name,time_on_reveal_ms:Date.now()-revealTs,action:'tab_hidden'});
-      document.removeEventListener('visibilitychange',revealCleanup);revealCleanup=null;
-    }
-  };
-  document.addEventListener('visibilitychange',revealCleanup);
-  bindRevealButtons(r);
-  // reset card position in case of re-entry
-  const body=document.getElementById('rvBody');
-  body.style.transition='none';body.style.transform='';body.style.opacity='1';
-  document.getElementById('rvHintLeft').style.opacity=0;
-  document.getElementById('rvHintRight').style.opacity=0;
-  go('reveal');
-  // init swipe after transition settles
-  setTimeout(()=>initSwipe(body),320);
-}
-function bindRevealButtons(r){
-  document.getElementById('btnGo').onclick=()=>commitGo(r);
-  document.getElementById('btnRestart').onclick=()=>restartQuiz();
-  document.getElementById('btnShare').onclick=()=>{track('share_clicked',{restaurant:r.name});shareIt(r);};
-}
-function updateSwipeHint(){
-  const hint=document.getElementById('rvSwipeHint');
-  if(!hint)return;
-  const canSkip=ranked.length>1&&revealIdx<Math.min(ranked.length-1,MAX_SWIPES-1);
-  if(!canSkip){
-    hint.textContent=revealIdx>0?'Dah tu, just go lah 😅':'';
-    hint.classList.add('locked');
-  }else{
-    hint.textContent=revealIdx===0?'← geser untuk pilihan lain':`Pilihan ${revealIdx+1} / ${Math.min(ranked.length,MAX_SWIPES)}`;
-    hint.classList.remove('locked');
-  }
-}
-function commitGo(r){
-  if(revealCleanup){document.removeEventListener('visibilitychange',revealCleanup);revealCleanup=null;}
-  track('maps_clicked',{
-    restaurant:r.name,area:r.area,category:r.cat,price_tier:r.price,
-    time_to_click_ms:Date.now()-revealTs,rerolls_used:rerollsUsed
-  });
-  savePrefs(r);saveRecent(r.name);
-  lsSet(LAST_KEY,{n:r.name,area:r.area,price:r.price,cuisine:r.scores.cuisine[0],ts:Date.now()});
-  const awayTs=Date.now();
-  const returnHandler=()=>{
-    if(!document.hidden){
-      track('maps_returned',{restaurant:r.name,time_away_ms:Date.now()-awayTs});
-      document.removeEventListener('visibilitychange',returnHandler);
-    }
-  };
-  document.addEventListener('visibilitychange',returnHandler);
-  window.open(r.maps,'_blank');
-}
-
-/* ════ SWIPE MECHANIC ════ */
-function initSwipe(el){
-  let startX=0,startY=0,curX=0,dragging=false,axisLocked=false,isHoriz=false;
-  const hintL=document.getElementById('rvHintLeft');
-  const hintR=document.getElementById('rvHintRight');
-  function onStart(x,y){startX=x;startY=y;curX=0;dragging=true;axisLocked=false;isHoriz=false;el.style.transition='none';}
-  function onMove(x,y){
-    if(!dragging)return;
-    const dx=x-startX,dy=y-startY;
-    if(!axisLocked){
-      if(Math.abs(dx)<6&&Math.abs(dy)<6)return;
-      isHoriz=Math.abs(dx)>Math.abs(dy)*0.85;
-      axisLocked=true;
-    }
-    if(!isHoriz)return;
-    curX=dx;
-    el.style.transform=`translateX(${dx}px) rotate(${dx*0.022}deg)`;
-    hintL.style.opacity=String(Math.min(1,Math.max(0,-dx/70)));
-    hintR.style.opacity=String(Math.min(1,Math.max(0,dx/70)));
-  }
-  function onEnd(){
-    if(!dragging)return;
-    dragging=false;axisLocked=false;
-    hintL.style.opacity='0';hintR.style.opacity='0';
-    if(isHoriz&&curX<-55){swipeLeft();}
-    else if(isHoriz&&curX>55){swipeRight();}
-    else{el.style.transition='transform .25s cubic-bezier(.25,.46,.45,.94)';el.style.transform='';}
-    curX=0;
-  }
-  el.addEventListener('touchstart',e=>onStart(e.touches[0].clientX,e.touches[0].clientY),{passive:true});
-  el.addEventListener('touchmove',e=>{if(isHoriz||!axisLocked)onMove(e.touches[0].clientX,e.touches[0].clientY);},{passive:true});
-  el.addEventListener('touchend',onEnd,{passive:true});
-  // mouse fallback for desktop testing
-  el.addEventListener('mousedown',e=>{onStart(e.clientX,e.clientY);
-    const mm=ev=>onMove(ev.clientX,ev.clientY);
-    const mu=()=>{onEnd();document.removeEventListener('mousemove',mm);document.removeEventListener('mouseup',mu);};
-    document.addEventListener('mousemove',mm);document.addEventListener('mouseup',mu);
-  });
-}
-function swipeLeft(){
-  const maxIdx=Math.min(ranked.length-1,MAX_SWIPES-1);
-  const body=document.getElementById('rvBody');
-  if(revealIdx>=maxIdx){
-    body.style.transition='transform .3s cubic-bezier(.25,.46,.45,.94)';
-    body.style.transform='';
-    const hint=document.getElementById('rvSwipeHint');
-    hint.textContent='Dah tu, just go lah 😅';hint.classList.add('locked');
-    return;
-  }
-  revealIdx++;rerollsUsed++;
-  const r=ranked[revealIdx];
-  track('swipe_skipped',{from:ranked[revealIdx-1].name,to:r.name,skip_num:revealIdx});
-  body.style.transition='transform .22s ease-in,opacity .18s';
-  body.style.transform='translateX(-115%) rotate(-16deg)';
-  body.style.opacity='0';
-  setTimeout(()=>{
-    populateReveal(r,true);
-    updateSwipeHint();
-    body.style.transition='none';
-    body.style.transform='translateX(110%) rotate(10deg)';
-    body.style.opacity='1';
-    document.getElementById('rvHintLeft').style.opacity='0';
-    document.getElementById('rvHintRight').style.opacity='0';
-    requestAnimationFrame(()=>requestAnimationFrame(()=>{
-      body.style.transition='transform .28s cubic-bezier(.25,.46,.45,.94)';
-      body.style.transform='';
-    }));
-    bindRevealButtons(r);
-  },230);
-}
-function swipeRight(){
-  const r=ranked[revealIdx];
-  const body=document.getElementById('rvBody');
-  body.style.transition='transform .22s ease-in,opacity .18s';
-  body.style.transform='translateX(115%) rotate(16deg)';
-  body.style.opacity='0';
-  setTimeout(()=>commitGo(r),180);
-}
-function restartQuiz(){
-  if(revealCleanup){document.removeEventListener('visibilitychange',revealCleanup);revealCleanup=null;}
-  track('restart_quiz',{from_restaurant:ranked[revealIdx]?.name});
-  answers={};qIdx=0;ranked=[];revealIdx=0;
-  go('quiz');renderQ(0);
-}
-
-/* ════ SHARE ════ */
-function shareIt(r){
-  const distTxt=r._dist!=null?` (${fmtDist(r._dist)} dari kau)`:'';
-  const txt=`manamana dah decide untuk aku\n\nMalam ni pergi ${r.name}${distTxt} — ${r.area}.\n\n"${r.why}"\n\nCuba kau punya: manamana.io`;
-  if(navigator.share){navigator.share({text:txt}).catch(()=>{});}
-  else{window.open('https://api.whatsapp.com/send?text='+encodeURIComponent(txt),'_blank');}
-}
-
-/* ════ SEDAP / MEHH (MEDIUM-3) ════ */
-function checkFeedbackPrompt(){
-  const last=lsGet(LAST_KEY,null);
-  if(!last||!last.n)return;
-  if(loadFeedback().find(e=>e.n===last.n))return;
-  const banner=document.getElementById('sedapBanner');
-  document.getElementById('sedapQ').innerHTML=`Last time kau pergi <em>${last.n}</em>. Best tak?`;
-  banner.classList.add('visible');
-  document.getElementById('btnSedap').onclick=e=>{e.stopPropagation();saveFeedback(last,'sedap');banner.classList.remove('visible');};
-  document.getElementById('btnMehh').onclick=e=>{e.stopPropagation();saveFeedback(last,'mehh');banner.classList.remove('visible');};
-}
-
-/* ════ PROFILE (HIGH-4) ════ */
-function renderProfile(){
-  track('profile_viewed',{match_count:loadHistory().length});
-  const history=loadHistory(),prefs=loadPrefs(),fb=loadFeedback();
-  const topArea=getTopKey(prefs.area),topPrice=getTopKey(prefs.price);
-  let html='';
-  if(history.length===0){
-    html='<div class="pf-empty">Belum ada history lagi.<br>Pergi makan dulu baru balik sini.</div>';
-  }else{
-    const priceMap={1:'Jimat',2:'Mid-range',3:'Splash out'};
-    if(topArea||topPrice){
-      html+=`<div class="pf-card"><div class="pf-stat">Taste Profile</div>`;
-      if(topArea)html+=`<div class="pf-insight">Kau selalu makan kat <strong>${topArea}</strong>.</div>`;
-      if(topPrice)html+=`<div class="pf-insight">Budget biasa: <strong>${priceMap[topPrice]||topPrice}</strong>.</div>`;
-      html+=`</div>`;
-    }
-    html+=`<div class="pf-section-title">Last 5 Visits</div><div class="pf-matches">`;
-    const recent=history.slice(-5).reverse();
-    recent.forEach(h=>{
-      const rating=fb.find(f=>f.n===h.n);
-      const ratingStr=rating?(rating.r==='sedap'?' · 😋 Sedap':' · 😐 Mehh'):'';
-      const dateStr=h.ts?new Date(h.ts).toLocaleDateString('en-MY',{day:'numeric',month:'short'}):'';
-      html+=`<div class="pf-match-row"><div class="pf-match-name">${h.n}${ratingStr}</div><div class="pf-match-meta">${h.area||''} · ${dateStr}</div></div>`;
+  function highlight(){
+    document.querySelectorAll(".line-chip").forEach(ch=>{
+      const on = ch.dataset.id===currentLine.id;
+      ch.classList.toggle("on", on);
+      ch.setAttribute("aria-pressed", on ? "true" : "false");
     });
-    html+=`</div>`;
   }
-  html+=`<button class="btn-pf-delete" onclick="clearAllData()">Padam semua data</button>`;
-  html+=`<div class="pf-delete-hint">Ini akan reset semua history, prefs, dan feedback kau.</div>`;
-  document.getElementById('pfBody').innerHTML=html;
-  go('profile');
-}
-function clearAllData(){
-  if(!confirm('Confirm nak padam semua?'))return;
-  [PREF_KEY,RECENT_KEY,HISTORY_KEY,FEEDBACK_KEY,LAST_KEY,NEG_KEY,VISITS_KEY].forEach(k=>localStorage.removeItem(k));
-  track('data_cleared');
-  go('splash');
-}
-function updateSplashTeaser(){
-  const h=loadHistory();
-  const el=document.getElementById('spTeaser');
-  if(!el)return;
-  if(h.length<3){el.textContent='';return;}
-  const prefs=loadPrefs();
-  const topArea=getTopKey(prefs.area);
-  el.innerHTML=`Dah <b>${h.length}</b> kali guna${topArea?` · Top spot: <b>${topArea}</b>`:''}`;
-}
 
-/* ════ INIT ════ */
-updateDietUI();
-updatePriceUI();
-incVisit();
-updateSplashTeaser();
-checkFeedbackPrompt();
-document.getElementById('spProfileLink').addEventListener('click',e=>{e.stopPropagation();renderProfile();go('profile');});
-document.getElementById('pfBack').addEventListener('click',()=>go('splash'));
-document.getElementById('splash').addEventListener('click',()=>{
-  if(document.getElementById('sedapBanner').classList.contains('visible'))return;
-  track('quiz_start');go('quiz');answers={};qIdx=0;renderQ(0);
-});
-document.getElementById('spBtn').addEventListener('click',e=>{
-  e.stopPropagation();track('quiz_start');go('quiz');answers={};qIdx=0;renderQ(0);
-});
+  // =============== render line strip ===============
+  const strip = document.getElementById("strip");
+  let crowds = [];
+  function renderLine(){
+    const L = currentLine;
+    tipPinned = false; tipIdx = -1; tip.classList.remove("show");
+    strip.innerHTML = '<div class="track-line" style="background:repeating-linear-gradient(90deg,'+L.color+' 0 18px, var(--kaya) 18px 30px)"></div>';
+    strip.style.minWidth = Math.max(700, L.stations.length*48) + "px";
+    crowds = L.stations.map((n,i)=>crowdFor(n,i,L.stations.length));
+    L.stations.forEach((n,i)=>{
+      const c = crowds[i];
+      const b = document.createElement("button");
+      b.className = "stn" + (IC.has(n) ? " ic" : "");
+      b.setAttribute("role","listitem");
+      b.setAttribute("aria-label", n + ": " + lvl(c) + (PARKINFO[n] ? ", has Park N' Ride" : ""));
+      b.title = n + " — " + lvl(c);
+      b.addEventListener("mouseenter", ()=>showTip(i));
+      b.addEventListener("focus", ()=>showTip(i));
+      b.addEventListener("mouseleave", scheduleHideTip);
+      b.addEventListener("blur", scheduleHideTip);
+      b.addEventListener("click", (e)=>{ e.preventDefault(); showTip(i, true); });
+      const fillH = Math.round(8 + c*92);
+      b.innerHTML =
+        '<span class="face">'+face(c)+'</span>' +
+        '<div class="glass"><div class="foam" style="bottom:'+fillH+'%"></div><div class="fill" style="height:'+fillH+'%;background:'+col(c)+'"></div></div>' +
+        '<div class="node"></div>' +
+        '<div class="name">'+(IC.has(n)?"<b>"+n+"</b>":n)+'</div>';
+      strip.appendChild(b);
+    });
+    document.getElementById("boardSwatch").style.background = L.color;
+    document.getElementById("boardName").textContent = L.name + " Line";
+    document.getElementById("boardMeta").textContent = "LALUAN " + L.tag + " · " + L.stations.length + " STATIONS";
+    document.getElementById("endA").textContent = "◀ " + L.stations[0].toUpperCase();
+    document.getElementById("endB").textContent = L.stations[L.stations.length-1].toUpperCase() + " ▶";
+    document.getElementById("lineHint").textContent = L.hint;
+    renderParking(L);
+    // sync report selects
+    if(lineSelect.value !== L.name) lineSelect.value = L.name;
+    fillStations(L);
+  }
+
+  // =============== station tooltip: hover or tap a stop ===============
+  const tip = document.getElementById("tip");
+  const scroller = document.getElementById("scroller");
+  let tipTimer = null, tipPinned = false, tipIdx = -1;
+
+  function crowdClass(c){ return c > 0.75 ? "c-r" : c > 0.5 ? "c-a" : "c-g"; }
+
+  function showTip(i, pin){
+    clearTimeout(tipTimer);
+    const L = currentLine, n = L.stations[i], c = crowds[i];
+    tipIdx = i; if(pin) tipPinned = true;
+    const P = PARKINFO[n];
+    tip.innerHTML =
+      '<div class="t-name">'+n+'</div>' +
+      '<span class="t-crowd '+crowdClass(c)+'">'+face(c)+' '+lvl(c)+' now</span>' +
+      '<div class="t-park">' +
+        (P ? '🅿️ ' + P.bays + ' · ' + P.price
+           : '<span class="no">No Park N\' Ride here — feeder bus or drop-off je.</span>') +
+      '</div>' +
+      '<div class="nav-btns">' +
+        '<a class="nav-btn gm" target="_blank" rel="noopener" href="'+mapsUrl(n, L)+'">🗺️ Maps</a>' +
+        '<a class="nav-btn wz" target="_blank" rel="noopener" href="'+wazeUrl(n, L)+'">🚗 Waze</a>' +
+      '</div>';
+    positionTip();
+    tip.classList.add("show");
+  }
+  function positionTip(){
+    if(tipIdx < 0) return;
+    const stns = strip.querySelectorAll(".stn");
+    if(!stns[tipIdx]) return;
+    const sRect = stns[tipIdx].getBoundingClientRect();
+    const bRect = tip.parentElement.getBoundingClientRect();
+    let x = sRect.left - bRect.left + sRect.width/2;
+    x = Math.max(120, Math.min(bRect.width - 120, x)); // keep card inside the board
+    tip.style.left = x + "px";
+    tip.style.bottom = (bRect.bottom - sRect.top + 14) + "px";
+  }
+  function scheduleHideTip(){
+    if(tipPinned) return;
+    tipTimer = setTimeout(()=>tip.classList.remove("show"), 250);
+  }
+  tip.addEventListener("mouseenter", ()=>clearTimeout(tipTimer));
+  tip.addEventListener("mouseleave", ()=>{ tipPinned = false; scheduleHideTip(); });
+  scroller.addEventListener("scroll", ()=>{ tipPinned = false; tip.classList.remove("show"); }, {passive:true});
+  document.addEventListener("click", (e)=>{
+    if(!tip.contains(e.target) && !e.target.closest(".stn")){
+      tipPinned = false; tip.classList.remove("show");
+    }
+  });
+  window.addEventListener("resize", positionTip);
+
+  // wobble
+  if(!window.matchMedia("(prefers-reduced-motion: reduce)").matches){
+    setInterval(()=>{
+      document.querySelectorAll("#strip .stn").forEach((el,i)=>{
+        const base = 8 + (crowds[i]||0.4)*92;
+        const h = Math.max(6, Math.min(100, base + (Math.random()*6-3)));
+        el.querySelector(".fill").style.height = h + "%";
+        el.querySelector(".foam").style.bottom = h + "%";
+      });
+    }, 2400);
+  }
+
+  // =============== parking: per line ===============
+  // verified = we have official bays/prices. Others show an honest "verifying" state.
+  const PARKING = {
+    sa: {
+      sub:"LRT3 Shah Alam Line Park N' Ride — verified bays and prices from Prasarana's launch announcement.",
+      banner:"🎉 FREE parking at all 6 LRT3 Park N' Ride until <u>31 July 2026</u> — same promo as the free rides.",
+      note:"<b>After 31 July:</b> Prasarana belum announce LRT3 parking rates. For reference, Rapid KL's usual Park N' Ride rate at other LRT stations is <b>RM4 per entry</b> — we'll update the moment it's confirmed <span class='kao'>(๑•̀ᴗ•́)๑</span>. <b>Bandar Utama</b> &amp; <b>Glenmarie 2</b> are NOT in the free promo — existing rates apply there now.",
+      items:[
+        {n:"Kayu Ara", area:"Petaling Jaya", bays:"350", now:{t:"FREE til 31 Jul",cls:"free"}, later:"TBA · ref RM4"},
+        {n:"Damansara Idaman", area:"Petaling Jaya", bays:"150", now:{t:"FREE til 31 Jul",cls:"free"}, later:"TBA · ref RM4"},
+        {n:"Pasar Klang", area:"Klang town", bays:"100", now:{t:"FREE til 31 Jul",cls:"free"}, later:"TBA · ref RM4"},
+        {n:"Seri Andalas", area:"South Klang", bays:"550", now:{t:"FREE til 31 Jul",cls:"free"}, later:"TBA · ref RM4"},
+        {n:"Bandar Bukit Tinggi", area:"South Klang", bays:"600", now:{t:"FREE til 31 Jul",cls:"free"}, later:"TBA · ref RM4"},
+        {n:"Johan Setia", area:"Klang terminus", bays:"550", now:{t:"FREE til 31 Jul",cls:"free"}, later:"TBA · ref RM4"},
+        {n:"Bandar Utama", area:"⇄ MRT Kajang", bays:"Available", now:{t:"Existing rates",cls:"paid"}, later:"Unchanged"},
+        {n:"Glenmarie 2", area:"⇄ LRT Kelana Jaya", bays:"Available", now:{t:"Existing rates",cls:"paid"}, later:"Unchanged"}
+      ]
+    },
+    kj: {
+      sub:"Kelana Jaya Line has 10 Park N' Ride stations with 4,000+ bays in total (per MyRapid). The extension stations below are officially RM4 per entry per day — motorcycle & bicycle bays free.",
+      note:"RM4/entry is from Rapid KL's official announcement for the extension (LEP) stations and may have been revised — confirm on arrival. Gombak, Kelana Jaya & Lembah Subang rates: check on site. Full list on <a href='https://myrapid.com.my/bus-train/rapid-kl/park-ride/' target='_blank' rel='noopener'>MyRapid Park N' Ride</a>.",
+      items:[
+        {n:"Gombak", area:"Northern terminus", bays:"Multi-storey", now:{t:"Check on site",cls:"tba"}, later:"—"},
+        {n:"Kelana Jaya", area:"Petaling Jaya", bays:"Check on site", now:{t:"Check on site",cls:"tba"}, later:"—"},
+        {n:"Lembah Subang", area:"Petaling Jaya", bays:"Check on site", now:{t:"Check on site",cls:"tba"}, later:"—"},
+        {n:"Ara Damansara", area:"Petaling Jaya", bays:"Check on site", now:{t:"RM4/entry",cls:"paid"}, later:"Moto free"},
+        {n:"Glenmarie", area:"Shah Alam", bays:"Check on site", now:{t:"RM4/entry",cls:"paid"}, later:"Moto free"},
+        {n:"USJ 21", area:"Subang Jaya", bays:"Check on site", now:{t:"RM4/entry",cls:"paid"}, later:"Moto free"},
+        {n:"Alam Megah", area:"Subang Jaya", bays:"Check on site", now:{t:"RM4/entry",cls:"paid"}, later:"Moto free"},
+        {n:"Subang Alam", area:"Subang Jaya", bays:"Check on site", now:{t:"RM4/entry",cls:"paid"}, later:"Moto free"},
+        {n:"Putra Heights", area:"Terminus · ⇄ Sri Petaling", bays:"Check on site", now:{t:"RM4/entry",cls:"paid"}, later:"Moto free"}
+      ]
+    },
+    ag: { sub:"Ampang Line (Sentul Timur ⇄ Ampang) has no dedicated Prasarana Park N' Ride — parking near stations is mostly council & private lots.",
+      note:"Per MyRapid: some stations rely on nearby parking provided by the City Council and independent parties — rates vary by operator. If you're driving, the Sri Petaling branch's Puchong stations or an MRT hub may be a better park-and-ride bet. Details: <a href='https://myrapid.com.my/bus-train/rapid-kl/park-ride/' target='_blank' rel='noopener'>MyRapid Park N' Ride</a>.", items:[] },
+    sp: {
+      sub:"Sri Petaling Line Park N' Ride — bay counts below are from Prasarana's official statements for the Puchong extension stations.",
+      note:"Bandar Puteri has NO parking facility (per Prasarana). Awan Besar has a dedicated Park N' Ride lot. Rates shown as reference from Rapid KL's LEP announcement — confirm on arrival. Full list: <a href='https://myrapid.com.my/bus-train/rapid-kl/park-ride/' target='_blank' rel='noopener'>MyRapid Park N' Ride</a>.",
+      items:[
+        {n:"Awan Besar", area:"Bukit OUG", bays:"Dedicated lot", now:{t:"ref RM4/entry",cls:"tba"}, later:"—"},
+        {n:"IOI Puchong Jaya", area:"Puchong", bays:"470 + 95 moto", now:{t:"ref RM4/entry",cls:"tba"}, later:"Moto free"},
+        {n:"Pusat Bandar Puchong", area:"Puchong", bays:"122 + 90 moto", now:{t:"ref RM4/entry",cls:"tba"}, later:"Moto free"},
+        {n:"Taman Perindustrian Puchong", area:"Puchong", bays:"350 + 164 moto", now:{t:"ref RM4/entry",cls:"tba"}, later:"Moto free"},
+        {n:"Putra Heights", area:"Terminus · ⇄ Kelana Jaya", bays:"Check on site", now:{t:"RM4/entry",cls:"paid"}, later:"Moto free"}
+      ]
+    },
+    mr: { sub:"KL Monorail is a city-centre line — no Park N' Ride on this one.",
+      note:"Driving in? Park at an LRT/MRT Park N' Ride outside the city centre and ride in — cheaper than KL parking, less pening. Interchange to Monorail at KL Sentral, Hang Tuah or Titiwangsa.", items:[] }
+  };
+
+  function renderParking(L){
+    const P = PARKING[L.id];
+    document.getElementById("parkTitle").textContent = "Where can park on the " + L.name + "? 🚗";
+    document.getElementById("parkSub").textContent = P.sub;
+    const banner = document.getElementById("freeBanner");
+    if(P.banner){ banner.innerHTML = P.banner; banner.hidden = false; } else { banner.hidden = true; }
+    document.getElementById("parkNote").innerHTML = P.note;
+    const grid = document.getElementById("parkGrid");
+    grid.innerHTML = "";
+    P.items.forEach(p=>{
+      const d = document.createElement("div");
+      d.className = "pk";
+      d.innerHTML =
+        '<div class="area">'+p.area+'</div><h3>🅿️ '+p.n+'</h3>' +
+        '<div class="row"><span>Bays</span><b>'+p.bays+'</b></div>' +
+        '<div class="row"><span>Price now</span><span class="pill '+p.now.cls+'">'+p.now.t+'</span></div>' +
+        '<div class="row"><span>After promo</span><span class="pill tba">'+p.later+'</span></div>' +
+        '<div class="nav-btns">' +
+          '<a class="nav-btn gm" target="_blank" rel="noopener" href="'+mapsUrl(p.n, L)+'">🗺️ Maps</a>' +
+          '<a class="nav-btn wz" target="_blank" rel="noopener" href="'+wazeUrl(p.n, L)+'">🚗 Waze</a>' +
+        '</div>';
+      grid.appendChild(d);
+    });
+  }
+
+  // =============== reports ===============
+  const lineSelect = document.getElementById("lineSelect");
+  const stationSelect = document.getElementById("stationSelect");
+  LINES.filter(L=>!L.soon).forEach(L=>{
+    const o=document.createElement("option");o.textContent=L.name;lineSelect.appendChild(o);
+  });
+  function fillStations(L){
+    stationSelect.innerHTML="";
+    L.stations.forEach(s=>{const o=document.createElement("option");o.textContent=s;stationSelect.appendChild(o)});
+  }
+  lineSelect.addEventListener("change", ()=>{
+    const L = LINES.find(x=>x.name===lineSelect.value);
+    currentLine = L; renderLine(); highlight();
+  });
+  function voted(level){
+    document.getElementById("thanks").textContent =
+      "TERIMA KASIH BOSS! " + stationSelect.value.toUpperCase() + " → “" + level.toUpperCase() + "” recorded ✓";
+  }
+
+  // =============== scroll train ===============
+  const train = document.getElementById("train");
+  function moveTrain(){
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    const pct = max > 0 ? window.scrollY / max : 0;
+    train.style.left = "calc(" + (pct*100) + "% - " + (pct*40) + "px)";
+  }
+  document.addEventListener("scroll", moveTrain, {passive:true});
+  moveTrain();
+
+  // init
+  renderLine(); highlight();
 </script>
 </body>
 </html>

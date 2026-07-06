@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Mana-Mana ☕ Klang Valley train crowd check</title>
 <meta name="description" content="Jom check dulu — crowd levels for every LRT, Monorail (and soon MRT) line in the Klang Valley. Parking info & live commuter reports.">
@@ -261,6 +260,23 @@
   footer .fine{font-family:'Space Mono',monospace;font-size:.68rem;max-width:56ch;margin-top:10px}
   footer a{color:var(--teh-deep);font-weight:800}
 
+  /* ===== live reports + ridership (V2) ===== */
+  .demo-chip.live{background:var(--pandan);color:#fff;border-color:var(--pandan-deep)}
+  .demo-chip.live::before{content:"\25CF ";animation:pulse 1.6s ease-in-out infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+  .stn.live .node{background:var(--pandan);border-color:var(--pandan-deep);box-shadow:0 0 0 3px rgba(93,184,106,.35)}
+  .stn.live .glass{border-color:var(--pandan-deep)}
+  .tip .t-live{margin-top:8px;font-family:'Space Mono',monospace;font-size:.64rem;font-weight:700;color:var(--pandan-deep)}
+  .rider-stat{display:flex;flex-wrap:wrap;align-items:center;gap:14px;margin-top:16px;background:var(--milo);color:var(--santan);border:var(--bd);border-radius:14px;box-shadow:var(--shadow-sm);padding:14px 18px}
+  .rider-stat .big{font-family:'Lilita One',cursive;font-size:1.5rem;color:var(--kaya);line-height:1}
+  .rider-stat .lbl{font-family:'Space Mono',monospace;font-size:.66rem;font-weight:700;color:#EAD9C2;text-transform:uppercase;letter-spacing:.05em}
+  .rider-stat .trend{font-weight:800;font-size:.82rem;border:2px solid var(--santan);border-radius:999px;padding:2px 10px}
+  .rider-stat .trend.up{background:var(--sesak);color:#fff;border-color:var(--sesak)}
+  .rider-stat .trend.down{background:var(--pandan);color:#fff;border-color:var(--pandan-deep)}
+  .rider-stat .src{font-family:'Space Mono',monospace;font-size:.6rem;color:#B79D82;margin-left:auto}
+  .rider-stat .spark{display:flex;align-items:flex-end;gap:2px;height:30px}
+  .rider-stat .spark i{width:5px;background:var(--kaya);border-radius:2px 2px 0 0;opacity:.85;display:block}
+
   @media (max-width:860px){
     .park-grid{grid-template-columns:1fr 1fr}
     .report-grid{grid-template-columns:1fr}
@@ -269,6 +285,7 @@
   @media (max-width:560px){.park-grid{grid-template-columns:1fr}}
   @media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
@@ -304,7 +321,7 @@
     <span class="sec-badge">01 · LIVE LINES</span>
     <h2>Pick your line</h2>
     <p class="sec-sub">Each station is a glass of teh tarik — the fuller the glass, the more sesak the platform. MRT lines coming soon, sabar ya.</p>
-    <span class="demo-chip">DEMO DATA · MON 6:05 PM</span>
+    <span class="demo-chip" id="dataChip">Baseline forecast · loading live reports…</span>
 
     <div class="line-switch" id="lineSwitch" role="tablist" aria-label="Choose a train line"></div>
 
@@ -325,6 +342,7 @@
       <div class="strip-ends"><span id="endA"></span><span id="endB"></span></div>
     </div>
     <div class="hint" id="lineHint"></div>
+    <div class="rider-stat" id="riderStat" hidden></div>
   </div>
 </section>
 
@@ -509,10 +527,15 @@
     strip.innerHTML = '<div class="track-line" style="background:repeating-linear-gradient(90deg,'+L.color+' 0 18px, var(--kaya) 18px 30px)"></div>';
     strip.style.minWidth = Math.max(700, L.stations.length*48) + "px";
     crowds = L.stations.map((n,i)=>crowdFor(n,i,L.stations.length));
+    liveIdx = new Set();
+    L.stations.forEach((n,i)=>{
+      const lr = liveMap[L.id+"||"+n];
+      if(lr){ crowds[i] = levelToC(lr.level); liveIdx.add(i); }
+    });
     L.stations.forEach((n,i)=>{
       const c = crowds[i];
       const b = document.createElement("button");
-      b.className = "stn" + (IC.has(n) ? " ic" : "");
+      b.className = "stn" + (IC.has(n) ? " ic" : "") + (liveIdx.has(i) ? " live" : "");
       b.setAttribute("role","listitem");
       b.setAttribute("aria-label", n + ": " + lvl(c) + (PARKINFO[n] ? ", has Park N' Ride" : ""));
       b.title = n + " — " + lvl(c);
@@ -536,6 +559,7 @@
     document.getElementById("endB").textContent = L.stations[L.stations.length-1].toUpperCase() + " ▶";
     document.getElementById("lineHint").textContent = L.hint;
     renderParking(L);
+    renderRidership(L);
     // sync report selects
     if(lineSelect.value !== L.name) lineSelect.value = L.name;
     fillStations(L);
@@ -556,6 +580,7 @@
     tip.innerHTML =
       '<div class="t-name">'+n+'</div>' +
       '<span class="t-crowd '+crowdClass(c)+'">'+face(c)+' '+lvl(c)+' now</span>' +
+      (liveMap[currentLine.id+"||"+n] ? '<div class="t-live">\u25CF LIVE \u00b7 '+liveMap[currentLine.id+"||"+n].reports+' report'+(liveMap[currentLine.id+"||"+n].reports>1?'s':'')+' \u00b7 '+timeAgo(liveMap[currentLine.id+"||"+n].last_at)+'</div>' : '') +
       '<div class="t-park">' +
         (P ? '🅿️ ' + P.bays + ' · ' + P.price
            : '<span class="no">No Park N\' Ride here — feeder bus or drop-off je.</span>') +
@@ -693,9 +718,29 @@
     const L = LINES.find(x=>x.name===lineSelect.value);
     currentLine = L; renderLine(); highlight();
   });
-  function voted(level){
-    document.getElementById("thanks").textContent =
-      "TERIMA KASIH BOSS! " + stationSelect.value.toUpperCase() + " → “" + level.toUpperCase() + "” recorded ✓";
+  async function voted(level){
+    const L = LINES.find(x=>x.name===lineSelect.value) || currentLine;
+    const station = stationSelect.value;
+    const thanks = document.getElementById("thanks");
+    thanks.style.color = "#3E9A4C";
+    if(!sb){
+      thanks.textContent = "TERIMA KASIH BOSS! " + station.toUpperCase() + " → “" + level.toUpperCase() + "” recorded ✓";
+      return;
+    }
+    thanks.textContent = "Sending…";
+    try{
+      const { error } = await sb.from("reports").insert({ line_id:L.id, station, level, client_id:clientId() });
+      if(error) throw error;
+      track('report_submit', { line:L.id, station, level });
+      liveMap[L.id+"||"+station] = { level, reports:((liveMap[L.id+"||"+station]||{}).reports||0)+1, last_at:new Date().toISOString() };
+      thanks.textContent = "TERIMA KASIH BOSS! " + station.toUpperCase() + " → “" + level.toUpperCase() + "” recorded ✓";
+      if(L.id===currentLine.id){ renderLine(); highlight(); }
+      updateDataChip();
+      loadLive();
+    }catch(e){
+      thanks.style.color = "#D5223E";
+      thanks.textContent = "Alamak, report tak jadi — cuba lagi? (" + (e.message||"network") + ")";
+    }
   }
 
   // =============== scroll train ===============
@@ -708,8 +753,96 @@
   document.addEventListener("scroll", moveTrain, {passive:true});
   moveTrain();
 
+  // =============== V2: Supabase live reports ===============
+  const SUPABASE_URL = "https://dbcrjbiqcmyhhmwzgewy.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_VmKBiyv6cCkNiVuHa9GWcg_KaXJtIXk";
+  const sb = (window.supabase && window.supabase.createClient) ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
+
+  let liveMap = {};        // "lineId||Station" -> {level, reports, last_at}
+  let liveIdx = new Set(); // station indices on the current line that are live
+  const LEVEL_C = { Lengang:0.35, Biasa:0.62, Sesak:0.9 };
+  const levelToC = lv => (LEVEL_C[lv] != null ? LEVEL_C[lv] : 0.5);
+
+  function clientId(){
+    let id = null;
+    try{ id = localStorage.getItem("mm_cid"); }catch(e){}
+    if(!id){ id = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : "c"+Math.random().toString(36).slice(2); try{ localStorage.setItem("mm_cid", id); }catch(e){} }
+    return id;
+  }
+  function timeAgo(iso){
+    const sec = Math.max(0, (Date.now() - new Date(iso).getTime())/1000);
+    if(sec < 60) return "just now";
+    return Math.round(sec/60) + " min ago";
+  }
+  function updateDataChip(){
+    const chip = document.getElementById("dataChip");
+    const n = Object.keys(liveMap).length;
+    if(n > 0){ chip.classList.add("live"); chip.textContent = n + " live commuter report" + (n>1?"s":"") + " now \u00b7 baseline forecast"; }
+    else { chip.classList.remove("live"); chip.textContent = "Baseline forecast \u00b7 no live reports yet \u2014 tap Reports to be first"; }
+  }
+  async function loadLive(){
+    if(!sb) return;
+    try{
+      const { data, error } = await sb.rpc("get_live_reports");
+      if(error) throw error;
+      liveMap = {};
+      (data||[]).forEach(r => { liveMap[r.line_id+"||"+r.station] = { level:r.level, reports:r.reports, last_at:r.last_at }; });
+      updateDataChip();
+      renderLine(); highlight();
+    }catch(e){ /* offline: keep showing baseline forecast */ }
+  }
+
+  // =============== V2: data.gov.my ridership ===============
+  // line id -> ridership_headline field. Ampang + Sri Petaling share one figure in the national dataset.
+  const RIDER_FIELD = { kj:"rail_lrt_kj", ag:"rail_lrt_ampang", sp:"rail_lrt_ampang", mr:"rail_monorail", kg:"rail_mrt_kajang", py:"rail_mrt_pjy" };
+  const RIDER_NOTE  = { ag:"Ampang + Sri Petaling combined", sp:"Ampang + Sri Petaling combined" };
+  let riderRows = null;
+  async function loadRidership(){
+    try{
+      const res = await fetch("https://api.data.gov.my/data-catalogue/?id=ridership_headline&sort=-date&limit=30");
+      riderRows = await res.json();
+      renderRidership(currentLine);
+    }catch(e){ /* leave hidden if the open-data API is unreachable */ }
+  }
+  function fmtK(n){ return n>=1000 ? Math.round(n/1000)+"k" : String(Math.round(n)); }
+  function renderRidership(L){
+    const box = document.getElementById("riderStat");
+    if(!box) return;
+    const field = RIDER_FIELD[L.id];
+    if(!riderRows || !field){
+      if(L.id === "sa"){
+        box.hidden = false;
+        box.innerHTML = '<div><div class="lbl">Daily ridership</div><div class="big">Baru!</div></div>' +
+          '<div class="lbl" style="max-width:36ch">LRT3 Shah Alam is too new for national ridership stats \u2014 we\u2019ll surface them once data.gov.my publishes the line.</div>' +
+          '<span class="src">via data.gov.my</span>';
+      } else { box.hidden = true; }
+      return;
+    }
+    const vals = riderRows.map(r=>r[field]).filter(v=>typeof v==="number");
+    if(vals.length < 8){ box.hidden = true; return; }
+    const latest = vals[0];
+    const last7 = vals.slice(0,7), prev7 = vals.slice(7,14);
+    const avg = a => a.reduce((t,v)=>t+v,0)/a.length;
+    const a1 = avg(last7), a0 = prev7.length ? avg(prev7) : a1;
+    const pct = a0 ? Math.round((a1-a0)/a0*100) : 0;
+    const spark = last7.slice().reverse();
+    const mx = Math.max.apply(null, spark);
+    const bars = spark.map(v=>'<i style="height:'+Math.max(3,Math.round(v/mx*30))+'px"></i>').join("");
+    const note = RIDER_NOTE[L.id] ? ' \u00b7 '+RIDER_NOTE[L.id] : '';
+    box.hidden = false;
+    box.innerHTML =
+      '<div><div class="lbl">Avg daily riders (7d)</div><div class="big">'+fmtK(a1)+'</div></div>' +
+      '<span class="trend '+(pct>=0?'up':'down')+'">'+(pct>=0?'\u25B2':'\u25BC')+' '+Math.abs(pct)+'% vs prev wk</span>' +
+      '<div class="spark" title="riders, last 7 days">'+bars+'</div>' +
+      '<div class="lbl">latest '+fmtK(latest)+' \u00b7 '+riderRows[0].date+note+'</div>' +
+      '<span class="src">official \u00b7 data.gov.my</span>';
+  }
+
   // init
   renderLine(); highlight();
+  loadLive();
+  loadRidership();
+  setInterval(loadLive, 45000);
 </script>
 </body>
 </html>

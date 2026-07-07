@@ -32,6 +32,7 @@
     --r:18px; --maxw:1040px;
   }
   *{margin:0;padding:0;box-sizing:border-box}
+  [hidden]{display:none !important}
   html{scroll-behavior:smooth}
   body{
     background:var(--santan);
@@ -278,12 +279,34 @@
   .rider-stat .spark{display:flex;align-items:flex-end;gap:2px;height:30px}
   .rider-stat .spark i{width:5px;background:var(--kaya);border-radius:2px 2px 0 0;opacity:.85;display:block}
 
+  /* ===== jom plan: train vs drive ===== */
+  .gt-sel{width:100%;font-family:'Baloo 2';font-weight:700;font-size:1rem;padding:12px;border:var(--bd);border-radius:12px;background:var(--kopi-cup);color:var(--milo);box-shadow:var(--shadow-sm);margin-top:18px;margin-bottom:16px}
+  .gt-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .gt-card{background:var(--kopi-cup);border:var(--bd);border-radius:var(--r);box-shadow:var(--shadow);padding:16px;display:flex;flex-direction:column}
+  .gt-card.pick{outline:4px solid var(--pandan);outline-offset:2px}
+  .gt-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px}
+  .gt-title{font-family:'Lilita One',cursive;font-size:1.15rem;display:flex;align-items:center;gap:8px}
+  .gt-tag{font-family:'Space Mono',monospace;font-weight:700;font-size:.62rem;border:2.5px solid var(--milo-deep);border-radius:999px;padding:3px 9px;white-space:nowrap}
+  .gt-tag.best{background:var(--pandan);color:#fff} .gt-tag.jam{background:#9FD9F6;color:var(--milo)}
+  .gt-body{display:flex;justify-content:space-between;align-items:flex-end;gap:8px}
+  .gt-big{font-family:'Lilita One',cursive;font-size:1.9rem;line-height:1}
+  .gt-big.dim{color:#A98E72}
+  .gt-meta{font-weight:600;font-size:.8rem;color:#6B4E37;margin-top:4px}
+  .gt-crowd{display:inline-flex;align-items:center;gap:5px;font-weight:800;font-size:.78rem;border:2.5px solid var(--milo-deep);border-radius:999px;padding:3px 10px}
+  .gt-crowd.c-g{background:var(--pandan);color:#fff} .gt-crowd.c-a{background:var(--kaya)} .gt-crowd.c-r{background:var(--sesak);color:#fff}
+  .gt-live{font-family:'Space Mono',monospace;font-size:.6rem;font-weight:700;margin-top:8px}
+  .gt-verdict{display:flex;gap:9px;align-items:flex-start;margin-top:18px;background:var(--kaya);border:var(--bd);border-radius:14px;box-shadow:var(--shadow-sm);padding:13px 16px;font-weight:700;font-size:.95rem;transform:rotate(-.4deg)}
+
+  /* ===== weather (Tier 1) ===== */
+  .wx-chip{display:inline-flex;align-items:center;gap:8px;margin-top:16px;font-family:'Space Mono',monospace;font-weight:700;font-size:.8rem;background:var(--kopi-cup);border:2.5px solid var(--milo-deep);border-radius:999px;padding:6px 14px;box-shadow:var(--shadow-sm)}
+  .wx-warn{margin-top:20px;background:var(--sesak);color:#fff;border:var(--bd);border-radius:14px;box-shadow:var(--shadow-sm);padding:14px 18px;font-weight:800;font-size:1rem;transform:rotate(-.4deg);display:flex;gap:10px;align-items:flex-start}
+
   @media (max-width:860px){
     .park-grid{grid-template-columns:1fr 1fr}
     .report-grid{grid-template-columns:1fr}
     .tab{padding:7px 10px;font-size:.78rem}
   }
-  @media (max-width:560px){.park-grid{grid-template-columns:1fr}}
+  @media (max-width:560px){.park-grid{grid-template-columns:1fr} .gt-grid{grid-template-columns:1fr}}
   @media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -302,6 +325,7 @@
     <a class="logo" href="#top"><span class="cup">🚈</span>Mana-Mana</a>
     <div class="tabs">
       <a class="tab t1" href="#live">Live Lines</a>
+      <a class="tab t1" href="#getthere">Plan</a>
       <a class="tab t2" href="#parking">Parking</a>
       <a class="tab t3" href="#reports">Reports</a>
     </div>
@@ -313,8 +337,11 @@
     <span class="sticker">✦ seluruh Klang Valley punya crowd check ✦</span>
     <h1>Every train line. One question: <span class="hl">sesak ke tak?</span></h1>
     <p class="hero-sub">Kelana Jaya, Ampang, Sri Petaling, the new Shah Alam Line, Monorail — pick your line, see which stations are packed, where got parking, and report from the platform.</p>
+    <div class="wx-chip" id="wxChip" hidden></div>
   </div>
 </header>
+
+<div class="wrap"><div class="wx-warn" id="wxWarn" hidden></div></div>
 
 <!-- ============ 1. LIVE LINES ============ -->
 <section id="live">
@@ -347,10 +374,22 @@
   </div>
 </section>
 
-<!-- ============ 2. PARKING ============ -->
+<!-- ============ 2. JOM PLAN (train vs drive) ============ -->
+<section id="getthere">
+  <div class="wrap">
+    <span class="sec-badge" style="background:var(--kaya);color:var(--milo)">02 · JOM PLAN</span>
+    <h2>Nak pergi mana? Train ke drive? 🤔</h2>
+    <p class="sec-sub">Pick your destination station — we'll check if the platform's lengang, and you tap through to see the drive.</p>
+    <select class="gt-sel" id="destSelect" aria-label="Destination station"></select>
+    <div class="gt-grid" id="gtGrid"></div>
+    <div class="gt-verdict" id="gtVerdict"></div>
+  </div>
+</section>
+
+<!-- ============ 3. PARKING ============ -->
 <section id="parking">
   <div class="wrap">
-    <span class="sec-badge" style="background:var(--bandung);color:var(--milo)">02 · PARKING</span>
+    <span class="sec-badge" style="background:var(--bandung);color:var(--milo)">03 · PARKING</span>
     <h2 id="parkTitle">Where can park? How much? 🚗</h2>
     <p class="sec-sub" id="parkSub"></p>
 
@@ -362,10 +401,10 @@
   </div>
 </section>
 
-<!-- ============ 3. REPORTS ============ -->
+<!-- ============ 4. REPORTS ============ -->
 <section id="reports">
   <div class="wrap">
-    <span class="sec-badge" style="background:var(--pandan)">03 · REPORTS</span>
+    <span class="sec-badge" style="background:var(--pandan)">04 · REPORTS</span>
     <div class="report-band">
       <div class="report-grid">
         <div>
@@ -531,9 +570,12 @@
     // baseline: real live-station-busyness feed where we have it, else time-of-day forecast
     crowds = L.stations.map((n,i)=>{
       const b = busyMap[n];
-      return (typeof b === "number") ? Math.max(.05, Math.min(.97, b/100)) : crowdFor(n,i,L.stations.length);
+      if(typeof b === "number") return Math.max(.05, Math.min(.97, b/100));
+      const r = riderScore[n];
+      if(typeof r === "number") return Math.max(.05, Math.min(.97, r));
+      return crowdFor(n,i,L.stations.length);
     });
-    crowdSrc = L.stations.map(n => (typeof busyMap[n] === "number") ? "busy" : "forecast");
+    crowdSrc = L.stations.map(n => (typeof busyMap[n] === "number") ? "busy" : (typeof riderScore[n] === "number" ? "ridership" : "forecast"));
     liveIdx = new Set();
     // freshest signal wins: a community report overrides the busyness baseline
     L.stations.forEach((n,i)=>{
@@ -568,6 +610,7 @@
     document.getElementById("lineHint").textContent = L.hint;
     renderParking(L);
     renderRidership(L);
+    renderGetThere(L);
     // sync report selects
     if(lineSelect.value !== L.name) lineSelect.value = L.name;
     fillStations(L);
@@ -590,7 +633,7 @@
       '<span class="t-crowd '+crowdClass(c)+'">'+face(c)+' '+lvl(c)+' now</span>' +
       (liveMap[currentLine.id+"||"+n]
         ? '<div class="t-live">\u25CF LIVE \u00b7 '+liveMap[currentLine.id+"||"+n].reports+' report'+(liveMap[currentLine.id+"||"+n].reports>1?'s':'')+' \u00b7 '+timeAgo(liveMap[currentLine.id+"||"+n].last_at)+'</div>'
-        : (crowdSrc[i]==="busy" ? '<div class="t-live" style="color:#6B4E37">\u25CF LIVE BUSYNESS \u00b7 via Google</div>' : '<div class="t-live" style="color:#B79D82">forecast \u00b7 no live data</div>')) +
+        : (crowdSrc[i]==="busy" ? '<div class="t-live" style="color:#6B4E37">\u25CF LIVE BUSYNESS \u00b7 via Google</div>' : crowdSrc[i]==="ridership" ? '<div class="t-live" style="color:#6B4E37">\u25d1 TYPICAL \u00b7 data.gov.my ridership</div>' : '<div class="t-live" style="color:#B79D82">forecast \u00b7 no live data</div>')) +
       '<div class="t-park">' +
         (P ? '🅿️ ' + P.bays + ' · ' + P.price
            : '<span class="no">No Park N\' Ride here — feeder bus or drop-off je.</span>') +
@@ -714,6 +757,65 @@
     });
   }
 
+  // =============== 1.5 JOM PLAN: train crowd vs drive ===============
+  // Reuses the already-computed crowds[] / crowdSrc[] for the current line, plus the
+  // no-API-key mapsUrl()/wazeUrl() deep-links. The only thing NOT live is the drive
+  // ETA number — see the Routes API stub below for the paid upgrade path.
+  const destSelect = document.getElementById("destSelect");
+  if(destSelect) destSelect.addEventListener("change", ()=>renderGetThere(currentLine));
+
+  function renderGetThere(L){
+    const grid = document.getElementById("gtGrid");
+    const verdict = document.getElementById("gtVerdict");
+    if(!grid || !destSelect || L.soon) return;
+    // keep the destination list in sync with the current line (persist selection within a line)
+    if(destSelect.dataset.line !== L.id){
+      destSelect.innerHTML = "";
+      L.stations.forEach(s=>{ const o=document.createElement("option"); o.textContent=s; destSelect.appendChild(o); });
+      destSelect.dataset.line = L.id;
+    }
+    const dest = destSelect.value || L.stations[0];
+    const i = L.stations.indexOf(dest);
+    const c = (crowds[i] != null) ? crowds[i] : 0.5;
+    const src = crowdSrc[i] || "forecast";
+    const quiet = c <= 0.5;   // lengang → train is the easy win
+    const liveTag =
+      src === "report" ? '<div class="gt-live" style="color:var(--pandan-deep)">● LIVE · commuter report</div>'
+      : src === "busy" ? '<div class="gt-live" style="color:#6B4E37">● LIVE BUSYNESS · via Google</div>'
+      : src === "ridership" ? '<div class="gt-live" style="color:#6B4E37">◑ TYPICAL · data.gov.my ridership</div>'
+      : '<div class="gt-live" style="color:#B79D82">forecast · no live data</div>';
+
+    grid.innerHTML =
+      '<div class="gt-card'+(quiet?' pick':'')+'">' +
+        '<div class="gt-head"><span class="gt-title">🚈 Naik train</span>' +
+          (quiet ? '<span class="gt-tag best">✓ BEST CALL</span>' : '') + '</div>' +
+        '<div class="gt-body"><div>' +
+          '<div class="gt-crowd '+crowdClass(c)+'">'+face(c)+' '+lvl(c)+'</div>' +
+          '<div class="gt-meta">'+L.name+' Line</div>' +
+        '</div></div>' + liveTag +
+      '</div>' +
+      '<div class="gt-card'+(quiet?'':' pick')+'">' +
+        '<div class="gt-head"><span class="gt-title">🚗 Drive</span>' +
+          '<span class="gt-tag jam">see traffic</span></div>' +
+        '<div class="gt-body"><div>' +
+          '<div class="gt-big dim">check</div>' +
+          '<div class="gt-meta">tap Waze for live traffic</div>' +
+        '</div></div>' +
+        '<div class="nav-btns">' +
+          '<a class="nav-btn gm" target="_blank" rel="noopener" href="'+mapsUrl(dest, L)+'">🗺️ Maps</a>' +
+          '<a class="nav-btn wz" target="_blank" rel="noopener" href="'+wazeUrl(dest, L)+'">🚗 Waze</a>' +
+        '</div>' +
+        // TODO(Routes API): call your Supabase edge fn -> {minutes, vsUsual};
+        // replace the "check" gt-big with "~NN min" and set the jam tag red when vsUsual > 10.
+      '</div>';
+
+    verdict.innerHTML = '<span>💡</span><span>' +
+      (quiet
+        ? dest+' looks '+lvl(c).toLowerCase()+' right now — naik train lah, skip the traffic &amp; parking.'
+        : dest+' is '+lvl(c).toLowerCase()+' at the moment — tap Waze, driving might actually be smoother.') +
+      '</span>';
+  }
+
   // =============== reports ===============
   const lineSelect = document.getElementById("lineSelect");
   const stationSelect = document.getElementById("stationSelect");
@@ -771,6 +873,7 @@
   let liveMap = {};        // "lineId||Station" -> {level, reports, last_at}
   let liveIdx = new Set(); // station indices on the current line that are live
   let busyMap = {};        // "Station" -> live busyness score 0-100 (from crowd.json)
+  let riderScore = {};     // "Station" -> typical busyness 0-1 from real ridership (station_ridership.json)
   let busyUpdated = null;  // ISO timestamp of the busyness feed
   const LEVEL_C = { Lengang:0.35, Biasa:0.62, Sesak:0.9 };
   const levelToC = lv => (LEVEL_C[lv] != null ? LEVEL_C[lv] : 0.5);
@@ -814,6 +917,9 @@
     } else if(busy > 0){
       chip.classList.add("live");
       chip.textContent = "Live station busyness \u00b7 " + busy + " stations \u00b7 tap Reports to add yours";
+    } else if(Object.keys(riderScore).length > 0){
+      chip.classList.remove("live");
+      chip.textContent = "Typical crowd from official ridership \u00b7 data.gov.my \u00b7 tap Reports for live";
     } else {
       chip.classList.remove("live");
       chip.textContent = "Baseline forecast \u00b7 no live data yet \u2014 tap Reports to be first";
@@ -877,13 +983,79 @@
       '<span class="src">official \u00b7 data.gov.my</span>';
   }
 
+  // =============== Tier 1: real per-station ridership baseline ===============
+  // station_ridership.json = avg daily throughput per station (data.gov.my OD data, CC BY),
+  // normalized 0-1. Used as the crowd baseline UNDER live busyness + community reports.
+  async function loadRiderBaseline(){
+    try{
+      const res = await fetch("station_ridership.json?t=" + Date.now());
+      if(!res.ok) return;
+      const j = await res.json();
+      const s = j.stations || {};
+      riderScore = {};
+      Object.keys(s).forEach(n => { riderScore[n] = s[n].score; });
+      renderLine(); highlight();
+    }catch(e){ /* fall back to time-of-day forecast */ }
+  }
+
+  // =============== Tier 1: weather (Open-Meteo now + official MET warnings) ===============
+  const WX_LAT = 3.139, WX_LON = 101.687;   // Kuala Lumpur
+  function wmo(code, day){
+    if(code===0)  return {e: day ? "☀️" : "🌙", t:"clear"};
+    if(code<=2)   return {e:"⛅", t:"partly cloudy"};
+    if(code===3)  return {e:"☁️", t:"cloudy"};
+    if(code<=48)  return {e:"🌫️", t:"foggy"};
+    if(code<=57)  return {e:"🌦️", t:"drizzle"};
+    if(code<=67)  return {e:"🌧️", t:"rain"};
+    if(code<=77)  return {e:"🌨️", t:"snow"};
+    if(code<=82)  return {e:"🌦️", t:"showers"};
+    if(code<=86)  return {e:"🌨️", t:"snow showers"};
+    return {e:"⛈️", t:"thunderstorm"};
+  }
+  async function loadWeather(){
+    try{
+      const r = await fetch("https://api.open-meteo.com/v1/forecast?latitude=" + WX_LAT + "&longitude=" + WX_LON + "&current=temperature_2m,precipitation,weather_code,is_day&timezone=Asia%2FKuala_Lumpur");
+      const j = await r.json(); const c = j.current; if(!c) return;
+      const w = wmo(c.weather_code, c.is_day);
+      const chip = document.getElementById("wxChip");
+      if(chip){
+        chip.textContent = w.e + " KL now " + Math.round(c.temperature_2m) + "° · " + w.t + (c.precipitation > 0 ? " · " + c.precipitation + "mm" : "");
+        chip.hidden = false;
+      }
+    }catch(e){ /* leave chip hidden if unreachable */ }
+  }
+  async function loadWxWarning(){
+    try{
+      const r = await fetch("https://api.data.gov.my/weather/warning/");
+      const arr = await r.json(); const now = Date.now();
+      const hit = (arr||[]).find(w=>{
+        const t = ((w.heading_en||"") + " " + (w.text_en||"") + " " + ((w.warning_issue||{}).title_en||"")).toLowerCase();
+        const rain = /thunderstorm|heavy rain|\brain\b|flood/.test(t);
+        const here = /selangor|kuala lumpur|klang|nationwide|peninsular/.test(t);
+        const active = !w.valid_to || new Date(w.valid_to).getTime() > now;
+        return rain && here && active;
+      });
+      const box = document.getElementById("wxWarn"); if(!box) return;
+      if(hit){
+        const until = hit.valid_to ? new Date(hit.valid_to).toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"}) : "";
+        box.innerHTML = '<span>⛈️</span><span>MET warning: ' + (hit.heading_en || "Thunderstorms & heavy rain") + (until ? " until " + until : "") + '. Jom check dulu — train beats flooded roads.</span>';
+        box.hidden = false;
+      } else { box.hidden = true; }
+    }catch(e){ /* no warning layer if unreachable */ }
+  }
+
   // init
   renderLine(); highlight();
   loadBusyness();
   loadLive();
   loadRidership();
+  loadRiderBaseline();
+  loadWeather();
+  loadWxWarning();
   setInterval(loadLive, 45000);
   setInterval(loadBusyness, 300000);   // busyness feed refreshes every 5 min
+  setInterval(loadWeather, 900000);    // weather every 15 min
+  setInterval(loadWxWarning, 900000);
 </script>
 </body>
 </html>

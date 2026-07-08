@@ -1,0 +1,22 @@
+{
+  "name": "Mana-Mana — sesak ke tak?",
+  "short_name": "Mana-Mana",
+  "description": "Klang Valley train crowd check · parking · live commuter reports.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FFF4DE",
+  "theme_color": "#3B2314",
+  "lang": "en-MY",
+  "categories": ["travel", "utilities", "navigation"],
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Live Lines", "url": "/#live", "description": "See which stations are sesak now" },
+    { "name": "Report", "url": "/#reports", "description": "Tell the next commuter — lengang, biasa or sesak" }
+  ]
+}

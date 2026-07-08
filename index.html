@@ -307,6 +307,50 @@
     .tab{padding:7px 10px;font-size:.78rem}
   }
   @media (max-width:560px){.park-grid{grid-template-columns:1fr} .gt-grid{grid-template-columns:1fr}}
+  /* ===== click-clarity cues ===== */
+  .point{
+    display:inline-flex;align-items:center;gap:7px;
+    font-family:'Space Mono',monospace;font-weight:700;font-size:.72rem;
+    background:var(--kaya);border:2.5px solid var(--milo-deep);border-radius:999px;
+    padding:6px 13px;box-shadow:var(--shadow-sm);color:var(--milo);
+    transform:rotate(-2deg);margin:14px 0 6px;
+    transition:opacity .3s ease, transform .3s ease;
+  }
+  .point.point-quiet{background:var(--santan)}
+  .point .arr{font-size:.95rem;line-height:1;display:inline-block}
+  .point.up .arr{animation:mm-bob 1.6s ease-in-out infinite}
+  .point.dismissed{opacity:0;transform:rotate(-2deg) scale(.88);pointer-events:none;margin-bottom:-32px}
+  @keyframes mm-bob{
+    0%,100%{transform:translateY(0)}
+    50%{transform:translateY(-3px)}
+  }
+  @keyframes mm-pulse{
+    0%,100%{box-shadow:0 0 0 0 rgba(255,201,60,.55)}
+    50%{box-shadow:0 0 0 10px rgba(255,201,60,0)}
+  }
+  .pulse-hint{animation:mm-pulse 1.9s ease-in-out infinite}
+  .tip .close{
+    position:absolute;top:6px;right:8px;
+    background:var(--kopi-cup);border:2.5px solid var(--milo-deep);border-radius:50%;
+    width:26px;height:26px;padding:0;line-height:1;
+    font-family:'Space Mono',monospace;font-weight:700;font-size:.95rem;color:var(--milo);
+    cursor:pointer;box-shadow:2px 2px 0 var(--milo-deep);
+    display:inline-flex;align-items:center;justify-content:center;
+    transition:transform .12s, box-shadow .12s;
+  }
+  .tip .close:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--milo-deep)}
+  .tip .close:active{transform:translate(1px,1px);box-shadow:0 0 0 var(--milo-deep)}
+  .tip .close:focus-visible{outline:2.5px dashed var(--teh);outline-offset:2px}
+  .tip .t-name{padding-right:30px}
+  .nav-btn.mr{background:var(--pandan);color:#fff;border-color:var(--pandan-deep)}
+  .thanks .outcome{
+    display:inline-block;margin-top:4px;font-family:'Baloo 2';font-size:.82rem;font-weight:700;
+    background:var(--santan);border:2px solid var(--milo-deep);border-radius:8px;padding:2px 8px;color:var(--milo);
+  }
+  @media (max-width:560px){
+    .point{font-size:.68rem;padding:5px 11px}
+  }
+
   @media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -353,6 +397,8 @@
 
     <div class="line-switch" id="lineSwitch" role="tablist" aria-label="Choose a train line"></div>
 
+    <div class="point up" id="pointLive" hidden><span class="arr">👇</span> Tap any station to see crowd &amp; parking</div>
+
     <div class="board">
       <div class="board-head">
         <div class="board-title"><span class="swatch" id="boardSwatch"></span><span id="boardName"></span></div>
@@ -381,6 +427,7 @@
     <h2>Nak pergi mana? Train ke drive? 🤔</h2>
     <p class="sec-sub">Pick your destination station — we'll check if the platform's lengang, and you tap through to see the drive.</p>
     <select class="gt-sel" id="destSelect" aria-label="Destination station"></select>
+    <div class="point" id="pointPlan" hidden><span class="arr">→</span> ① Pick where, ② tap Maps / Waze / Timetable</div>
     <div class="gt-grid" id="gtGrid"></div>
     <div class="gt-verdict" id="gtVerdict"></div>
   </div>
@@ -394,6 +441,8 @@
     <p class="sec-sub" id="parkSub"></p>
 
     <div class="free-banner" id="freeBanner" hidden></div>
+
+    <div class="point up" id="pointPark" hidden><span class="arr">👇</span> Tap Maps or Waze on your pick</div>
 
     <div class="park-grid" id="parkGrid"></div>
 
@@ -417,6 +466,7 @@
           <label for="stationSelect">Which station?</label>
           <select id="stationSelect" aria-label="Select your station"></select>
           <div class="vq">How packed is it right now?<small>YOUR REPORT EXPIRES AFTER 20 MIN</small></div>
+          <div class="point up point-quiet" id="pointVote" hidden><span class="arr">👇</span> Tap how it feels</div>
           <div class="vbtns">
             <button class="g" onclick="voted('Lengang')">Lengang<br>😌</button>
             <button class="a" onclick="voted('Biasa')">Biasa<br>🙂</button>
@@ -593,7 +643,7 @@
       b.addEventListener("focus", ()=>showTip(i));
       b.addEventListener("mouseleave", scheduleHideTip);
       b.addEventListener("blur", scheduleHideTip);
-      b.addEventListener("click", (e)=>{ e.preventDefault(); showTip(i, true); });
+      b.addEventListener("click", (e)=>{ e.preventDefault(); showTip(i, true); dismissSection("live"); });
       const fillH = Math.round(8 + c*92);
       b.innerHTML =
         '<div class="glass"><div class="foam" style="bottom:'+fillH+'%"></div><div class="fill" style="height:'+fillH+'%;background:'+col(c)+'"></div></div>' +
@@ -614,6 +664,7 @@
     // sync report selects
     if(lineSelect.value !== L.name) lineSelect.value = L.name;
     fillStations(L);
+    applyPulseHints();
   }
 
   // =============== station tooltip: hover or tap a stop ===============
@@ -629,6 +680,7 @@
     tipIdx = i; if(pin) tipPinned = true;
     const P = PARKINFO[n];
     tip.innerHTML =
+      '<button class="close" type="button" aria-label="Close">×</button>' +
       '<div class="t-name">'+n+'</div>' +
       '<span class="t-crowd '+crowdClass(c)+'">'+face(c)+' '+lvl(c)+' now</span>' +
       (liveMap[currentLine.id+"||"+n]
@@ -662,6 +714,11 @@
   }
   tip.addEventListener("mouseenter", ()=>clearTimeout(tipTimer));
   tip.addEventListener("mouseleave", ()=>{ tipPinned = false; scheduleHideTip(); });
+  tip.addEventListener("click", (e)=>{
+    if(e.target.closest(".close")){
+      tipPinned = false; tip.classList.remove("show"); tipIdx = -1;
+    }
+  });
   scroller.addEventListener("scroll", ()=>{ tipPinned = false; tip.classList.remove("show"); }, {passive:true});
   document.addEventListener("click", (e)=>{
     if(!tip.contains(e.target) && !e.target.closest(".stn")){
@@ -793,6 +850,9 @@
           '<div class="gt-crowd '+crowdClass(c)+'">'+face(c)+' '+lvl(c)+'</div>' +
           '<div class="gt-meta">'+L.name+' Line</div>' +
         '</div></div>' + liveTag +
+        '<div class="nav-btns">' +
+          '<a class="nav-btn mr" target="_blank" rel="noopener" href="https://myrapid.com.my/bus-train/rapid-kl/rapid-rail/">🚈 Timetable</a>' +
+        '</div>' +
       '</div>' +
       '<div class="gt-card'+(quiet?'':' pick')+'">' +
         '<div class="gt-head"><span class="gt-title">🚗 Drive</span>' +
@@ -830,13 +890,20 @@
     const L = LINES.find(x=>x.name===lineSelect.value);
     currentLine = L; renderLine(); highlight();
   });
+  function outcomeChip(station, level){
+    const bg = level==="Lengang" ? "var(--pandan)" : level==="Sesak" ? "var(--sesak)" : "var(--kaya)";
+    const fg = level==="Biasa" ? "var(--milo)" : "#fff";
+    return '<span class="outcome" style="background:'+bg+';color:'+fg+'">'+station+' → '+level+' '+face(levelToC(level))+'</span>';
+  }
   async function voted(level){
     const L = LINES.find(x=>x.name===lineSelect.value) || currentLine;
     const station = stationSelect.value;
     const thanks = document.getElementById("thanks");
     thanks.style.color = "#3E9A4C";
+    dismissSection("vote");
+    const chip = outcomeChip(station, level);
     if(!sb){
-      thanks.textContent = "TERIMA KASIH BOSS! " + station.toUpperCase() + " → “" + level.toUpperCase() + "” recorded ✓";
+      thanks.innerHTML = "TERIMA KASIH BOSS! You just moved " + chip + " on the strip ↑";
       return;
     }
     thanks.textContent = "Sending…";
@@ -845,7 +912,7 @@
       if(error) throw error;
       track('report_submit', { line:L.id, station, level });
       liveMap[L.id+"||"+station] = { level, reports:((liveMap[L.id+"||"+station]||{}).reports||0)+1, last_at:new Date().toISOString() };
-      thanks.textContent = "TERIMA KASIH BOSS! " + station.toUpperCase() + " → “" + level.toUpperCase() + "” recorded ✓";
+      thanks.innerHTML = "TERIMA KASIH BOSS! You just moved " + chip + " on the strip ↑";
       if(L.id===currentLine.id){ renderLine(); highlight(); }
       updateDataChip();
       loadLive();
@@ -1044,8 +1111,71 @@
     }catch(e){ /* no warning layer if unreachable */ }
   }
 
+  // =============== click-clarity cues (first-visit only) ===============
+  const CUES_KEY = "mm_seen_v1";
+  const dismissed = { live:false, plan:false, park:false, vote:false };
+  let cuesActive = false;
+  function cuesSeen(){ try { return localStorage.getItem(CUES_KEY) === "1"; } catch(e){ return false; } }
+  function markCuesSeen(){ try { localStorage.setItem(CUES_KEY, "1"); } catch(e){} }
+  function initCues(){
+    if(cuesSeen()) return;
+    cuesActive = true;
+    ["pointLive","pointPlan","pointPark","pointVote"].forEach(id=>{
+      const el = document.getElementById(id); if(el) el.hidden = false;
+    });
+    applyPulseHints();
+    // fallback for private-mode users where markCuesSeen() no-ops
+    setTimeout(()=>{ if(cuesActive) dismissAll(); }, 20000);
+  }
+  function applyPulseHints(){
+    if(!cuesActive) return;
+    if(!dismissed.live){
+      const stns = strip.querySelectorAll(".stn");
+      if(stns.length){
+        const g = stns[Math.floor(stns.length/2)].querySelector(".glass");
+        if(g) g.classList.add("pulse-hint");
+      }
+    }
+    if(!dismissed.park){
+      const firstPark = document.querySelector("#parkGrid .pk .nav-btns");
+      if(firstPark) firstPark.classList.add("pulse-hint");
+    }
+    if(!dismissed.vote){
+      const vb = document.querySelector(".vbtns");
+      if(vb) vb.classList.add("pulse-hint");
+    }
+  }
+  function dismissSection(sec){
+    if(!cuesActive || dismissed[sec]) return;
+    dismissed[sec] = true;
+    markCuesSeen();
+    const pointId = { live:"pointLive", plan:"pointPlan", park:"pointPark", vote:"pointVote" }[sec];
+    const p = pointId && document.getElementById(pointId);
+    if(p) p.classList.add("dismissed");
+    const pulseSel = { live:"#strip .pulse-hint", park:"#parkGrid .pulse-hint", vote:".vbtns.pulse-hint" }[sec];
+    if(pulseSel) document.querySelectorAll(pulseSel).forEach(el=>el.classList.remove("pulse-hint"));
+  }
+  function dismissAll(){
+    cuesActive = false; markCuesSeen();
+    ["live","plan","park","vote"].forEach(s=>{
+      dismissed[s] = true;
+      const p = document.getElementById({live:"pointLive",plan:"pointPlan",park:"pointPark",vote:"pointVote"}[s]);
+      if(p) p.classList.add("dismissed");
+    });
+    document.querySelectorAll(".pulse-hint").forEach(el=>el.classList.remove("pulse-hint"));
+  }
+  // dismiss triggers for sections rendered dynamically: delegate on the grids
+  document.getElementById("parkGrid").addEventListener("click", (e)=>{
+    if(e.target.closest(".nav-btn")) dismissSection("park");
+  });
+  document.getElementById("gtGrid").addEventListener("click", (e)=>{
+    if(e.target.closest(".nav-btn")) dismissSection("plan");
+  });
+  if(destSelect) destSelect.addEventListener("change", ()=>dismissSection("plan"));
+
   // init
   renderLine(); highlight();
+  initCues();
   loadBusyness();
   loadLive();
   loadRidership();

@@ -6,6 +6,10 @@
 <title>Mana-Mana ☕ Klang Valley train crowd check</title>
 <meta name="description" content="Jom check dulu — crowd levels for every LRT, Monorail (and soon MRT) line in the Klang Valley. Parking info & live commuter reports.">
 <link rel="canonical" href="https://manamana.io/">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#3B2314">
+<link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
+<link rel="apple-touch-icon" href="/icons/icon-192.png">
 <meta property="og:site_name" content="Mana-Mana">
 <meta property="og:title" content="Mana-Mana — sesak ke tak? Klang Valley train crowd check">
 <meta property="og:description" content="Check which LRT & Monorail stations are packed, where got parking and harga, and report live from the platform. manamana.io">
@@ -307,6 +311,95 @@
     .tab{padding:7px 10px;font-size:.78rem}
   }
   @media (max-width:560px){.park-grid{grid-template-columns:1fr} .gt-grid{grid-template-columns:1fr}}
+  /* ===== click-clarity cues ===== */
+  .point{
+    display:inline-flex;align-items:center;gap:7px;
+    font-family:'Space Mono',monospace;font-weight:700;font-size:.72rem;
+    background:var(--kaya);border:2.5px solid var(--milo-deep);border-radius:999px;
+    padding:6px 13px;box-shadow:var(--shadow-sm);color:var(--milo);
+    transform:rotate(-2deg);margin:14px 0 6px;
+    transition:opacity .3s ease, transform .3s ease;
+  }
+  .point.point-quiet{background:var(--santan)}
+  .point .arr{font-size:.95rem;line-height:1;display:inline-block}
+  .point.up .arr{animation:mm-bob 1.6s ease-in-out infinite}
+  .point.dismissed{opacity:0;transform:rotate(-2deg) scale(.88);pointer-events:none;margin-bottom:-32px}
+  @keyframes mm-bob{
+    0%,100%{transform:translateY(0)}
+    50%{transform:translateY(-3px)}
+  }
+  @keyframes mm-pulse{
+    0%,100%{box-shadow:0 0 0 0 rgba(255,201,60,.55)}
+    50%{box-shadow:0 0 0 10px rgba(255,201,60,0)}
+  }
+  .pulse-hint{animation:mm-pulse 1.9s ease-in-out infinite}
+  .tip .close{
+    position:absolute;top:6px;right:8px;
+    background:var(--kopi-cup);border:2.5px solid var(--milo-deep);border-radius:50%;
+    width:26px;height:26px;padding:0;line-height:1;
+    font-family:'Space Mono',monospace;font-weight:700;font-size:.95rem;color:var(--milo);
+    cursor:pointer;box-shadow:2px 2px 0 var(--milo-deep);
+    display:inline-flex;align-items:center;justify-content:center;
+    transition:transform .12s, box-shadow .12s;
+  }
+  .tip .close:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--milo-deep)}
+  .tip .close:active{transform:translate(1px,1px);box-shadow:0 0 0 var(--milo-deep)}
+  .tip .close:focus-visible{outline:2.5px dashed var(--teh);outline-offset:2px}
+  .tip .t-name{padding-right:30px}
+  .nav-btn.mr{background:var(--pandan);color:#fff;border-color:var(--pandan-deep)}
+  .thanks .outcome{
+    display:inline-block;margin-top:4px;font-family:'Baloo 2';font-size:.82rem;font-weight:700;
+    background:var(--santan);border:2px solid var(--milo-deep);border-radius:8px;padding:2px 8px;color:var(--milo);
+  }
+  @media (max-width:560px){
+    .point{font-size:.68rem;padding:5px 11px}
+  }
+
+  /* ===== My commute widget ===== */
+  .commute-sec{padding:22px 0 0}
+  .commute-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+  .commute-title{font-family:'Lilita One',cursive;font-size:1.15rem;display:flex;align-items:center;gap:8px}
+  .commute-title .st{transform:rotate(-8deg);display:inline-block}
+  .install-chip{
+    font-family:'Space Mono',monospace;font-weight:800;font-size:.76rem;
+    padding:7px 12px;border:var(--bd);border-radius:999px;
+    background:var(--kaya);color:var(--milo);cursor:pointer;
+    box-shadow:var(--shadow-sm);transition:transform .12s, box-shadow .12s;
+  }
+  .install-chip:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--milo-deep)}
+  .install-chip:active{transform:translate(1px,1px);box-shadow:1px 1px 0 var(--milo-deep)}
+  .install-chip:focus-visible{outline:3px dashed var(--teh);outline-offset:3px}
+  .install-chip.ios{background:var(--santan);cursor:default}
+  .commute-list{display:grid;grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));gap:14px;margin-top:14px}
+  .commute-empty{
+    margin-top:14px;background:var(--kopi-cup);border:var(--bd);border-radius:14px;
+    box-shadow:var(--shadow-sm);padding:14px 16px;font-weight:600;font-size:.9rem;color:#6B4E37;
+  }
+  .cc-card{
+    background:var(--kopi-cup);border:var(--bd);border-radius:var(--r);
+    box-shadow:var(--shadow-sm);padding:14px 16px;position:relative;
+    transition:transform .12s;
+  }
+  .cc-card:hover{transform:translate(-1px,-1px)}
+  .cc-line{font-family:'Space Mono',monospace;font-weight:700;font-size:.66rem;color:#6B4E37;text-transform:uppercase;letter-spacing:.05em}
+  .cc-name{font-family:'Lilita One',cursive;font-size:1.05rem;line-height:1.15;padding-right:26px;margin-top:2px}
+  .cc-chip{display:inline-flex;align-items:center;gap:5px;margin-top:8px;font-weight:800;font-size:.8rem;border:2.5px solid var(--milo-deep);border-radius:999px;padding:2px 10px}
+  .cc-chip.c-g{background:var(--pandan);color:#fff}
+  .cc-chip.c-a{background:var(--kaya)}
+  .cc-chip.c-r{background:var(--sesak);color:#fff}
+  .cc-chip.c-none{background:#EFE4CE;color:#6B4E37}
+  .cc-src{margin-top:6px;font-family:'Space Mono',monospace;font-size:.62rem;color:#8B6D50}
+  .cc-x{
+    position:absolute;top:6px;right:8px;background:none;border:none;
+    font-family:'Space Mono',monospace;font-weight:700;font-size:1.1rem;color:#8B6D50;
+    cursor:pointer;padding:2px 8px;line-height:1;
+  }
+  .cc-x:hover{color:var(--milo)}
+  .cc-x:focus-visible{outline:2.5px dashed var(--teh);outline-offset:2px;border-radius:6px}
+  /* ☆ Save button in station tooltip */
+  .nav-btn.sv{background:var(--milo);color:var(--santan);border-color:var(--milo-deep);cursor:pointer;font:inherit;font-weight:800;font-size:.74rem}
+  .nav-btn.sv.saved{background:var(--kaya);color:var(--milo)}
+
   @media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -343,6 +436,20 @@
 
 <div class="wrap"><div class="wx-warn" id="wxWarn" hidden></div></div>
 
+<!-- ============ MY COMMUTE (saved stations) ============ -->
+<section id="commute" class="commute-sec">
+  <div class="wrap">
+    <div class="commute-head">
+      <span class="commute-title"><span class="st">⭐</span> My commute</span>
+      <button class="install-chip" id="installChip" hidden onclick="installApp()">📲 Install app</button>
+    </div>
+    <div class="commute-list" id="commuteList"></div>
+    <div class="commute-empty" id="commuteEmpty">
+      Save your usual station — tap <b>☆ Save</b> on any station below and it'll show up here with live status.
+    </div>
+  </div>
+</section>
+
 <!-- ============ 1. LIVE LINES ============ -->
 <section id="live">
   <div class="wrap">
@@ -352,6 +459,8 @@
     <span class="demo-chip" id="dataChip">Baseline forecast · loading live reports…</span>
 
     <div class="line-switch" id="lineSwitch" role="tablist" aria-label="Choose a train line"></div>
+
+    <div class="point up" id="pointLive" hidden><span class="arr">👇</span> Tap any station to see crowd &amp; parking</div>
 
     <div class="board">
       <div class="board-head">
@@ -381,6 +490,7 @@
     <h2>Nak pergi mana? Train ke drive? 🤔</h2>
     <p class="sec-sub">Pick your destination station — we'll check if the platform's lengang, and you tap through to see the drive.</p>
     <select class="gt-sel" id="destSelect" aria-label="Destination station"></select>
+    <div class="point" id="pointPlan" hidden><span class="arr">→</span> ① Pick where, ② tap Maps / Waze / Timetable</div>
     <div class="gt-grid" id="gtGrid"></div>
     <div class="gt-verdict" id="gtVerdict"></div>
   </div>
@@ -394,6 +504,8 @@
     <p class="sec-sub" id="parkSub"></p>
 
     <div class="free-banner" id="freeBanner" hidden></div>
+
+    <div class="point up" id="pointPark" hidden><span class="arr">👇</span> Tap Maps or Waze on your pick</div>
 
     <div class="park-grid" id="parkGrid"></div>
 
@@ -417,6 +529,7 @@
           <label for="stationSelect">Which station?</label>
           <select id="stationSelect" aria-label="Select your station"></select>
           <div class="vq">How packed is it right now?<small>YOUR REPORT EXPIRES AFTER 20 MIN</small></div>
+          <div class="point up point-quiet" id="pointVote" hidden><span class="arr">👇</span> Tap how it feels</div>
           <div class="vbtns">
             <button class="g" onclick="voted('Lengang')">Lengang<br>😌</button>
             <button class="a" onclick="voted('Biasa')">Biasa<br>🙂</button>
@@ -593,7 +706,7 @@
       b.addEventListener("focus", ()=>showTip(i));
       b.addEventListener("mouseleave", scheduleHideTip);
       b.addEventListener("blur", scheduleHideTip);
-      b.addEventListener("click", (e)=>{ e.preventDefault(); showTip(i, true); });
+      b.addEventListener("click", (e)=>{ e.preventDefault(); showTip(i, true); dismissSection("live"); });
       const fillH = Math.round(8 + c*92);
       b.innerHTML =
         '<div class="glass"><div class="foam" style="bottom:'+fillH+'%"></div><div class="fill" style="height:'+fillH+'%;background:'+col(c)+'"></div></div>' +
@@ -614,6 +727,8 @@
     // sync report selects
     if(lineSelect.value !== L.name) lineSelect.value = L.name;
     fillStations(L);
+    applyPulseHints();
+    if (typeof commute !== 'undefined') commute.render();
   }
 
   // =============== station tooltip: hover or tap a stop ===============
@@ -629,6 +744,7 @@
     tipIdx = i; if(pin) tipPinned = true;
     const P = PARKINFO[n];
     tip.innerHTML =
+      '<button class="close" type="button" aria-label="Close">×</button>' +
       '<div class="t-name">'+n+'</div>' +
       '<span class="t-crowd '+crowdClass(c)+'">'+face(c)+' '+lvl(c)+' now</span>' +
       (liveMap[currentLine.id+"||"+n]
@@ -641,6 +757,7 @@
       '<div class="nav-btns">' +
         '<a class="nav-btn gm" target="_blank" rel="noopener" href="'+mapsUrl(n, L)+'">🗺️ Maps</a>' +
         '<a class="nav-btn wz" target="_blank" rel="noopener" href="'+wazeUrl(n, L)+'">🚗 Waze</a>' +
+        '<button class="nav-btn sv'+(commute.has(L.id,n)?' saved':'')+'" type="button" data-line="'+L.id+'" data-station="'+n.replace(/"/g,'&quot;')+'">'+(commute.has(L.id,n)?'★ Saved':'☆ Save')+'</button>' +
       '</div>';
     positionTip();
     tip.classList.add("show");
@@ -662,6 +779,11 @@
   }
   tip.addEventListener("mouseenter", ()=>clearTimeout(tipTimer));
   tip.addEventListener("mouseleave", ()=>{ tipPinned = false; scheduleHideTip(); });
+  tip.addEventListener("click", (e)=>{
+    if(e.target.closest(".close")){
+      tipPinned = false; tip.classList.remove("show"); tipIdx = -1;
+    }
+  });
   scroller.addEventListener("scroll", ()=>{ tipPinned = false; tip.classList.remove("show"); }, {passive:true});
   document.addEventListener("click", (e)=>{
     if(!tip.contains(e.target) && !e.target.closest(".stn")){
@@ -793,6 +915,9 @@
           '<div class="gt-crowd '+crowdClass(c)+'">'+face(c)+' '+lvl(c)+'</div>' +
           '<div class="gt-meta">'+L.name+' Line</div>' +
         '</div></div>' + liveTag +
+        '<div class="nav-btns">' +
+          '<a class="nav-btn mr" target="_blank" rel="noopener" href="https://myrapid.com.my/bus-train/rapid-kl/rapid-rail/">🚈 Timetable</a>' +
+        '</div>' +
       '</div>' +
       '<div class="gt-card'+(quiet?'':' pick')+'">' +
         '<div class="gt-head"><span class="gt-title">🚗 Drive</span>' +
@@ -830,13 +955,20 @@
     const L = LINES.find(x=>x.name===lineSelect.value);
     currentLine = L; renderLine(); highlight();
   });
+  function outcomeChip(station, level){
+    const bg = level==="Lengang" ? "var(--pandan)" : level==="Sesak" ? "var(--sesak)" : "var(--kaya)";
+    const fg = level==="Biasa" ? "var(--milo)" : "#fff";
+    return '<span class="outcome" style="background:'+bg+';color:'+fg+'">'+station+' → '+level+' '+face(levelToC(level))+'</span>';
+  }
   async function voted(level){
     const L = LINES.find(x=>x.name===lineSelect.value) || currentLine;
     const station = stationSelect.value;
     const thanks = document.getElementById("thanks");
     thanks.style.color = "#3E9A4C";
+    dismissSection("vote");
+    const chip = outcomeChip(station, level);
     if(!sb){
-      thanks.textContent = "TERIMA KASIH BOSS! " + station.toUpperCase() + " → “" + level.toUpperCase() + "” recorded ✓";
+      thanks.innerHTML = "TERIMA KASIH BOSS! You just moved " + chip + " on the strip ↑";
       return;
     }
     thanks.textContent = "Sending…";
@@ -845,7 +977,7 @@
       if(error) throw error;
       track('report_submit', { line:L.id, station, level });
       liveMap[L.id+"||"+station] = { level, reports:((liveMap[L.id+"||"+station]||{}).reports||0)+1, last_at:new Date().toISOString() };
-      thanks.textContent = "TERIMA KASIH BOSS! " + station.toUpperCase() + " → “" + level.toUpperCase() + "” recorded ✓";
+      thanks.innerHTML = "TERIMA KASIH BOSS! You just moved " + chip + " on the strip ↑";
       if(L.id===currentLine.id){ renderLine(); highlight(); }
       updateDataChip();
       loadLive();
@@ -1044,8 +1176,218 @@
     }catch(e){ /* no warning layer if unreachable */ }
   }
 
+  // =============== click-clarity cues (first-visit only) ===============
+  const CUES_KEY = "mm_seen_v1";
+  const dismissed = { live:false, plan:false, park:false, vote:false };
+  let cuesActive = false;
+  function cuesSeen(){ try { return localStorage.getItem(CUES_KEY) === "1"; } catch(e){ return false; } }
+  function markCuesSeen(){ try { localStorage.setItem(CUES_KEY, "1"); } catch(e){} }
+  function initCues(){
+    if(cuesSeen()) return;
+    cuesActive = true;
+    ["pointLive","pointPlan","pointPark","pointVote"].forEach(id=>{
+      const el = document.getElementById(id); if(el) el.hidden = false;
+    });
+    applyPulseHints();
+    // fallback for private-mode users where markCuesSeen() no-ops
+    setTimeout(()=>{ if(cuesActive) dismissAll(); }, 20000);
+  }
+  function applyPulseHints(){
+    if(!cuesActive) return;
+    if(!dismissed.live){
+      const stns = strip.querySelectorAll(".stn");
+      if(stns.length){
+        const g = stns[Math.floor(stns.length/2)].querySelector(".glass");
+        if(g) g.classList.add("pulse-hint");
+      }
+    }
+    if(!dismissed.park){
+      const firstPark = document.querySelector("#parkGrid .pk .nav-btns");
+      if(firstPark) firstPark.classList.add("pulse-hint");
+    }
+    if(!dismissed.vote){
+      const vb = document.querySelector(".vbtns");
+      if(vb) vb.classList.add("pulse-hint");
+    }
+  }
+  function dismissSection(sec){
+    if(!cuesActive || dismissed[sec]) return;
+    dismissed[sec] = true;
+    markCuesSeen();
+    const pointId = { live:"pointLive", plan:"pointPlan", park:"pointPark", vote:"pointVote" }[sec];
+    const p = pointId && document.getElementById(pointId);
+    if(p) p.classList.add("dismissed");
+    const pulseSel = { live:"#strip .pulse-hint", park:"#parkGrid .pulse-hint", vote:".vbtns.pulse-hint" }[sec];
+    if(pulseSel) document.querySelectorAll(pulseSel).forEach(el=>el.classList.remove("pulse-hint"));
+  }
+  function dismissAll(){
+    cuesActive = false; markCuesSeen();
+    ["live","plan","park","vote"].forEach(s=>{
+      dismissed[s] = true;
+      const p = document.getElementById({live:"pointLive",plan:"pointPlan",park:"pointPark",vote:"pointVote"}[s]);
+      if(p) p.classList.add("dismissed");
+    });
+    document.querySelectorAll(".pulse-hint").forEach(el=>el.classList.remove("pulse-hint"));
+  }
+  // dismiss triggers for sections rendered dynamically: delegate on the grids
+  document.getElementById("parkGrid").addEventListener("click", (e)=>{
+    if(e.target.closest(".nav-btn")) dismissSection("park");
+  });
+  document.getElementById("gtGrid").addEventListener("click", (e)=>{
+    if(e.target.closest(".nav-btn")) dismissSection("plan");
+  });
+  if(destSelect) destSelect.addEventListener("change", ()=>dismissSection("plan"));
+
+  // =============== PWA: service worker + install prompt ===============
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js').catch(err => console.warn('SW registration failed', err));
+    });
+  }
+  let deferredInstall = null;
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredInstall = e;
+    const chip = document.getElementById('installChip');
+    if (chip) { chip.hidden = false; chip.textContent = '📲 Install app'; chip.classList.remove('ios'); }
+  });
+  window.addEventListener('appinstalled', () => {
+    const chip = document.getElementById('installChip'); if (chip) chip.hidden = true;
+  });
+  async function installApp(){
+    if (deferredInstall) {
+      deferredInstall.prompt();
+      const { outcome } = await deferredInstall.userChoice;
+      if (outcome !== 'dismissed') { const chip = document.getElementById('installChip'); if (chip) chip.hidden = true; }
+      deferredInstall = null;
+    }
+  }
+  // iOS Safari doesn't fire beforeinstallprompt — show a static hint instead.
+  (function iOSHint(){
+    const ua = navigator.userAgent || '';
+    const isIOS = /iPad|iPhone|iPod/.test(ua) && !window.MSStream;
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+    if (isIOS && !isStandalone) {
+      const chip = document.getElementById('installChip');
+      if (chip) { chip.hidden = false; chip.textContent = '📲 Share → Add to Home Screen'; chip.classList.add('ios'); chip.onclick = null; }
+    }
+  })();
+
+  // =============== My commute (saved stations) ===============
+  const commute = {
+    items: [],
+    keySet: new Set(),
+    key(line_id, station){ return line_id + '||' + station; },
+    has(line_id, station){ return this.keySet.has(this.key(line_id, station)); },
+    async load(){
+      try {
+        const raw = localStorage.getItem('mm_commute_v1');
+        if (raw) {
+          this.items = JSON.parse(raw);
+          this.keySet = new Set(this.items.map(it => this.key(it.line_id, it.station)));
+          this.render();
+        }
+      } catch (e) {}
+      if (!sb) return;
+      try {
+        const { data, error } = await sb.from('saved_stations').select('id,line_id,station').eq('client_id', clientId());
+        if (error) throw error;
+        this.items = (data || []).map(r => ({ id: r.id, line_id: r.line_id, station: r.station }));
+        this.keySet = new Set(this.items.map(it => this.key(it.line_id, it.station)));
+        this.persist();
+        this.render();
+      } catch (e) { /* stay on local */ }
+    },
+    persist(){ try { localStorage.setItem('mm_commute_v1', JSON.stringify(this.items)); } catch (e) {} },
+    async add(line_id, station){
+      if (this.has(line_id, station)) return;
+      this.items.push({ id: null, line_id, station });
+      this.keySet.add(this.key(line_id, station));
+      this.render();
+      this.persist();
+      if (!sb) return;
+      try {
+        const { data, error } = await sb.from('saved_stations').insert({ client_id: clientId(), line_id, station }).select('id').single();
+        if (error) throw error;
+        const it = this.items.find(x => x.line_id === line_id && x.station === station);
+        if (it) it.id = data.id;
+        this.persist();
+      } catch (e) { /* keep local */ }
+    },
+    async remove(line_id, station){
+      this.items = this.items.filter(it => !(it.line_id === line_id && it.station === station));
+      this.keySet.delete(this.key(line_id, station));
+      this.render();
+      this.persist();
+      if (!sb) return;
+      try {
+        await sb.from('saved_stations').delete().eq('client_id', clientId()).eq('line_id', line_id).eq('station', station);
+      } catch (e) {}
+    },
+    levelForSaved(it){
+      const k = it.line_id + '||' + it.station;
+      if (liveMap[k]) return { level: liveMap[k].level, src: 'report' };
+      if (typeof busyMap[it.station] === 'number') {
+        const c = Math.max(.05, Math.min(.97, busyMap[it.station] / 100));
+        return { level: lvl(c), src: 'busy' };
+      }
+      if (typeof riderScore[it.station] === 'number') {
+        return { level: lvl(riderScore[it.station]), src: 'typical' };
+      }
+      return { level: null, src: null };
+    },
+    render(){
+      const list = document.getElementById('commuteList');
+      const empty = document.getElementById('commuteEmpty');
+      if (!list) return;
+      if (!this.items.length) { list.innerHTML = ''; if (empty) empty.style.display = ''; return; }
+      if (empty) empty.style.display = 'none';
+      list.innerHTML = this.items.map(it => {
+        const L = LINES.find(x => x.id === it.line_id);
+        const state = this.levelForSaved(it);
+        const c = state.level ? levelToC(state.level) : 0.5;
+        const cls = state.level ? crowdClass(c) : 'c-none';
+        const chipStr = state.level
+          ? '<span class="cc-chip '+cls+'">'+face(c)+' '+state.level+'</span>'
+          : '<span class="cc-chip c-none">no data yet</span>';
+        const srcTxt =
+          state.src === 'report'  ? '● live commuter report'  :
+          state.src === 'busy'    ? '● live busyness · google' :
+          state.src === 'typical' ? '◑ typical · data.gov.my ridership' :
+                                    'baseline';
+        const stationAttr = it.station.replace(/"/g, '&quot;');
+        return '<div class="cc-card">' +
+          '<button class="cc-x" aria-label="Remove" data-line="'+it.line_id+'" data-station="'+stationAttr+'">×</button>' +
+          '<div class="cc-line">'+(L ? L.name : it.line_id)+'</div>' +
+          '<div class="cc-name">'+it.station+'</div>' +
+          chipStr +
+          '<div class="cc-src">'+srcTxt+'</div>' +
+        '</div>';
+      }).join('');
+    }
+  };
+
+  // Delegated handlers for save (tooltip) and remove (commute card)
+  document.addEventListener('click', (e) => {
+    const sv = e.target.closest('.nav-btn.sv');
+    if (sv) {
+      const line = sv.dataset.line, station = sv.dataset.station;
+      if (commute.has(line, station)) commute.remove(line, station);
+      else commute.add(line, station);
+      // Re-render the currently open tip so the button reflects the new state
+      if (tipIdx >= 0) showTip(tipIdx, tipPinned);
+      return;
+    }
+    const cx = e.target.closest('.cc-x');
+    if (cx) {
+      commute.remove(cx.dataset.line, cx.dataset.station);
+    }
+  });
+
   // init
   renderLine(); highlight();
+  initCues();
+  commute.load();
   loadBusyness();
   loadLive();
   loadRidership();

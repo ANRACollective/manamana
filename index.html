@@ -355,6 +355,47 @@
     .point{font-size:.68rem;padding:5px 11px}
   }
 
+  /* ===== data-source + off-hours states ===== */
+  /* Recolor the station node by data source, so eyes land on what's live vs forecast */
+  .stn.src-report    .node{background:var(--pandan);border-color:var(--pandan-deep);box-shadow:0 0 0 3px rgba(93,184,106,.35)}
+  .stn.src-busy      .node{background:#9FD9F6;border-color:#5A9DC4}
+  .stn.src-ridership .node{background:var(--kaya);border-color:var(--milo-deep)}
+  .stn.src-forecast  .node{background:var(--kopi-cup);border-color:#B79D82}
+  /* Forecast is a guess, so its fill is dimmed and doesn't try to look authoritative */
+  .stn.src-forecast .fill{opacity:.35}
+  .stn.src-forecast .foam{opacity:.5}
+  /* Off-hours: empty glasses, no face, no color — the strip should read "closed", not "lengang" */
+  .strip.offhours .stn .fill,
+  .strip.offhours .stn .foam{display:none}
+  .strip.offhours .stn .face{visibility:hidden}
+  .strip.offhours .stn .node{background:#D9C7A5;border-color:#B79D82;box-shadow:none}
+  .strip.offhours .stn .glass{background:#EFE4CE;opacity:.7}
+  .offhours-banner{
+    margin:16px 0 6px;background:var(--milo);color:var(--kaya);border:var(--bd);border-radius:14px;
+    box-shadow:var(--shadow-sm);padding:14px 18px;font-weight:800;font-size:1rem;transform:rotate(-.4deg);
+    display:flex;gap:10px;align-items:flex-start;
+  }
+  .offhours-banner .lbl{font-family:'Space Mono',monospace;font-weight:700;font-size:.7rem;color:#EAD9C2;text-transform:uppercase;letter-spacing:.05em;margin-top:4px}
+  .offhours-banner b{color:#fff}
+  /* Reports section during off-hours: kill the buttons and explain */
+  .vbtns.paused button{opacity:.35;pointer-events:none;filter:grayscale(1)}
+  .vbtns.paused{position:relative}
+  .vbtns.paused::after{
+    content:"\1F319 Reports pause overnight — back at 6:00 AM";
+    position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+    font-family:'Baloo 2';font-weight:800;font-size:.9rem;color:var(--kaya);
+    background:var(--milo);border:var(--bd);border-radius:10px;padding:8px 14px;
+    box-shadow:var(--shadow-sm);white-space:nowrap;
+  }
+  /* Source key row in the board head */
+  .src-key{display:flex;gap:12px;flex-wrap:wrap;margin-top:8px;font-family:'Space Mono',monospace;font-size:.66rem;font-weight:700;color:#6B4E37}
+  .src-key span{display:inline-flex;align-items:center;gap:5px}
+  .src-key i{width:9px;height:9px;border-radius:50%;border:2px solid var(--milo-deep);display:inline-block}
+  .src-key i.k-r{background:var(--pandan);border-color:var(--pandan-deep)}
+  .src-key i.k-b{background:#9FD9F6;border-color:#5A9DC4}
+  .src-key i.k-y{background:var(--kaya)}
+  .src-key i.k-g{background:var(--kopi-cup);border-color:#B79D82}
+
   /* ===== My commute widget ===== */
   .commute-sec{padding:22px 0 0}
   .commute-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
@@ -469,6 +510,14 @@
 
     <div class="point up" id="pointLive" hidden><span class="arr">👇</span> Tap any station to see crowd &amp; parking</div>
 
+    <div class="offhours-banner" id="offhoursBanner" hidden>
+      <span style="font-size:1.3rem;line-height:1">🌙</span>
+      <div>
+        <div class="lbl">off-hours</div>
+        <div><b>LRT tak jalan sekarang</b> — <span id="offhoursNext">service resumes at 6:00 AM</span>.</div>
+      </div>
+    </div>
+
     <div class="board">
       <div class="board-head">
         <div class="board-title"><span class="swatch" id="boardSwatch"></span><span id="boardName"></span></div>
@@ -478,6 +527,12 @@
           <span><i class="dot a"></i>Biasa</span>
           <span><i class="dot r"></i>Sesak</span>
         </div>
+      </div>
+      <div class="src-key" aria-label="Source of each station's reading">
+        <span><i class="k-r"></i>live report</span>
+        <span><i class="k-b"></i>live busyness</span>
+        <span><i class="k-y"></i>typical (ridership)</span>
+        <span><i class="k-g"></i>baseline forecast</span>
       </div>
       <div class="strip-scroller" id="scroller">
         <div class="strip" id="strip" role="list" aria-label="Crowd level by station"></div>
@@ -678,10 +733,44 @@
     });
   }
 
+  // =============== service hours (KL rail rough window) ===============
+  // Rapid KL LRT + Monorail publish first ~6:00 AM and last ~11:30 PM. We treat
+  // 06:00-23:59 Malaysia time as service, and 00:00-05:59 as off-hours.
+  function nowKL(){
+    const parts = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Kuala_Lumpur', hour12: false, hour: '2-digit', minute: '2-digit' }).formatToParts(new Date());
+    const h = parseInt(parts.find(p=>p.type==='hour').value, 10);
+    const m = parseInt(parts.find(p=>p.type==='minute').value, 10);
+    return { h, m };
+  }
+  function serviceRunning(){
+    const { h } = nowKL();
+    return h >= 6 && h < 24;
+  }
+  function nextServiceCopy(){
+    const { h, m } = nowKL();
+    if (h >= 6 && h < 24) return null;
+    // Off-hours (00:00-05:59): compute time until 06:00
+    const mins = (6 - h) * 60 - m;
+    const hh = Math.floor(mins / 60), mm = mins % 60;
+    const rel = hh > 0 ? `${hh}h ${mm}m` : `${mm}m`;
+    return `service resumes at 6:00 AM (in ${rel})`;
+  }
+  function refreshServiceState(){
+    const running = serviceRunning();
+    const banner = document.getElementById('offhoursBanner');
+    const nextEl = document.getElementById('offhoursNext');
+    if (banner) banner.hidden = running;
+    if (!running && nextEl) nextEl.textContent = nextServiceCopy() || '';
+    if (typeof strip !== 'undefined' && strip) strip.classList.toggle('offhours', !running);
+    const vb = document.querySelector('.vbtns');
+    if (vb) vb.classList.toggle('paused', !running);
+    if (typeof updateDataChip === 'function') updateDataChip();
+  }
+
   // =============== render line strip ===============
   const strip = document.getElementById("strip");
   let crowds = [];
-  let crowdSrc = [];   // per-station provenance: "report" | "busy" | "forecast"
+  let crowdSrc = [];   // per-station provenance: "report" | "busy" | "ridership" | "forecast"
   function renderLine(){
     const L = currentLine;
     tipPinned = false; tipIdx = -1; tip.classList.remove("show");
@@ -705,7 +794,7 @@
     L.stations.forEach((n,i)=>{
       const c = crowds[i];
       const b = document.createElement("button");
-      b.className = "stn" + (IC.has(n) ? " ic" : "") + (liveIdx.has(i) ? " live" : "");
+      b.className = "stn" + (IC.has(n) ? " ic" : "") + (liveIdx.has(i) ? " live" : "") + " src-" + crowdSrc[i];
       b.setAttribute("role","listitem");
       b.setAttribute("aria-label", n + ": " + lvl(c) + (PARKINFO[n] ? ", has Park N' Ride" : ""));
       b.title = n + " — " + lvl(c);
@@ -727,7 +816,9 @@
     document.getElementById("boardMeta").textContent = "LALUAN " + L.tag + " · " + L.stations.length + " STATIONS" + feedTime;
     document.getElementById("endA").textContent = "◀ " + L.stations[0].toUpperCase();
     document.getElementById("endB").textContent = L.stations[L.stations.length-1].toUpperCase() + " ▶";
-    document.getElementById("lineHint").textContent = L.hint;
+    const hintEl = document.getElementById("lineHint");
+    if (!serviceRunning()) { hintEl.textContent = "🌙 Trains resume at 6:00 AM. Any 'crowd' reading you saw before was a stale value — ignore till morning."; }
+    else { hintEl.textContent = L.hint; }
     renderParking(L);
     renderRidership(L);
     renderGetThere(L);
@@ -736,6 +827,7 @@
     fillStations(L);
     applyPulseHints();
     if (typeof commute !== 'undefined') commute.render();
+    refreshServiceState();
   }
 
   // =============== station tooltip: hover or tap a stop ===============
@@ -753,10 +845,18 @@
     tip.innerHTML =
       '<button class="close" type="button" aria-label="Close">×</button>' +
       '<div class="t-name">'+n+'</div>' +
-      '<span class="t-crowd '+crowdClass(c)+'">'+face(c)+' '+lvl(c)+' now</span>' +
+      (function(){
+        const offhours = !serviceRunning();
+        return offhours
+          ? '<span class="t-crowd" style="background:#EFE4CE;color:var(--milo)">🌙 not running</span>'
+          : '<span class="t-crowd '+crowdClass(c)+'">'+face(c)+' '+lvl(c)+' now</span>';
+      })() +
       (liveMap[currentLine.id+"||"+n]
         ? '<div class="t-live">\u25CF LIVE \u00b7 '+liveMap[currentLine.id+"||"+n].reports+' report'+(liveMap[currentLine.id+"||"+n].reports>1?'s':'')+' \u00b7 '+timeAgo(liveMap[currentLine.id+"||"+n].last_at)+'</div>'
-        : (crowdSrc[i]==="busy" ? '<div class="t-live" style="color:#6B4E37">\u25CF LIVE BUSYNESS \u00b7 via Google</div>' : crowdSrc[i]==="ridership" ? '<div class="t-live" style="color:#6B4E37">\u25d1 TYPICAL \u00b7 data.gov.my ridership</div>' : '<div class="t-live" style="color:#B79D82">forecast \u00b7 no live data</div>')) +
+        : (!serviceRunning() ? '<div class="t-live" style="color:#6B4E37">🌙 off-hours \u00b7 resumes 6:00 AM</div>'
+          : crowdSrc[i]==="busy"      ? '<div class="t-live" style="color:#5A9DC4">\u25CF live busyness \u00b7 via Google (Popular Times)</div>'
+          : crowdSrc[i]==="ridership" ? '<div class="t-live" style="color:#8B6D50">\u25d1 typical crowd \u00b7 data.gov.my ridership</div>'
+          :                             '<div class="t-live" style="color:#B79D82">🔮 baseline forecast \u00b7 no live signal \u2014 tap Reports to be first</div>')) +
       '<div class="t-park">' +
         (P ? '🅿️ ' + P.bays + ' · ' + P.price
            : '<span class="no">No Park N\' Ride here — feeder bus or drop-off je.</span>') +
@@ -919,9 +1019,11 @@
         '<div class="gt-head"><span class="gt-title">🚈 Naik train</span>' +
           (quiet ? '<span class="gt-tag best">✓ BEST CALL</span>' : '') + '</div>' +
         '<div class="gt-body"><div>' +
-          '<div class="gt-crowd '+crowdClass(c)+'">'+face(c)+' '+lvl(c)+'</div>' +
+          (serviceRunning()
+             ? '<div class="gt-crowd '+crowdClass(c)+'">'+face(c)+' '+lvl(c)+'</div>'
+             : '<div class="gt-crowd" style="background:#EFE4CE;color:var(--milo)">🌙 not running</div>') +
           '<div class="gt-meta">'+L.name+' Line</div>' +
-        '</div></div>' + liveTag +
+        '</div></div>' + (serviceRunning() ? liveTag : '<div class="gt-live" style="color:#6B4E37">🌙 off-hours · resumes 6:00 AM</div>') +
         '<div class="nav-btns">' +
           '<a class="nav-btn mr" target="_blank" rel="noopener" href="https://myrapid.com.my/bus-train/rapid-kl/rapid-rail/">🚈 Timetable</a>' +
         '</div>' +
@@ -942,9 +1044,11 @@
       '</div>';
 
     verdict.innerHTML = '<span>💡</span><span>' +
-      (quiet
-        ? dest+' looks '+lvl(c).toLowerCase()+' right now — naik train lah, skip the traffic &amp; parking.'
-        : dest+' is '+lvl(c).toLowerCase()+' at the moment — tap Waze, driving might actually be smoother.') +
+      (!serviceRunning()
+        ? '🌙 Trains tak jalan sekarang — service resumes at 6:00 AM. Driving is your only option until then.'
+        : (quiet
+            ? dest+' looks '+lvl(c).toLowerCase()+' right now — naik train lah, skip the traffic &amp; parking.'
+            : dest+' is '+lvl(c).toLowerCase()+' at the moment — tap Waze, driving might actually be smoother.')) +
       '</span>';
   }
 
@@ -1047,6 +1151,11 @@
   }
   function updateDataChip(){
     const chip = document.getElementById("dataChip");
+    if (!serviceRunning()) {
+      chip.classList.remove("live");
+      chip.textContent = "🌙 Off-hours · trains resume at 6:00 AM · no live crowd until then";
+      return;
+    }
     const reports = Object.keys(liveMap).length;
     const busy = Object.keys(busyMap).length;
     if(reports > 0){
@@ -1474,6 +1583,7 @@
   setInterval(loadBusyness, 300000);   // busyness feed refreshes every 5 min
   setInterval(loadWeather, 900000);    // weather every 15 min
   setInterval(loadWxWarning, 900000);
+  setInterval(refreshServiceState, 60000); // catches the 6:00 AM boundary without a reload
 </script>
 </body>
 </html>

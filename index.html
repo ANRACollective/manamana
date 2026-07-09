@@ -360,16 +360,20 @@
   .commute-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
   .commute-title{font-family:'Lilita One',cursive;font-size:1.15rem;display:flex;align-items:center;gap:8px}
   .commute-title .st{transform:rotate(-8deg);display:inline-block}
-  .install-chip{
+  .install-chip, .tg-chip{
     font-family:'Space Mono',monospace;font-weight:800;font-size:.76rem;
     padding:7px 12px;border:var(--bd);border-radius:999px;
     background:var(--kaya);color:var(--milo);cursor:pointer;
     box-shadow:var(--shadow-sm);transition:transform .12s, box-shadow .12s;
   }
-  .install-chip:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--milo-deep)}
-  .install-chip:active{transform:translate(1px,1px);box-shadow:1px 1px 0 var(--milo-deep)}
-  .install-chip:focus-visible{outline:3px dashed var(--teh);outline-offset:3px}
+  .install-chip:hover, .tg-chip:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--milo-deep)}
+  .install-chip:active, .tg-chip:active{transform:translate(1px,1px);box-shadow:1px 1px 0 var(--milo-deep)}
+  .install-chip:focus-visible, .tg-chip:focus-visible{outline:3px dashed var(--teh);outline-offset:3px}
   .install-chip.ios{background:var(--santan);cursor:default}
+  .tg-chip{background:#EAF6FF}
+  .tg-chip.linked{background:var(--pandan);color:#fff;border-color:var(--pandan-deep);cursor:default}
+  .tg-chip.linked:hover{transform:none;box-shadow:var(--shadow-sm)}
+  .commute-actions{display:flex;gap:8px;flex-wrap:wrap}
   .commute-list{display:grid;grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));gap:14px;margin-top:14px}
   .commute-empty{
     margin-top:14px;background:var(--kopi-cup);border:var(--bd);border-radius:14px;
@@ -441,7 +445,10 @@
   <div class="wrap">
     <div class="commute-head">
       <span class="commute-title"><span class="st">⭐</span> My commute</span>
-      <button class="install-chip" id="installChip" hidden onclick="installApp()">📲 Install app</button>
+      <div class="commute-actions">
+        <button class="tg-chip" id="tgChip" onclick="linkTelegram()">🔗 Link Telegram</button>
+        <button class="install-chip" id="installChip" hidden onclick="installApp()">📲 Install app</button>
+      </div>
     </div>
     <div class="commute-list" id="commuteList"></div>
     <div class="commute-empty" id="commuteEmpty">
@@ -1290,7 +1297,9 @@
       } catch (e) {}
       if (!sb) return;
       try {
-        const { data, error } = await sb.from('saved_stations').select('id,line_id,station').eq('client_id', clientId());
+        // saves_for_client merges rows saved on the web AND rows saved on Telegram
+        // by a chat that has linked to the same client_id.
+        const { data, error } = await sb.rpc('saves_for_client', { cid: clientId() });
         if (error) throw error;
         this.items = (data || []).map(r => ({ id: r.id, line_id: r.line_id, station: r.station }));
         this.keySet = new Set(this.items.map(it => this.key(it.line_id, it.station)));
@@ -1384,10 +1393,77 @@
     }
   });
 
+  // =============== Telegram link flow ===============
+  const TG_BOT_USERNAME = 'manamanaio_bot';
+  // Alphabet drops 0/O/1/I/L to avoid mis-reading if the user ever sees the code
+  const LINK_CODE_ALPHABET = '23456789ABCDEFGHJKMNPQRSTUVWXYZ';
+  function newLinkCode(){
+    const buf = new Uint8Array(6);
+    (window.crypto && crypto.getRandomValues) ? crypto.getRandomValues(buf) : buf.forEach((_,i)=>{ buf[i] = Math.floor(Math.random()*256); });
+    let s = '';
+    for (let i=0; i<6; i++) s += LINK_CODE_ALPHABET[buf[i] % LINK_CODE_ALPHABET.length];
+    return s;
+  }
+  function markTgLinked(){
+    const chip = document.getElementById('tgChip');
+    if (!chip) return;
+    chip.textContent = '✓ Linked to @' + TG_BOT_USERNAME;
+    chip.classList.add('linked');
+    chip.disabled = true;
+  }
+  async function linkTelegram(){
+    const chip = document.getElementById('tgChip');
+    if (!chip || chip.classList.contains('linked')) return;
+    if (!sb) { alert('Sorry — Telegram link needs internet.'); return; }
+    const code = newLinkCode();
+    try {
+      const { error } = await sb.from('link_codes').insert({ code, client_id: clientId() });
+      if (error) throw error;
+    } catch (e) {
+      console.warn('link_codes insert failed', e);
+      alert('Alamak, tak jadi. Cuba lagi.');
+      return;
+    }
+    window.open('https://t.me/' + TG_BOT_USERNAME + '?start=' + code, '_blank', 'noopener');
+    // Poll for consumption on tab-focus (user returns from Telegram), then hydrate saves.
+    let cleared = false;
+    const check = async () => {
+      if (cleared) return true;
+      try {
+        const { data } = await sb.rpc('link_code_status', { c: code });
+        const row = (data || [])[0];
+        if (row && row.used_at) {
+          cleared = true;
+          markTgLinked();
+          commute.load();
+          return true;
+        }
+      } catch (e) {}
+      return false;
+    };
+    const onFocus = async () => {
+      if (await check()) window.removeEventListener('focus', onFocus);
+    };
+    window.addEventListener('focus', onFocus);
+    // Backup: also check every ~4 s for up to 2 minutes in case focus never fires.
+    let ticks = 30;
+    const iv = setInterval(async () => {
+      if (--ticks <= 0 || await check()) clearInterval(iv);
+    }, 4000);
+  }
+  async function checkTgLinkedOnLoad(){
+    if (!sb) return;
+    try {
+      const { data } = await sb.rpc('is_client_linked', { cid: clientId() });
+      if (data === true) markTgLinked();
+    } catch (e) {}
+  }
+
   // init
   renderLine(); highlight();
   initCues();
   commute.load();
+  checkTgLinkedOnLoad();
   loadBusyness();
   loadLive();
   loadRidership();

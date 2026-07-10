@@ -110,11 +110,9 @@
   .card.sg{background:linear-gradient(135deg, #FFFDF6 0%, #FFF0F0 100%)}
   .card.sg .cta{background:var(--sg-red);color:#fff}
   .card.sg .features li::before{background:var(--sg-red)}
-  .card.sg .badge-new{
-    position:absolute;top:22px;left:22px;
-    font-family:'Space Mono',monospace;font-size:.6rem;font-weight:700;letter-spacing:.1em;
-    background:var(--kaya);color:var(--milo);border:2.5px solid var(--milo-deep);border-radius:6px;
-    padding:2px 8px;transform:rotate(-4deg);
+  .caveat{
+    margin-top:8px;font-family:'Space Mono',monospace;font-size:.65rem;
+    font-weight:700;letter-spacing:.06em;color:#7a5a40;align-self:flex-start;
   }
 
   footer{
@@ -130,47 +128,45 @@
 <div class="wrap">
   <header>
     <div class="logo-big">🚈</div>
-    <span class="sticker">✦ one question ✦</span>
     <h1>We answer one question: <span class="hl">is it packed?</span></h1>
     <p class="sub">Started in Singapore. Extended to Klang Valley. Pick your city.</p>
   </header>
 
   <div class="picker">
+    <a class="card sg" href="/sg/">
+      <span class="flag">🇸🇬</span>
+      <div>
+        <h3 class="city-name">Singapore</h3>
+        <div class="city-tag">MRT · live crowd + leave-by</div>
+        <p class="pitch">Check any MRT station right now — is it packed? Then rank departure options by <b>predicted crowd</b>, not just fastest — using LTA's official feed.</p>
+        <ul class="features">
+          <li>Live platform density per line</li>
+          <li>Arrive-at-time picker</li>
+          <li>Least-crowded ranking</li>
+        </ul>
+      </div>
+      <span class="cta">Plan a trip →</span>
+      <span class="caveat">Prototype — sample data for now</span>
+    </a>
+
     <a class="card my" href="/my/">
       <span class="flag">🇲🇾</span>
       <div>
-        <div class="city-name">Malaysia</div>
+        <h3 class="city-name">Malaysia</h3>
         <div class="city-tag">Klang Valley · KL</div>
         <p class="pitch">LRT, Monorail &amp; the new Shah Alam Line — glass-fill crowd per station, parking rates, weather warnings.</p>
         <ul class="features">
+          <li>Live glass-fill per station</li>
           <li>Live commuter reports</li>
           <li>Parking maps &amp; harga</li>
-          <li>Ridership-baselined forecast</li>
         </ul>
       </div>
       <span class="cta">Jom check dulu →</span>
     </a>
-
-    <a class="card sg" href="/sg/">
-      <span class="badge-new">FEASIBILITY</span>
-      <span class="flag">🇸🇬</span>
-      <div>
-        <div class="city-name">Singapore</div>
-        <div class="city-tag">MRT · leave-by planner</div>
-        <p class="pitch">Tell us when you need to arrive. We rank departure options by <b>predicted crowd</b>, not just fastest — using LTA's official feed.</p>
-        <ul class="features">
-          <li>Arrive-at-time picker</li>
-          <li>Least-crowded ranking</li>
-          <li>Live service alerts</li>
-        </ul>
-      </div>
-      <span class="cta">Plan a trip →</span>
-    </a>
   </div>
 
   <footer>
-    <p>manamana.io — <a href="/my/">Malaysia</a> · <a href="/sg/">Singapore</a> · <a href="https://github.com/anracollective/manamana">GitHub</a></p>
-    <p style="margin-top:6px">SG is currently a feasibility prototype running on sample data — see <code>/sg/README.md</code>.</p>
+    <p>manamana.io — <a href="/sg/">Singapore</a> · <a href="/my/">Malaysia</a> · <a href="https://github.com/anracollective/manamana">GitHub</a></p>
   </footer>
 </div>
 

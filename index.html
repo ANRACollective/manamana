@@ -355,6 +355,18 @@
     .point{font-size:.68rem;padding:5px 11px}
   }
 
+  /* ===== service-alerts banner (news pull) ===== */
+  .alerts-band{
+    margin:14px 0 6px;background:var(--sesak);color:#fff;border:var(--bd);border-radius:14px;
+    box-shadow:var(--shadow-sm);padding:12px 16px 8px;transform:rotate(-.4deg);
+  }
+  .alerts-band .lbl{font-family:'Space Mono',monospace;font-weight:700;font-size:.66rem;text-transform:uppercase;letter-spacing:.05em;opacity:.85;margin-bottom:4px}
+  .alerts-band .a-item{display:block;color:#fff;text-decoration:none;padding:6px 0;border-top:2px dashed rgba(255,255,255,.35);font-weight:700;font-size:.92rem;line-height:1.25}
+  .alerts-band .a-item:first-of-type{border-top:none}
+  .alerts-band .a-item .a-meta{display:block;margin-top:2px;font-family:'Space Mono',monospace;font-weight:700;font-size:.62rem;opacity:.85;text-transform:uppercase;letter-spacing:.03em}
+  .alerts-band .a-item:hover{text-decoration:underline}
+  .alerts-band .a-more{display:inline-block;margin-top:6px;font-family:'Space Mono',monospace;font-weight:700;font-size:.66rem;background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.4);padding:2px 8px;border-radius:999px;cursor:pointer;color:#fff}
+
   /* ===== data-source + off-hours states ===== */
   /* Recolor the station node by data source, so eyes land on what's live vs forecast */
   .stn.src-report    .node{background:var(--pandan);border-color:var(--pandan-deep);box-shadow:0 0 0 3px rgba(93,184,106,.35)}
@@ -517,6 +529,8 @@
         <div><b>LRT tak jalan sekarang</b> — <span id="offhoursNext">service resumes at 6:00 AM</span>.</div>
       </div>
     </div>
+
+    <div class="alerts-band" id="alertsBand" hidden></div>
 
     <div class="board">
       <div class="board-head">
@@ -828,6 +842,7 @@
     applyPulseHints();
     if (typeof commute !== 'undefined') commute.render();
     refreshServiceState();
+    if (typeof renderAlerts === 'function') renderAlerts();
   }
 
   // =============== station tooltip: hover or tap a stop ===============
@@ -1183,6 +1198,57 @@
       updateDataChip();
       renderLine(); highlight();
     }catch(e){ /* offline: keep showing baseline forecast */ }
+  }
+
+  // =============== V3: service alerts (news pull) ===============
+  // Pulled from Google News RSS server-side and stored in service_alerts.
+  // Show items published in the last 24 h that match the current line, or that
+  // don't mention any specific line (treated as "affects all").
+  let alertRows = [];   // hydrated by loadAlerts, filtered per line by renderAlerts
+  let alertsExpanded = false;
+  function alertAgo(iso){
+    const sec = Math.max(0, (Date.now() - new Date(iso).getTime())/1000);
+    if(sec < 3600)   return Math.round(sec/60) + " min ago";
+    if(sec < 86400)  return Math.round(sec/3600) + "h ago";
+    return Math.round(sec/86400) + "d ago";
+  }
+  async function loadAlerts(){
+    if(!sb) return;
+    const since = new Date(Date.now() - 24*3600*1000).toISOString();
+    try{
+      const { data, error } = await sb
+        .from("service_alerts")
+        .select("id,title,url,publisher,published_at,line_ids")
+        .gte("published_at", since)
+        .order("published_at", { ascending:false })
+        .limit(25);
+      if(error) throw error;
+      alertRows = data || [];
+      renderAlerts();
+    }catch(e){ /* alerts silently unavailable */ }
+  }
+  function renderAlerts(){
+    const band = document.getElementById("alertsBand");
+    if(!band) return;
+    const forLine = alertRows.filter(a => !a.line_ids || a.line_ids.length === 0 || a.line_ids.includes(currentLine.id));
+    if(!forLine.length){ band.hidden = true; band.innerHTML = ""; return; }
+    band.hidden = false;
+    const shown = alertsExpanded ? forLine : forLine.slice(0, 1);
+    const more = forLine.length - shown.length;
+    band.innerHTML =
+      '<div class="lbl">🚨 latest news · ' + forLine.length + ' item' + (forLine.length>1?'s':'') + ' in 24 h</div>' +
+      shown.map(a =>
+        '<a class="a-item" target="_blank" rel="noopener" href="'+a.url+'">' +
+          a.title +
+          '<span class="a-meta">' + (a.publisher || 'news') + ' · ' + alertAgo(a.published_at) + '</span>' +
+        '</a>'
+      ).join('') +
+      (more > 0 ? '<button class="a-more" type="button" id="alertsMore">+ ' + more + ' more</button>' : '') +
+      (alertsExpanded && forLine.length > 1 ? '<button class="a-more" type="button" id="alertsLess">show less</button>' : '');
+    const moreBtn = document.getElementById('alertsMore');
+    if (moreBtn) moreBtn.addEventListener('click', () => { alertsExpanded = true; renderAlerts(); });
+    const lessBtn = document.getElementById('alertsLess');
+    if (lessBtn) lessBtn.addEventListener('click', () => { alertsExpanded = false; renderAlerts(); });
   }
 
   // =============== V2: data.gov.my ridership ===============
@@ -1584,6 +1650,8 @@
   setInterval(loadWeather, 900000);    // weather every 15 min
   setInterval(loadWxWarning, 900000);
   setInterval(refreshServiceState, 60000); // catches the 6:00 AM boundary without a reload
+  loadAlerts();
+  setInterval(loadAlerts, 300000);     // hydrate service_alerts every 5 min
 </script>
 </body>
 </html>

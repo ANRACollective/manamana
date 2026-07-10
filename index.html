@@ -115,6 +115,46 @@
     font-weight:700;letter-spacing:.06em;color:#7a5a40;align-self:flex-start;
   }
 
+  /* ---- JB ↔ SG full-width band ---- */
+  .card.jb{
+    grid-column: 1 / -1;
+    background:linear-gradient(135deg, #FFFDF6 0%, #FFF7EA 60%, #FFF0F0 100%);
+    min-height:auto;padding:26px 28px;
+  }
+  .card.jb .cta{background:var(--milo);color:#fff}
+  .jb-flex{display:flex;flex-wrap:wrap;gap:22px;align-items:flex-start;justify-content:space-between;width:100%}
+  .jb-left{max-width:340px;flex:1 1 280px}
+  .jb-tag-strong{color:var(--sg-red-deep, var(--milo))}
+  .jb-right{
+    display:flex;flex-direction:column;gap:8px;flex:1 1 280px;min-width:260px;
+    font-family:'Space Mono',monospace;font-size:.82rem;font-weight:700;
+  }
+  .status-pill{
+    display:flex;align-items:center;gap:10px;padding:7px 12px;
+    background:var(--kopi-cup);border:2.5px solid var(--milo-deep);border-radius:12px;
+    box-shadow:2px 2px 0 var(--milo-deep);
+  }
+  .status-pill .s-name{color:var(--milo);flex:1;font-family:'Baloo 2';font-size:.9rem}
+  .s-badge{
+    font-family:'Space Mono',monospace;padding:2px 9px;border:2px solid var(--milo-deep);
+    border-radius:999px;font-size:.66rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;
+  }
+  .s-badge.l{background:var(--pandan);color:#fff}
+  .s-badge.m{background:var(--teh);color:#fff}
+  .s-badge.h{background:#E8503A;color:#fff}
+  .rts-chip{
+    font-family:'Space Mono',monospace;font-size:.68rem;font-weight:700;
+    background:#FFC93C;color:var(--milo);padding:5px 12px;
+    border:2.5px solid var(--milo-deep);border-radius:999px;
+    align-self:flex-start;transform:rotate(-1deg);box-shadow:2px 2px 0 var(--milo-deep);
+    margin-top:2px;
+  }
+  .jb-cta-row{
+    display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+    margin-top:18px;padding-top:14px;border-top:2px dashed rgba(122,90,64,.35);
+    width:100%;
+  }
+
   footer{
     margin-top:44px;text-align:center;font-size:.82rem;color:#7a5a40;font-weight:600;
     padding-top:20px;border-top:2px dashed var(--milo-deep);
@@ -163,6 +203,32 @@
       </div>
       <span class="cta">Jom check dulu →</span>
     </a>
+
+    <a class="card jb" href="/jb/">
+      <span class="flag">🌉</span>
+      <div class="jb-flex">
+        <div class="jb-left">
+          <h3 class="city-name">JB ↔ SG</h3>
+          <div class="city-tag jb-tag-strong">The world's busiest land crossing</div>
+          <p class="pitch">~400,000 crossings a day between Johor Bahru and Singapore. Check the queue before you leave — same question as everywhere else: is it packed?</p>
+        </div>
+        <div class="jb-right">
+          <div class="status-pill">
+            <span class="s-name">Woodlands Causeway</span>
+            <span class="s-badge m" id="landCausewayBadge">Moderate</span>
+          </div>
+          <div class="status-pill">
+            <span class="s-name">Tuas Second Link</span>
+            <span class="s-badge l" id="landSecondBadge">Light</span>
+          </div>
+          <div class="rts-chip">🚊 RTS train — opens Dec 2026</div>
+        </div>
+      </div>
+      <div class="jb-cta-row">
+        <span class="cta">Check the jam →</span>
+        <span class="caveat">Prototype — time-of-day heuristic for now</span>
+      </div>
+    </a>
   </div>
 
   <footer>
@@ -180,6 +246,34 @@
       })
     }).catch(() => {})
   }
+
+  // JB ↔ SG landing pills — time-of-day heuristic until we wire ICA scraper.
+  // Pattern reflects the well-known causeway rhythm: mornings SG-bound heavy,
+  // evenings JB-bound heavy, Friday PM extreme, quiet 22:00-05:00.
+  (function() {
+    const d = new Date(), hr = d.getHours(), dow = d.getDay()  // 0=Sun, 5=Fri
+    function ratePeak(hr, weight) {
+      if (hr >= 22 || hr < 5) return 'l'
+      const morning = Math.max(0, 3 - Math.abs(hr - 8))   // 0..3 peaks at 8
+      const evening = Math.max(0, 3 - Math.abs(hr - 18))  // 0..3 peaks at 18
+      const load = (morning + evening) * weight
+      if (load >= 3.5) return 'h'
+      if (load >= 1.6) return 'm'
+      return 'l'
+    }
+    const fridayBoost = (dow === 5) ? 1.35 : 1.0
+    const causeway = ratePeak(hr, 1.15 * fridayBoost)
+    const second   = ratePeak(hr, 0.75 * fridayBoost)
+    const LABEL = { l: 'Light', m: 'Moderate', h: 'Heavy' }
+    function setBadge(id, bucket) {
+      const el = document.getElementById(id)
+      if (!el) return
+      el.className = 's-badge ' + bucket
+      el.textContent = LABEL[bucket]
+    }
+    setBadge('landCausewayBadge', causeway)
+    setBadge('landSecondBadge',   second)
+  })()
 </script>
 
 </body>

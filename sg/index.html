@@ -63,7 +63,36 @@
     box-shadow:var(--shadow);padding:22px;margin-top:28px;
   }
   .picker h2{font-family:'Lilita One',cursive;font-weight:400;font-size:1.4rem;margin-bottom:14px}
-  .field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+
+  .saved-row{
+    display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:14px;
+    padding-bottom:14px;border-bottom:2px dashed rgba(122,90,64,.4);
+  }
+  .saved-label{font-family:'Space Mono',monospace;font-size:.7rem;font-weight:700;color:#7a5a40;text-transform:uppercase;letter-spacing:.06em}
+  .saved-chip{
+    font-family:'Baloo 2',sans-serif;font-weight:700;font-size:.82rem;padding:5px 11px;
+    border:2.5px solid var(--milo-deep);border-radius:999px;background:#FFC93C;color:var(--milo);
+    box-shadow:2px 2px 0 var(--milo-deep);cursor:pointer;
+  }
+  .saved-chip:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--milo-deep)}
+  .saved-chip[data-side="dest"]{background:#F7A8C4}
+
+  .when-row{
+    display:flex;gap:12px;align-items:center;margin-bottom:14px;flex-wrap:wrap;
+    padding:10px 12px;background:var(--paper);border:2px dashed var(--milo-deep);border-radius:12px;
+  }
+  .when-radio{
+    display:inline-flex;align-items:center;gap:6px;font-family:'Baloo 2';font-weight:700;font-size:.9rem;cursor:pointer;
+  }
+  .when-radio input{width:16px;height:16px;accent-color:var(--sg-red);cursor:pointer}
+  .when-row input[type="time"]{
+    font-family:'Baloo 2';font-weight:700;font-size:1rem;
+    padding:8px 10px;border:2.5px solid var(--milo-deep);border-radius:10px;
+    background:var(--kopi-cup);color:var(--milo);box-shadow:2px 2px 0 var(--milo-deep);
+    margin-left:auto;
+  }
+
+  .field{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
   .field label{font-family:'Space Mono',monospace;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--milo)}
   .field select, .field input{
     font-family:'Baloo 2',sans-serif;font-weight:700;font-size:1rem;
@@ -71,8 +100,23 @@
     background:var(--paper);color:var(--milo);width:100%;box-shadow:2px 2px 0 var(--milo-deep);
   }
   .field select:focus, .field input:focus{outline:3px dashed var(--sg-red);outline-offset:2px}
-  .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-  @media (max-width:520px){.row2{grid-template-columns:1fr}}
+
+  .input-row{display:flex;gap:8px}
+  .input-row input{flex:1}
+  .save-btn{
+    padding:0 14px;border:2.5px solid var(--milo-deep);border-radius:10px;
+    background:var(--kopi-cup);cursor:pointer;font-size:1.15rem;
+    box-shadow:2px 2px 0 var(--milo-deep);flex:none;
+    transition:transform .1s, box-shadow .1s, background .1s;
+  }
+  .save-btn:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--milo-deep)}
+  .save-btn.saved{background:var(--pandan);color:#fff}
+
+  .search-note{
+    font-family:'Space Mono',monospace;font-size:.62rem;font-weight:700;
+    color:#7a5a40;margin:-6px 0 12px;letter-spacing:.02em;
+  }
+
   .go{
     display:block;width:100%;font-family:'Lilita One',cursive;font-size:1.1rem;
     padding:14px;background:var(--sg-red);color:#fff;border:var(--bd);border-radius:14px;
@@ -92,7 +136,7 @@
   .card:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--milo-deep)}
   .card.best{border-color:var(--pandan);box-shadow:6px 6px 0 #3E9A4C}
   .card.best::before{
-    content:"★ least crowded";position:absolute;top:-11px;left:16px;
+    content:attr(data-best-label);position:absolute;top:-11px;left:16px;
     font-family:'Space Mono',monospace;font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
     background:var(--pandan);color:#fff;border:2.5px solid #3E9A4C;border-radius:999px;padding:2px 10px;
   }
@@ -120,9 +164,19 @@
 
   .why{margin-top:12px;font-size:.88rem;color:#5C4330;font-weight:600}
   .why .k{background:#FFC93C;padding:1px 6px;border-radius:6px;border:1.5px solid var(--milo-deep);font-family:'Space Mono',monospace;font-size:.78rem}
+
+  .fare{
+    margin-top:8px;font-family:'Space Mono',monospace;font-size:.78rem;font-weight:700;color:#5C4330;
+  }
+  .fare .val{background:var(--kopi-cup);padding:2px 8px;border:2px solid var(--milo-deep);border-radius:6px;margin-right:4px}
+
   .alert{
     margin-top:10px;font-family:'Space Mono',monospace;font-size:.72rem;font-weight:700;
     background:#FFE7B0;border:2px solid var(--milo-deep);border-radius:8px;padding:6px 10px;
+  }
+  .last-train{
+    margin-top:8px;font-family:'Space Mono',monospace;font-size:.72rem;font-weight:700;
+    background:#FCC;border:2px solid var(--sg-red-deep);border-radius:8px;padding:6px 10px;color:#7A0A0A;
   }
 
   .empty{
@@ -158,30 +212,52 @@
   </header>
 
   <section class="picker">
+    <div class="saved-row" id="savedRow" hidden>
+      <span class="saved-label">Quick:</span>
+      <button class="saved-chip" data-set="home" data-side="origin" hidden></button>
+      <button class="saved-chip" data-set="work" data-side="dest" hidden></button>
+    </div>
+
     <h2>Where are you going?</h2>
-    <div class="row2">
-      <div class="field">
-        <label for="origin">From</label>
-        <select id="origin"></select>
-      </div>
-      <div class="field">
-        <label for="dest">To</label>
-        <select id="dest"></select>
+
+    <div class="when-row">
+      <label class="when-radio">
+        <input type="radio" name="when" value="leave" checked> Leave at
+      </label>
+      <label class="when-radio">
+        <input type="radio" name="when" value="arrive"> Arrive by
+      </label>
+      <input id="whenTime" type="time" value="10:30" aria-label="Time">
+    </div>
+
+    <div class="field">
+      <label for="origin">From</label>
+      <div class="input-row">
+        <input id="origin" list="stationList" placeholder="Type a station" autocomplete="off">
+        <button class="save-btn" data-role="home" data-from="origin" title="Save as Home">🏠</button>
       </div>
     </div>
-    <div class="row2">
-      <div class="field">
-        <label for="arriveBy">Arrive by</label>
-        <input id="arriveBy" type="time" value="10:30">
-      </div>
-      <div class="field">
-        <label for="rank">Rank options by</label>
-        <select id="rank">
-          <option value="crowd" selected>Least crowded first</option>
-          <option value="time">Fastest first</option>
-        </select>
+
+    <div class="field">
+      <label for="dest">To</label>
+      <div class="input-row">
+        <input id="dest" list="stationList" placeholder="Type a station" autocomplete="off">
+        <button class="save-btn" data-role="work" data-from="dest" title="Save as Work">💼</button>
       </div>
     </div>
+    <p class="search-note">Address &amp; postal-code search coming with the OneMap proxy.</p>
+
+    <div class="field">
+      <label for="rank">Rank options by</label>
+      <select id="rank">
+        <option value="crowd" selected>Least crowded first</option>
+        <option value="time">Fastest first</option>
+        <option value="fare">Cheapest first</option>
+      </select>
+    </div>
+
+    <datalist id="stationList"></datalist>
+
     <button class="go" onclick="plan()">Plan my trip →</button>
     <div class="disclaimer">⚠ Prototype: routes are generated from a mock OneMap response; crowd is real-shape sample data. See README for the swap-in.</div>
   </section>
@@ -192,7 +268,7 @@
 
   <footer>
     <p><b>Wired up:</b> stations from <code>stations.json</code>, crowd forecast from <code>sample-crowd.json</code> (shape-faithful to LTA <code>PCDForecast</code>), routing is client-side mock imitating OneMap <code>routingsvc/route?routeType=pt&amp;numItineraries=3</code>. Two <code>fetch()</code> calls swap for a Cloudflare Worker at <code>/api/*</code>.</p>
-    <p style="margin-top:8px">Ranking: score(route) = worst forecast bucket across MRT boarding stations at each boarding time. Ties broken by shortest travel. See <code>README.md</code>.</p>
+    <p style="margin-top:8px">Fare is estimated by duration band (real: LTA distance table). Last-train times per line are approximate for weekdays.</p>
   </footer>
 </div>
 
@@ -201,12 +277,72 @@ const BUCKET_LABEL = { l: "Low", m: "Moderate", h: "High" }
 const BUCKET_SCORE = { l: 25, m: 60, h: 90 }
 const BUCKET_CLASS = { l: "l", m: "m", h: "h" }
 
+// Approx SG last-train time per line (last departure from any terminal, weekday).
+// Real ranges vary by direction and station; per-line single value is good enough for a warning chip.
+const LAST_TRAIN = {
+  NSL: "23:47", EWL: "23:39", NEL: "23:29",
+  CCL: "23:15", DTL: "23:33", TEL: "23:24",
+  CGL: "23:16", BPLRT: "23:59", SKLRT: "23:59", PGLRT: "23:59"
+}
+
+const SAVE_KEY = "sg_saved"
+
 let STATIONS = null
 let LINES = null
 let CROWD = null
 let ALERTS = []
+let SAVED = {}
 
+// ---------- persistence ----------
+function loadSaved() {
+  try { SAVED = JSON.parse(localStorage.getItem(SAVE_KEY) || "{}") } catch (e) { SAVED = {} }
+}
+function persistSaved() {
+  try { localStorage.setItem(SAVE_KEY, JSON.stringify(SAVED)) } catch (e) {}
+}
+function isValidStation(name) {
+  return !!STATIONS?.find(s => s.name === name)
+}
+
+function saveAs(role, fromField) {
+  const val = document.getElementById(fromField).value
+  if (!isValidStation(val)) {
+    flashNote("Pick a valid station first.")
+    return
+  }
+  SAVED[role] = val
+  persistSaved()
+  updateSavedUI()
+}
+
+function updateSavedUI() {
+  const row = document.getElementById("savedRow")
+  let any = false
+  row.querySelectorAll(".saved-chip").forEach(chip => {
+    const role = chip.dataset.set
+    if (SAVED[role]) {
+      chip.hidden = false
+      chip.textContent = (role === "home" ? "🏠 " : "💼 ") + SAVED[role]
+      any = true
+    } else {
+      chip.hidden = true
+    }
+  })
+  row.hidden = !any
+  document.querySelectorAll(".save-btn").forEach(btn => {
+    const r = btn.dataset.role
+    btn.classList.toggle("saved", !!SAVED[r])
+  })
+}
+
+function flashNote(msg) {
+  const el = document.getElementById("results")
+  el.innerHTML = `<div class="empty">${msg}</div>`
+}
+
+// ---------- boot ----------
 async function boot() {
+  loadSaved()
   const [s, c] = await Promise.all([
     fetch("stations.json").then(r => r.json()),
     fetch("sample-crowd.json").then(r => r.json()),
@@ -216,22 +352,40 @@ async function boot() {
   CROWD = c.forecast
   ALERTS = c.alerts || []
 
-  const orig = document.getElementById("origin")
-  const dest = document.getElementById("dest")
+  const list = document.getElementById("stationList")
   for (const st of STATIONS) {
-    const linesTxt = st.lines.join(" · ")
-    orig.add(new Option(`${st.name}  (${linesTxt})`, st.name))
-    dest.add(new Option(`${st.name}  (${linesTxt})`, st.name))
+    const opt = document.createElement("option")
+    opt.value = st.name
+    opt.label = st.lines.join(" · ")
+    list.append(opt)
   }
-  orig.value = "Dhoby Ghaut"
-  dest.value = "City Hall"
+  document.getElementById("origin").value = SAVED.home || "Dhoby Ghaut"
+  document.getElementById("dest").value   = SAVED.work || "City Hall"
+
+  // default "when time" to current local time (Leave now)
+  const now = new Date()
+  document.getElementById("whenTime").value =
+    `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`
+
+  updateSavedUI()
+
+  // save-as buttons
+  document.querySelectorAll(".save-btn").forEach(btn => {
+    btn.addEventListener("click", () => saveAs(btn.dataset.role, btn.dataset.from))
+  })
+  // quick-tap chips fill the matching side
+  document.querySelectorAll(".saved-chip").forEach(chip => {
+    chip.addEventListener("click", () => {
+      const role = chip.dataset.set
+      const side = chip.dataset.side // "origin" or "dest"
+      if (SAVED[role]) document.getElementById(side).value = SAVED[role]
+    })
+  })
 }
 boot()
 
 // ---------- mock OneMap ----------
-// Returns 3 plausible pt itineraries between two named stations.
-// Real endpoint contract: numItineraries=3 -> array of {duration, legs:[...]}
-function mockRoute(originName, destName, arriveByHHMM) {
+function mockRoute(originName, destName, timeHHMM, mode) {
   const origin = STATIONS.find(s => s.name === originName)
   const dest   = STATIONS.find(s => s.name === destName)
   if (!origin || !dest) return []
@@ -239,14 +393,9 @@ function mockRoute(originName, destName, arriveByHHMM) {
   const shared = origin.lines.filter(l => dest.lines.includes(l))
   const candidates = []
 
-  // Direct itineraries (one per shared line, if any)
   for (const line of shared) {
-    candidates.push({
-      transfers: 0,
-      legs: [{ line, from: origin.name, to: dest.name }],
-    })
+    candidates.push({ transfers: 0, legs: [{ line, from: origin.name, to: dest.name }] })
   }
-  // 1-transfer itineraries (via any interchange that shares an origin line + a dest line)
   for (const st of STATIONS) {
     if (st.name === origin.name || st.name === dest.name) continue
     const l1 = origin.lines.find(l => st.lines.includes(l))
@@ -261,9 +410,6 @@ function mockRoute(originName, destName, arriveByHHMM) {
       })
     }
   }
-
-  // 2-transfer fallback — only if nothing shorter exists. Rare for MRT-to-MRT,
-  // common for far-apart LRT pairs (e.g. Bukit Panjang LRT -> Punggol LRT).
   if (candidates.length === 0) {
     outer: for (const i1 of STATIONS) {
       if (i1.name === origin.name || i1.name === dest.name) continue
@@ -288,7 +434,6 @@ function mockRoute(originName, destName, arriveByHHMM) {
     }
   }
 
-  // Dedupe by (line sequence, first transfer)
   const seen = new Set()
   const uniq = candidates.filter(r => {
     const k = r.legs.map(l => `${l.line}:${l.from}>${l.to}`).join("|")
@@ -296,52 +441,51 @@ function mockRoute(originName, destName, arriveByHHMM) {
     seen.add(k); return true
   })
 
-  // Cost model: ~2.5 min per hop (rough); +4 min per transfer walk
-  // We don't have station-to-station distances so use a stable pseudo-hop count.
   const durationMin = r => {
-    const hops = r.legs.length * 6 + r.transfers * 4 // baseline
-    // vary by line pairing so the 3 options are distinguishable
+    const hops = r.legs.length * 6 + r.transfers * 4
     const jitter = r.legs.reduce((a, l) => a + l.line.charCodeAt(0) % 5, 0)
     return hops + jitter
   }
 
-  // Back-solve boarding time so arrival <= arriveBy
-  const [ah, am] = arriveByHHMM.split(":").map(Number)
-  const arriveMinutes = ah * 60 + am
+  const [th, tm] = timeHHMM.split(":").map(Number)
+  const targetMinutes = th * 60 + tm
+
   const withTimes = uniq.map(r => {
     const dur = durationMin(r)
-    return { ...r, durationMin: dur, boardMinutes: arriveMinutes - dur }
+    const boardMinutes = mode === "leave" ? targetMinutes : (targetMinutes - dur)
+    return { ...r, durationMin: dur, boardMinutes, fare: estimateFare(dur) }
   })
 
-  // Return the three shortest that are still in the future-ish (>= now-5min)
   return withTimes.sort((a, b) => a.durationMin - b.durationMin).slice(0, 3)
 }
 
+// ---------- fare estimate ----------
+// SG adult card fares are distance-based (LTA publishes the band table).
+// Without station-to-station distance in the prototype, we map duration to a band.
+function estimateFare(durationMin) {
+  if (durationMin < 12) return "1.19"
+  if (durationMin < 20) return "1.39"
+  if (durationMin < 30) return "1.59"
+  if (durationMin < 45) return "1.89"
+  return "2.19"
+}
+
 // ---------- crowd overlay ----------
-// Pick the forecast slot closest to boarding time.
-// Sample data has now/t+30/t+60. Real endpoint returns time-tagged buckets.
 function slotForBoardingMinutes(bm) {
   const now = new Date()
   const nowMin = now.getHours() * 60 + now.getMinutes()
   const delta = bm - nowMin
-  if (delta < 15)   return "now"
-  if (delta < 45)   return "t+30"
+  if (delta < 15) return "now"
+  if (delta < 45) return "t+30"
   return "t+60"
 }
-
 function crowdForLegBoarding(leg, boardMinutes) {
-  const bucket = CROWD?.[leg.line]?.[leg.from]?.[slotForBoardingMinutes(boardMinutes)]
-  return bucket || null // null = no data
+  return CROWD?.[leg.line]?.[leg.from]?.[slotForBoardingMinutes(boardMinutes)] || null
 }
-
 function worstBucket(buckets) {
   const order = ["l", "m", "h"]
-  return buckets.reduce((worst, b) =>
-    order.indexOf(b) > order.indexOf(worst) ? b : worst,
-    "l"
-  )
+  return buckets.reduce((worst, b) => order.indexOf(b) > order.indexOf(worst) ? b : worst, "l")
 }
-
 function alertsForRoute(route) {
   const hits = []
   for (const leg of route.legs) {
@@ -353,6 +497,23 @@ function alertsForRoute(route) {
   return hits
 }
 
+// ---------- last-train check ----------
+function lastTrainWarnings(route) {
+  const warnings = []
+  let cum = 0
+  for (const leg of route.legs) {
+    const boardMin = route.boardMinutes + cum
+    const last = LAST_TRAIN[leg.line]
+    if (last) {
+      const [lh, lm] = last.split(":").map(Number)
+      const lastMin = lh * 60 + lm
+      if (boardMin >= lastMin - 15) warnings.push(`${leg.line}: last train ~${last}`)
+    }
+    cum += 6
+  }
+  return warnings
+}
+
 // ---------- render ----------
 function formatHHMM(minutes) {
   minutes = ((minutes % 1440) + 1440) % 1440
@@ -360,9 +521,10 @@ function formatHHMM(minutes) {
   return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`
 }
 
-function renderCard(route, isBest) {
+function renderCard(route, bestLabel) {
   const el = document.createElement("div")
-  el.className = "card" + (isBest ? " best" : "")
+  el.className = "card" + (bestLabel ? " best" : "")
+  if (bestLabel) el.dataset.bestLabel = bestLabel
 
   const buckets = route.legs.map(l => crowdForLegBoarding(l, route.boardMinutes)).filter(Boolean)
   const worst = worstBucket(buckets.length ? buckets : ["l"])
@@ -398,6 +560,13 @@ function renderCard(route, isBest) {
   })
   el.append(segs)
 
+  // fare line
+  const fare = document.createElement("div")
+  fare.className = "fare"
+  fare.innerHTML = `<span class="val">S$${route.fare}</span>card fare (est.)`
+  el.append(fare)
+
+  // "why" line
   const why = document.createElement("div")
   why.className = "why"
   const boardStation = route.legs[0].from
@@ -410,8 +579,16 @@ function renderCard(route, isBest) {
   }
   el.append(why)
 
-  const hits = alertsForRoute(route)
-  for (const a of hits) {
+  // last-train warnings
+  for (const w of lastTrainWarnings(route)) {
+    const div = document.createElement("div")
+    div.className = "last-train"
+    div.textContent = `🌙 ${w} — cutting it close.`
+    el.append(div)
+  }
+
+  // service alerts
+  for (const a of alertsForRoute(route)) {
     const div = document.createElement("div")
     div.className = "alert"
     div.textContent = `⚠ ${a.line}: ${a.message}`
@@ -422,39 +599,39 @@ function renderCard(route, isBest) {
 }
 
 function plan() {
-  const origin = document.getElementById("origin").value
-  const dest = document.getElementById("dest").value
-  const arriveBy = document.getElementById("arriveBy").value
+  const origin = document.getElementById("origin").value.trim()
+  const dest = document.getElementById("dest").value.trim()
+  const timeHHMM = document.getElementById("whenTime").value || "10:30"
+  const mode = document.querySelector('input[name="when"]:checked').value
   const rankMode = document.getElementById("rank").value
   const container = document.getElementById("results")
   container.innerHTML = ""
 
-  if (origin === dest) {
-    container.innerHTML = `<div class="empty">You're already there 😅 — pick a different destination.</div>`
-    return
-  }
+  if (!isValidStation(origin)) return flashNote(`"${origin}" isn't a station name. Type to search the list.`)
+  if (!isValidStation(dest))   return flashNote(`"${dest}" isn't a station name. Type to search the list.`)
+  if (origin === dest)         return flashNote("You're already there 😅 — pick a different destination.")
 
-  const routes = mockRoute(origin, dest, arriveBy)
-  if (!routes.length) {
-    container.innerHTML = `<div class="empty">No route found — the mock router supports up to 2 transfers. This pair may need 3+ (rare, e.g. across LRT loops), or check the station names.</div>`
-    return
-  }
+  const routes = mockRoute(origin, dest, timeHHMM, mode)
+  if (!routes.length) return flashNote("No route found — the mock router supports up to 2 transfers. This pair may need 3+ (rare, e.g. across LRT loops), or check the station names.")
 
-  // Score each and re-rank
   const scored = routes.map(r => {
     const buckets = r.legs.map(l => crowdForLegBoarding(l, r.boardMinutes)).filter(Boolean)
     const worst = worstBucket(buckets.length ? buckets : ["l"])
     return { ...r, crowdScore: BUCKET_SCORE[worst], worstBucket: worst }
   })
 
+  let bestLabel = "★ least crowded"
   if (rankMode === "crowd") {
-    // Least crowded first; tie-break by shorter travel
     scored.sort((a, b) => a.crowdScore - b.crowdScore || a.durationMin - b.durationMin)
+  } else if (rankMode === "fare") {
+    scored.sort((a, b) => parseFloat(a.fare) - parseFloat(b.fare) || a.durationMin - b.durationMin)
+    bestLabel = "★ cheapest"
   } else {
     scored.sort((a, b) => a.durationMin - b.durationMin)
+    bestLabel = "★ fastest"
   }
 
-  scored.forEach((r, i) => container.append(renderCard(r, i === 0)))
+  scored.forEach((r, i) => container.append(renderCard(r, i === 0 ? bestLabel : null)))
 }
 </script>
 

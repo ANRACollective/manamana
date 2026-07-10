@@ -7,11 +7,16 @@
       "Raffles Place": {"now": "h", "t+30": "h", "t+60": "m"},
       "Marina Bay":    {"now": "m", "t+30": "l", "t+60": "l"},
       "Orchard":       {"now": "h", "t+30": "m", "t+60": "m"},
+      "Somerset":      {"now": "m", "t+30": "m", "t+60": "l"},
       "Dhoby Ghaut":   {"now": "h", "t+30": "h", "t+60": "m"},
       "Newton":        {"now": "m", "t+30": "m", "t+60": "l"},
+      "Novena":        {"now": "m", "t+30": "l", "t+60": "l"},
+      "Toa Payoh":     {"now": "m", "t+30": "m", "t+60": "l"},
       "Bishan":        {"now": "m", "t+30": "l", "t+60": "l"},
       "Ang Mo Kio":    {"now": "l", "t+30": "l", "t+60": "l"},
+      "Yishun":        {"now": "l", "t+30": "l", "t+60": "l"},
       "Jurong East":   {"now": "h", "t+30": "m", "t+60": "l"},
+      "Choa Chu Kang": {"now": "m", "t+30": "l", "t+60": "l"},
       "Woodlands":     {"now": "m", "t+30": "l", "t+60": "l"}
     },
     "EWL": {
@@ -57,7 +62,26 @@
       "Outram Park":   {"now": "m", "t+30": "l", "t+60": "l"},
       "Chinatown":     {"now": "m", "t+30": "l", "t+60": "l"},
       "Serangoon":     {"now": "m", "t+30": "l", "t+60": "l"},
-      "Little India":  {"now": "m", "t+30": "l", "t+60": "l"}
+      "Little India":  {"now": "m", "t+30": "l", "t+60": "l"},
+      "Hougang":       {"now": "m", "t+30": "l", "t+60": "l"},
+      "Sengkang":      {"now": "h", "t+30": "m", "t+60": "l"},
+      "Punggol":       {"now": "h", "t+30": "m", "t+60": "l"},
+      "Punggol Coast": {"now": "l", "t+30": "l", "t+60": "l"}
+    },
+    "BPLRT": {
+      "Bukit Panjang": {"now": "m", "t+30": "l", "t+60": "l"},
+      "Choa Chu Kang": {"now": "m", "t+30": "l", "t+60": "l"}
+    },
+    "SKLRT": {
+      "Sengkang":      {"now": "h", "t+30": "m", "t+60": "l"}
+    },
+    "PGLRT": {
+      "Punggol":       {"now": "h", "t+30": "m", "t+60": "l"}
+    },
+    "CGL": {
+      "Tanah Merah":   {"now": "l", "t+30": "l", "t+60": "l"},
+      "Expo":          {"now": "l", "t+30": "l", "t+60": "l"},
+      "Changi Airport":{"now": "m", "t+30": "m", "t+60": "l"}
     },
     "TEL": {
       "Orchard":       {"now": "m", "t+30": "l", "t+60": "l"},

@@ -262,6 +262,32 @@ function mockRoute(originName, destName, arriveByHHMM) {
     }
   }
 
+  // 2-transfer fallback — only if nothing shorter exists. Rare for MRT-to-MRT,
+  // common for far-apart LRT pairs (e.g. Bukit Panjang LRT -> Punggol LRT).
+  if (candidates.length === 0) {
+    outer: for (const i1 of STATIONS) {
+      if (i1.name === origin.name || i1.name === dest.name) continue
+      const l1 = origin.lines.find(l => i1.lines.includes(l))
+      if (!l1) continue
+      for (const i2 of STATIONS) {
+        if (i2.name === origin.name || i2.name === dest.name || i2.name === i1.name) continue
+        const l3 = dest.lines.find(l => i2.lines.includes(l))
+        if (!l3 || l3 === l1) continue
+        const l2 = i1.lines.find(l => i2.lines.includes(l) && l !== l1 && l !== l3)
+        if (!l2) continue
+        candidates.push({
+          transfers: 2,
+          legs: [
+            { line: l1, from: origin.name, to: i1.name },
+            { line: l2, from: i1.name,     to: i2.name },
+            { line: l3, from: i2.name,     to: dest.name },
+          ],
+        })
+        if (candidates.length >= 8) break outer
+      }
+    }
+  }
+
   // Dedupe by (line sequence, first transfer)
   const seen = new Set()
   const uniq = candidates.filter(r => {
@@ -410,7 +436,7 @@ function plan() {
 
   const routes = mockRoute(origin, dest, arriveBy)
   if (!routes.length) {
-    container.innerHTML = `<div class="empty">No route in the prototype dataset. This subset has ~30 stations — expand <code>stations.json</code> to the full network for real coverage.</div>`
+    container.innerHTML = `<div class="empty">No route found — the mock router supports up to 2 transfers. This pair may need 3+ (rare, e.g. across LRT loops), or check the station names.</div>`
     return
   }
 

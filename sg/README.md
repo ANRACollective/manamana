@@ -98,7 +98,7 @@ Tie-broken by shortest travel time.
 
 | File | Purpose |
 |---|---|
-| `stations.json` | 30-station prototype subset (major interchanges + branches). Full network is ~130 stations — extend when we go live. |
+| `stations.json` | Full operational network — 185 stations across 6 MRT lines + Changi branch + 3 LRT lines. JRL and CRL excluded (under construction). |
 | `index.html` | Standalone "leave by" demo. Runs on sample data by default. |
 | `sample-crowd.json` | Mock LTA `PCDForecast` response, shape-faithful. |
 | `sample-route.json` | Mock OneMap `route?routeType=pt` response with 3 itineraries. |
@@ -119,8 +119,7 @@ three cards ranked by predicted crowd.
    `manamana.io/api/lta/*` (script skeleton below).
 2. Set Worker env vars: `ONEMAP_TOKEN`, `LTA_ACCOUNT_KEY`.
 3. In `index.html`, swap the two sample fetches for the real endpoints.
-4. Extend `stations.json` to the full ~130 stations (auto-gen from LTA
-   `TrainStationCrowdDensity` metadata).
+4. Cross-check `stations.json` against LTA's `TrainStationCrowdDensity` metadata (line codes + station names) so live buckets key correctly. LTA uses `NSL/EWL/CCL/NEL/DTL/TEL/BPL/SLRT/PLRT` — map to our codes.
 
 Worker sketch:
 

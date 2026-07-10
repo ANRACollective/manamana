@@ -1,0 +1,77 @@
+{
+  "_note": "Shape-faithful mock of LTA DataMall PCDForecast, keyed by line then station. Values are the same l/m/h buckets the real endpoint returns. Time slots are 30-min offsets from 'now' at page load — the client picks the slot closest to boarding time.",
+  "updated_at": "sample",
+  "forecast": {
+    "NSL": {
+      "City Hall":     {"now": "h", "t+30": "m", "t+60": "l"},
+      "Raffles Place": {"now": "h", "t+30": "h", "t+60": "m"},
+      "Marina Bay":    {"now": "m", "t+30": "l", "t+60": "l"},
+      "Orchard":       {"now": "h", "t+30": "m", "t+60": "m"},
+      "Dhoby Ghaut":   {"now": "h", "t+30": "h", "t+60": "m"},
+      "Newton":        {"now": "m", "t+30": "m", "t+60": "l"},
+      "Bishan":        {"now": "m", "t+30": "l", "t+60": "l"},
+      "Ang Mo Kio":    {"now": "l", "t+30": "l", "t+60": "l"},
+      "Jurong East":   {"now": "h", "t+30": "m", "t+60": "l"},
+      "Woodlands":     {"now": "m", "t+30": "l", "t+60": "l"}
+    },
+    "EWL": {
+      "City Hall":     {"now": "h", "t+30": "h", "t+60": "m"},
+      "Raffles Place": {"now": "h", "t+30": "m", "t+60": "m"},
+      "Bugis":         {"now": "m", "t+30": "m", "t+60": "l"},
+      "Paya Lebar":    {"now": "l", "t+30": "l", "t+60": "l"},
+      "Tampines":      {"now": "l", "t+30": "l", "t+60": "l"},
+      "Outram Park":   {"now": "m", "t+30": "l", "t+60": "l"},
+      "Buona Vista":   {"now": "l", "t+30": "l", "t+60": "l"},
+      "Jurong East":   {"now": "m", "t+30": "l", "t+60": "l"},
+      "Tanah Merah":   {"now": "l", "t+30": "l", "t+60": "l"}
+    },
+    "CCL": {
+      "Dhoby Ghaut":   {"now": "m", "t+30": "m", "t+60": "l"},
+      "Marina Bay":    {"now": "l", "t+30": "l", "t+60": "l"},
+      "Bishan":        {"now": "l", "t+30": "l", "t+60": "l"},
+      "Paya Lebar":    {"now": "l", "t+30": "l", "t+60": "l"},
+      "Buona Vista":   {"now": "l", "t+30": "l", "t+60": "l"},
+      "HarbourFront":  {"now": "m", "t+30": "m", "t+60": "l"},
+      "Serangoon":     {"now": "l", "t+30": "l", "t+60": "l"},
+      "Botanic Gardens": {"now": "l", "t+30": "l", "t+60": "l"},
+      "Promenade":     {"now": "l", "t+30": "l", "t+60": "l"},
+      "Bayfront":      {"now": "m", "t+30": "l", "t+60": "l"},
+      "MacPherson":    {"now": "l", "t+30": "l", "t+60": "l"},
+      "Caldecott":     {"now": "l", "t+30": "l", "t+60": "l"}
+    },
+    "DTL": {
+      "Newton":        {"now": "l", "t+30": "l", "t+60": "l"},
+      "Bugis":         {"now": "l", "t+30": "l", "t+60": "l"},
+      "Little India":  {"now": "l", "t+30": "l", "t+60": "l"},
+      "Chinatown":     {"now": "l", "t+30": "l", "t+60": "l"},
+      "Botanic Gardens": {"now": "l", "t+30": "l", "t+60": "l"},
+      "Promenade":     {"now": "l", "t+30": "l", "t+60": "l"},
+      "Bayfront":      {"now": "l", "t+30": "l", "t+60": "l"},
+      "Tampines":      {"now": "l", "t+30": "l", "t+60": "l"},
+      "MacPherson":    {"now": "l", "t+30": "l", "t+60": "l"},
+      "Stevens":       {"now": "l", "t+30": "l", "t+60": "l"}
+    },
+    "NEL": {
+      "Dhoby Ghaut":   {"now": "h", "t+30": "m", "t+60": "l"},
+      "HarbourFront":  {"now": "m", "t+30": "l", "t+60": "l"},
+      "Outram Park":   {"now": "m", "t+30": "l", "t+60": "l"},
+      "Chinatown":     {"now": "m", "t+30": "l", "t+60": "l"},
+      "Serangoon":     {"now": "m", "t+30": "l", "t+60": "l"},
+      "Little India":  {"now": "m", "t+30": "l", "t+60": "l"}
+    },
+    "TEL": {
+      "Orchard":       {"now": "m", "t+30": "l", "t+60": "l"},
+      "Marina Bay":    {"now": "l", "t+30": "l", "t+60": "l"},
+      "Outram Park":   {"now": "l", "t+30": "l", "t+60": "l"},
+      "Woodlands":     {"now": "l", "t+30": "l", "t+60": "l"},
+      "Caldecott":     {"now": "l", "t+30": "l", "t+60": "l"},
+      "Stevens":       {"now": "l", "t+30": "l", "t+60": "l"},
+      "Bright Hill":   {"now": "l", "t+30": "l", "t+60": "l"},
+      "Great World":   {"now": "l", "t+30": "l", "t+60": "l"},
+      "Havelock":      {"now": "l", "t+30": "l", "t+60": "l"}
+    }
+  },
+  "alerts": [
+    {"line": "EWL", "message": "Slower travel between Jurong East and Buona Vista due to track works", "affected": ["Jurong East", "Buona Vista"]}
+  ]
+}

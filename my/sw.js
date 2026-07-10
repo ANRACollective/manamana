@@ -1,14 +1,14 @@
 // Mana-Mana service worker
 // Bump this string on any change so old clients update.
-const VERSION = 'v1-2026-07-08';
+const VERSION = 'v2-2026-07-10';
 const SHELL = 'mm-shell-' + VERSION;
 const DATA  = 'mm-data-'  + VERSION;
 
 // App shell: everything needed to render an offline screen.
 const SHELL_URLS = [
-  '/',
-  '/index.html',
-  '/manifest.webmanifest',
+  '/my/',
+  '/my/index.html',
+  '/my/manifest.webmanifest',
   '/icons/icon-192.png',
   '/icons/icon-512.png',
   '/icons/icon-maskable-512.png'
@@ -45,12 +45,12 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  if (sameOrigin && (url.pathname === '/manifest.webmanifest' || url.pathname.startsWith('/icons/'))) {
+  if (sameOrigin && (url.pathname === '/my/manifest.webmanifest' || url.pathname.startsWith('/icons/'))) {
     event.respondWith(cacheFirst(req, SHELL));
     return;
   }
 
-  if (sameOrigin && (url.pathname.endsWith('.json') || url.pathname === '/station_ridership.json')) {
+  if (sameOrigin && (url.pathname === '/crowd.json' || url.pathname === '/station_ridership.json')) {
     event.respondWith(staleWhileRevalidate(req, DATA));
     return;
   }
@@ -62,10 +62,10 @@ async function networkFirstShell(req) {
   try {
     const fresh = await fetch(req);
     const cache = await caches.open(SHELL);
-    cache.put('/index.html', fresh.clone()).catch(() => {});
+    cache.put('/my/index.html', fresh.clone()).catch(() => {});
     return fresh;
   } catch (_) {
-    const cached = await caches.match('/index.html');
+    const cached = await caches.match('/my/index.html');
     if (cached) return cached;
     return new Response('offline', { status: 503, statusText: 'Offline' });
   }

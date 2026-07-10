@@ -73,9 +73,9 @@ LTA returns `l/m/h` per platform. The KL site uses a 0–100 gradient.
 To keep the visual language, map:
 
 ```
-l → 25   (Lengang green)
-m → 60   (Biasa amber)
-h → 90   (Sesak red)
+l → 25   (Low, green)
+m → 60   (Moderate, amber)
+h → 90   (High, red)
 ```
 
 The site labels show the discrete bucket ("Moderate") so the fake

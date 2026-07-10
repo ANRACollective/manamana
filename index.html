@@ -1214,7 +1214,9 @@
   }
   async function loadAlerts(){
     if(!sb) return;
-    const since = new Date(Date.now() - 24*3600*1000).toISOString();
+    // News lags real-time by hours; a 72 h window keeps the banner useful
+    // most weeks while still filtering out stale month-old stories.
+    const since = new Date(Date.now() - 72*3600*1000).toISOString();
     try{
       const { data, error } = await sb
         .from("service_alerts")
@@ -1236,7 +1238,7 @@
     const shown = alertsExpanded ? forLine : forLine.slice(0, 1);
     const more = forLine.length - shown.length;
     band.innerHTML =
-      '<div class="lbl">🚨 latest news · ' + forLine.length + ' item' + (forLine.length>1?'s':'') + ' in 24 h</div>' +
+      '<div class="lbl">🚨 latest news · ' + forLine.length + ' item' + (forLine.length>1?'s':'') + ' this week</div>' +
       shown.map(a =>
         '<a class="a-item" target="_blank" rel="noopener" href="'+a.url+'">' +
           a.title +

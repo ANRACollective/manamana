@@ -3,22 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mana-Mana ☕ Klang Valley train crowd check</title>
-<meta name="description" content="Jom check dulu — crowd levels for every LRT, Monorail (and soon MRT) line in the Klang Valley. Parking info & live commuter reports.">
+<title>Mana-Mana — pick your city</title>
+<meta name="description" content="Klang Valley (Malaysia) or Singapore — train crowd check, parking info, live commuter reports. Jom pilih.">
 <link rel="canonical" href="https://manamana.io/">
-<link rel="manifest" href="/manifest.webmanifest">
 <meta name="theme-color" content="#3B2314">
 <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
 <link rel="apple-touch-icon" href="/icons/icon-192.png">
 <meta property="og:site_name" content="Mana-Mana">
-<meta property="og:title" content="Mana-Mana — sesak ke tak? Klang Valley train crowd check">
-<meta property="og:description" content="Check which LRT & Monorail stations are packed, where got parking and harga, and report live from the platform. manamana.io">
+<meta property="og:title" content="Mana-Mana — Klang Valley &amp; Singapore train crowd check">
+<meta property="og:description" content="Pick your city — LRT/Monorail crowd for KL, MRT crowd + leave-by planner for SG. manamana.io">
 <meta property="og:url" content="https://manamana.io/">
 <meta property="og:type" content="website">
-<meta property="og:locale" content="en_MY">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Mana-Mana — sesak ke tak?">
-<meta name="twitter:description" content="Klang Valley train crowd check · parking · live reports. manamana.io">
+<meta name="twitter:title" content="Mana-Mana — pick your city">
+<meta name="twitter:description" content="KL or SG — train crowd check &amp; leave-by planner. manamana.io">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Baloo+2:wght@400;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -26,1634 +24,167 @@
   :root{
     --milo:#3B2314; --milo-deep:#28160B;
     --teh:#F0932B; --teh-deep:#D97817;
-    --pandan:#5DB86A; --pandan-deep:#3E9A4C;
-    --kaya:#FFC93C; --bandung:#F7A8C4;
+    --kaya:#FFC93C; --pandan:#5DB86A;
+    --sg-red:#ED2939; --sg-red-deep:#B71E2C;
     --santan:#FFF4DE; --kopi-cup:#FFFDF6;
-    --sesak:#E8503A; --biasa:#F0932B; --lengang:#5DB86A;
     --bd:3px solid var(--milo-deep);
     --shadow:6px 6px 0 var(--milo-deep);
-    --shadow-sm:4px 4px 0 var(--milo-deep);
-    --r:18px; --maxw:1040px;
+    --shadow-lg:10px 10px 0 var(--milo-deep);
+    --r:20px;
   }
   *{margin:0;padding:0;box-sizing:border-box}
-  [hidden]{display:none !important}
-  html{scroll-behavior:smooth}
+  html,body{min-height:100%}
   body{
     background:var(--santan);
     background-image:radial-gradient(var(--kaya) 1.4px, transparent 1.4px);
     background-size:26px 26px;
     color:var(--milo);font-family:'Baloo 2',system-ui,sans-serif;
     font-size:17px;line-height:1.5;overflow-x:hidden;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding:32px 20px;
   }
-  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 20px}
-  ::selection{background:var(--kaya)}
+  .wrap{max-width:920px;width:100%;margin:0 auto}
 
-  .ticker{
-    background:var(--milo);color:var(--kaya);
-    font-family:'Space Mono',monospace;font-size:.78rem;font-weight:700;
-    padding:8px 0;overflow:hidden;white-space:nowrap;border-bottom:var(--bd);
+  header{text-align:center;margin-bottom:36px}
+  .logo-big{
+    display:inline-grid;place-items:center;width:64px;height:64px;background:var(--teh);
+    border:var(--bd);border-radius:16px;box-shadow:var(--shadow);font-size:2rem;transform:rotate(-6deg);
+    margin-bottom:22px;
   }
-  .ticker-track{display:inline-block;animation:tick 24s linear infinite}
-  @keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-
-  nav{position:sticky;top:0;z-index:60;background:var(--santan);border-bottom:var(--bd)}
-  .nav-inner{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 20px;max-width:var(--maxw);margin:0 auto}
-  .logo{font-family:'Lilita One',cursive;font-size:1.3rem;color:var(--milo);text-decoration:none;display:flex;align-items:center;gap:8px}
-  .logo .cup{
-    display:inline-grid;place-items:center;width:34px;height:34px;background:var(--teh);
-    border:var(--bd);border-radius:10px;box-shadow:3px 3px 0 var(--milo-deep);font-size:1rem;transform:rotate(-6deg);
-  }
-  .tabs{display:flex;gap:8px}
-  .tab{
-    font-weight:800;font-size:.85rem;color:var(--milo);text-decoration:none;
-    padding:8px 14px;border:var(--bd);border-radius:999px;background:var(--kopi-cup);
-    box-shadow:var(--shadow-sm);transition:transform .12s, box-shadow .12s, background .12s;white-space:nowrap;
-  }
-  .tab:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--milo-deep)}
-  .tab:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--milo-deep)}
-  .tab:focus-visible{outline:3px dashed var(--teh);outline-offset:3px}
-  .tab.t1:hover{background:var(--kaya)} .tab.t2:hover{background:var(--bandung)} .tab.t3:hover{background:var(--pandan);color:#fff}
-
-  header{padding:52px 0 26px;position:relative}
+  h1{font-family:'Lilita One',cursive;font-weight:400;font-size:clamp(2.2rem,6vw,3.6rem);line-height:1.05}
+  h1 .hl{display:inline-block;background:var(--kaya);border:var(--bd);border-radius:12px;padding:0 12px;box-shadow:var(--shadow-sm, 4px 4px 0 var(--milo-deep));transform:rotate(-1.5deg)}
+  .sub{margin-top:16px;font-weight:600;color:#5C4330;max-width:52ch;margin-inline:auto}
   .sticker{
-    display:inline-block;font-family:'Space Mono',monospace;font-weight:700;font-size:.75rem;
-    background:var(--bandung);border:var(--bd);border-radius:999px;padding:6px 14px;
-    box-shadow:var(--shadow-sm);transform:rotate(-2deg);margin-bottom:18px;
-  }
-  h1{font-family:'Lilita One',cursive;font-weight:400;font-size:clamp(2.3rem,6.6vw,4.1rem);line-height:1.03;max-width:18ch}
-  h1 .hl{display:inline-block;background:var(--kaya);border:var(--bd);border-radius:12px;padding:0 12px;box-shadow:var(--shadow-sm);transform:rotate(-1.5deg)}
-  .hero-sub{margin-top:18px;font-size:1.08rem;font-weight:600;max-width:56ch;color:#5C4330}
-  .kao{font-family:'Space Mono',monospace;white-space:nowrap}
-
-  section{padding:54px 0 6px}
-  .sec-badge{
-    display:inline-block;font-family:'Lilita One',cursive;font-size:1rem;background:var(--teh);color:#fff;
-    border:var(--bd);border-radius:12px;padding:6px 16px;box-shadow:var(--shadow-sm);transform:rotate(-2deg);margin-bottom:14px;
-  }
-  h2{font-family:'Lilita One',cursive;font-weight:400;font-size:clamp(1.7rem,4vw,2.5rem);line-height:1.08}
-  .sec-sub{font-weight:600;color:#6B4E37;margin-top:8px;max-width:58ch}
-  .demo-chip{
-    display:inline-block;font-family:'Space Mono',monospace;font-size:.7rem;font-weight:700;
-    background:var(--kaya);border:2.5px solid var(--milo-deep);border-radius:999px;padding:4px 12px;margin-top:10px;
+    display:inline-block;font-family:'Space Mono',monospace;font-weight:700;font-size:.72rem;
+    background:#F7A8C4;border:var(--bd);border-radius:999px;padding:6px 14px;
+    box-shadow:4px 4px 0 var(--milo-deep);transform:rotate(-2deg);margin-bottom:16px;
   }
 
-  /* ===== line switcher ===== */
-  .line-switch{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
-  .line-chip{
-    font-family:'Baloo 2';font-weight:800;font-size:.85rem;padding:9px 16px;cursor:pointer;
-    border:var(--bd);border-radius:999px;background:var(--kopi-cup);color:var(--milo);
-    box-shadow:var(--shadow-sm);display:flex;align-items:center;gap:8px;
-    transition:transform .15s cubic-bezier(.34,1.56,.64,1), box-shadow .15s;
+  .picker{
+    display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:14px;
   }
-  .line-chip .swatch{width:14px;height:14px;border-radius:5px;border:2px solid var(--milo-deep);flex:none}
-  .line-chip:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--milo-deep)}
-  .line-chip:active{transform:translate(2px,2px);box-shadow:0 0 0 var(--milo-deep)}
-  .line-chip:focus-visible{outline:3px dashed var(--teh);outline-offset:3px}
-  .line-chip.on{background:var(--milo);color:var(--santan)}
-  .line-chip.soon{opacity:.65;cursor:not-allowed}
-  .line-chip.soon .soon-tag{
-    font-family:'Space Mono',monospace;font-size:.58rem;background:var(--kaya);color:var(--milo);
-    border:2px solid var(--milo-deep);border-radius:6px;padding:0 5px;
-  }
+  @media (max-width:640px){.picker{grid-template-columns:1fr}}
 
-  .board{
+  .card{
+    display:flex;flex-direction:column;justify-content:space-between;
     background:var(--kopi-cup);border:var(--bd);border-radius:var(--r);
-    box-shadow:var(--shadow);padding:22px 18px 14px;margin-top:18px;position:relative;
+    box-shadow:var(--shadow-lg);padding:28px;text-decoration:none;color:var(--milo);
+    min-height:280px;position:relative;overflow:hidden;
+    transition:transform .18s cubic-bezier(.34,1.56,.64,1), box-shadow .18s;
   }
-  /* ===== station tooltip: springs in, follows the hovered stop ===== */
-  .tip{
-    position:absolute;z-index:8;width:212px;
-    background:var(--kopi-cup);border:var(--bd);border-radius:14px;
-    box-shadow:var(--shadow-sm);padding:12px 14px;
-    opacity:0;pointer-events:none;
-    transform:translate(-50%,10px) scale(.85);transform-origin:bottom center;
-    transition:transform .28s cubic-bezier(.34,1.56,.64,1), opacity .18s, left .28s cubic-bezier(.34,1.4,.64,1);
-  }
-  .tip.show{opacity:1;pointer-events:auto;transform:translate(-50%,0) scale(1)}
-  .tip::after{
-    content:"";position:absolute;left:50%;bottom:-9px;width:14px;height:14px;
-    background:var(--kopi-cup);border-right:var(--bd);border-bottom:var(--bd);
-    transform:translateX(-50%) rotate(45deg);
-  }
-  .tip .t-name{font-family:'Lilita One',cursive;font-size:1rem;line-height:1.15}
-  .tip .t-crowd{display:inline-flex;align-items:center;gap:6px;margin-top:6px;font-weight:800;font-size:.78rem;border:2.5px solid var(--milo-deep);border-radius:999px;padding:2px 10px}
-  .tip .t-crowd.c-g{background:var(--pandan);color:#fff}
-  .tip .t-crowd.c-a{background:var(--kaya)}
-  .tip .t-crowd.c-r{background:var(--sesak);color:#fff}
-  .tip .t-park{
-    margin-top:9px;font-weight:700;font-size:.8rem;line-height:1.3;
-    border-top:2px dashed #E4CBA8;padding-top:8px;
-  }
-  .tip .t-park .no{color:#6B4E37;font-weight:600}
-  .tip .nav-btns{margin-top:10px}
-  .tip .nav-btn{font-size:.74rem;padding:6px 4px}
-  .board-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}
-  .board-title{font-family:'Lilita One',cursive;font-size:1.15rem;display:flex;align-items:center;gap:10px}
-  .board-title .swatch{width:18px;height:18px;border-radius:6px;border:2.5px solid var(--milo-deep)}
-  .board-meta{font-family:'Space Mono',monospace;font-size:.72rem;font-weight:700;color:#6B4E37}
-  .legend{display:flex;gap:10px;flex-wrap:wrap;font-weight:800;font-size:.78rem}
-  .legend span{display:flex;align-items:center;gap:6px;border:2.5px solid var(--milo-deep);border-radius:999px;padding:3px 11px;background:var(--santan)}
-  .dot{width:11px;height:11px;border-radius:50%;border:2px solid var(--milo-deep)}
-  .dot.g{background:var(--lengang)} .dot.a{background:var(--biasa)} .dot.r{background:var(--sesak)}
+  .card:hover{transform:translate(-4px,-4px);box-shadow:14px 14px 0 var(--milo-deep)}
+  .card:active{transform:translate(4px,4px);box-shadow:2px 2px 0 var(--milo-deep)}
+  .card:focus-visible{outline:3px dashed var(--teh);outline-offset:5px}
 
-  .strip-scroller{overflow-x:auto;padding-bottom:6px}
-  .strip{display:flex;align-items:flex-end;height:286px;position:relative;padding:0 4px}
-  .track-line{
-    position:absolute;left:0;right:0;bottom:134px;height:10px;
-    border:2.5px solid var(--milo-deep);border-radius:6px;z-index:0;
-  }
-  .stn{
-    flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;
-    position:relative;z-index:1;height:100%;min-width:46px;cursor:pointer;
-    background:none;border:none;font:inherit;color:inherit;
-  }
-  .glass{
-    width:22px;border:2.5px solid var(--milo-deep);border-radius:5px 5px 8px 8px;
-    background:var(--kopi-cup);position:relative;overflow:hidden;margin-bottom:6px;height:104px;flex:none;
-  }
-  .glass .fill{position:absolute;bottom:0;left:0;right:0;transition:height .6s cubic-bezier(.34,1.3,.64,1), background .3s}
-  .glass .foam{position:absolute;left:0;right:0;height:6px;background:#FFF0D0;border-bottom:2px solid var(--milo-deep);transition:bottom .6s cubic-bezier(.34,1.3,.64,1)}
-  .stn .face{font-size:.9rem;height:1.3em}
-  .stn .node{width:16px;height:16px;border-radius:50%;background:var(--kopi-cup);border:3.5px solid var(--milo-deep);margin:6px 0;flex:none;transition:transform .15s}
-  .stn:hover .node,.stn:focus-visible .node{transform:scale(1.35);background:var(--kaya)}
-  .stn:focus-visible{outline:3px dashed var(--teh);outline-offset:-3px;border-radius:10px}
-  .stn .name{position:relative;width:100%;height:118px}
-  .stn .name span{
-    position:absolute;top:2px;left:50%;transform-origin:left top;transform:rotate(45deg);
-    white-space:nowrap;font-family:'Baloo 2',sans-serif;font-size:.64rem;font-weight:700;color:#5C4330;
-  }
-  .stn.ic .name span{color:var(--milo)}
-  .strip-ends{display:flex;justify-content:space-between;font-family:'Space Mono',monospace;font-size:.7rem;font-weight:700;color:#6B4E37;padding-top:6px}
-  .hint{
-    margin-top:16px;background:var(--kaya);border:var(--bd);border-radius:14px;
-    box-shadow:var(--shadow-sm);padding:12px 16px;font-weight:700;font-size:.95rem;transform:rotate(-.5deg);
+  .flag{
+    position:absolute;top:20px;right:20px;font-size:2rem;
+    filter:drop-shadow(2px 2px 0 var(--milo-deep));
   }
 
-  /* ===== parking ===== */
-  .free-banner{
-    margin-top:20px;background:var(--pandan);color:#fff;border:var(--bd);border-radius:14px;
-    box-shadow:var(--shadow-sm);padding:14px 18px;font-weight:800;font-size:1rem;transform:rotate(.4deg);
+  .city-name{font-family:'Lilita One',cursive;font-size:2rem;letter-spacing:.01em}
+  .city-tag{
+    font-family:'Space Mono',monospace;font-weight:700;font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;
+    color:#7a5a40;margin-top:2px;
   }
-  .park-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:20px}
-  .pk{background:var(--kopi-cup);border:var(--bd);border-radius:var(--r);box-shadow:var(--shadow);padding:18px;transition:transform .15s cubic-bezier(.34,1.56,.64,1)}
-  .pk:hover{transform:translate(-2px,-2px) rotate(.6deg)}
-  .pk .area{font-family:'Space Mono',monospace;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#6B4E37}
-  .pk h3{font-family:'Lilita One',cursive;font-weight:400;font-size:1.1rem;margin:4px 0 10px}
-  .pk .row{display:flex;justify-content:space-between;align-items:baseline;border-top:2px dashed #E4CBA8;padding:7px 0 3px;font-size:.9rem;font-weight:600}
-  .pk .row b{font-weight:800}
-  .pill{border:2.5px solid var(--milo-deep);border-radius:999px;padding:2px 10px;font-size:.76rem;font-weight:800}
-  .pill.free{background:var(--pandan);color:#fff}
-  .pill.paid{background:var(--sesak);color:#fff}
-  .pill.tba{background:var(--santan)}
-  .park-note{
-    margin-top:20px;background:var(--kopi-cup);border:var(--bd);border-radius:14px;
-    box-shadow:var(--shadow-sm);padding:16px 18px;font-weight:600;font-size:.92rem;color:#5C4330;
+  .pitch{margin-top:14px;font-weight:600;line-height:1.4;max-width:26ch}
+  .features{
+    list-style:none;margin-top:16px;padding:0;font-size:.9rem;font-weight:600;
   }
-  .nav-btns{display:flex;gap:8px;margin-top:12px}
-  .nav-btn{
-    flex:1;text-align:center;text-decoration:none;font-weight:800;font-size:.82rem;color:var(--milo);
-    border:2.5px solid var(--milo-deep);border-radius:999px;padding:7px 4px;
-    box-shadow:3px 3px 0 var(--milo-deep);
-    transition:transform .12s cubic-bezier(.34,1.56,.64,1), box-shadow .12s;
-  }
-  .nav-btn:hover{transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--milo-deep)}
-  .nav-btn:active{transform:translate(2px,2px);box-shadow:0 0 0 var(--milo-deep)}
-  .nav-btn:focus-visible{outline:3px dashed var(--teh);outline-offset:2px}
-  .nav-btn.gm{background:var(--kaya)}
-  .nav-btn.wz{background:#9FD9F6}
-
-  /* ===== reports ===== */
-  .report-band{
-    margin-top:20px;background:var(--milo);color:var(--santan);border:var(--bd);
-    border-radius:var(--r);box-shadow:var(--shadow);padding:32px;
-    background-image:radial-gradient(rgba(255,201,60,.15) 1.4px, transparent 1.4px);background-size:22px 22px;
-  }
-  .report-grid{display:grid;grid-template-columns:1fr 1fr;gap:30px;align-items:center}
-  .report-band h2{color:var(--kaya)}
-  .report-band p{color:#EAD9C2;font-weight:600;margin-top:10px;max-width:44ch}
-  .vote{background:var(--santan);color:var(--milo);border:var(--bd);border-radius:var(--r);box-shadow:6px 6px 0 rgba(0,0,0,.35);padding:22px}
-  .vote label{font-weight:800;display:block;margin-bottom:8px}
-  .vote select{
-    width:100%;font-family:'Baloo 2';font-weight:700;font-size:1rem;padding:12px;
-    border:var(--bd);border-radius:12px;background:var(--kopi-cup);color:var(--milo);margin-bottom:14px;
-  }
-  .vq{font-weight:800;font-size:1rem}
-  .vq small{display:block;font-family:'Space Mono',monospace;font-weight:400;font-size:.68rem;color:#6B4E37;margin-top:2px}
-  .vbtns{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}
-  .vbtns button{
-    font-family:'Baloo 2';font-weight:800;font-size:.95rem;padding:16px 4px;cursor:pointer;
-    border:var(--bd);border-radius:16px;box-shadow:var(--shadow-sm);
-    transition:transform .15s cubic-bezier(.34,1.56,.64,1), box-shadow .15s;
-  }
-  .vbtns button:hover{transform:translate(-2px,-2px) scale(1.04);box-shadow:6px 6px 0 var(--milo-deep)}
-  .vbtns button:active{transform:translate(3px,3px);box-shadow:0 0 0 var(--milo-deep)}
-  .vbtns button:focus-visible{outline:3px dashed var(--milo);outline-offset:3px}
-  .vbtns .g{background:var(--pandan);color:#fff}
-  .vbtns .a{background:var(--kaya)}
-  .vbtns .r{background:var(--sesak);color:#fff}
-  .thanks{margin-top:12px;font-family:'Space Mono',monospace;font-size:.74rem;font-weight:700;min-height:1.3em;color:#3E9A4C}
-
-  .train-track{
-    position:fixed;left:0;right:0;bottom:0;height:34px;z-index:70;pointer-events:none;
-    background:repeating-linear-gradient(90deg, transparent 0 22px, var(--milo-deep) 22px 26px);
-    background-position:bottom;background-size:100% 8px;background-repeat:repeat-x;
-  }
-  .train-track::before{content:"";position:absolute;left:0;right:0;bottom:6px;height:3px;background:var(--milo-deep)}
-  #train{position:absolute;bottom:7px;left:0;font-size:1.5rem;transform:scaleX(-1);filter:drop-shadow(2px 2px 0 rgba(40,22,11,.4))}
-
-  footer{border-top:var(--bd);margin-top:60px;padding:34px 0 70px;background:var(--kopi-cup)}
-  .foot-grid{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;font-weight:600;font-size:.88rem;color:#6B4E37}
-  footer .fine{font-family:'Space Mono',monospace;font-size:.68rem;max-width:56ch;margin-top:10px}
-  footer a{color:var(--teh-deep);font-weight:800}
-
-  /* ===== live reports + ridership (V2) ===== */
-  .demo-chip.live{background:var(--pandan);color:#fff;border-color:var(--pandan-deep)}
-  .demo-chip.live::before{content:"\25CF ";animation:pulse 1.6s ease-in-out infinite}
-  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-  .stn.live .node{background:var(--pandan);border-color:var(--pandan-deep);box-shadow:0 0 0 3px rgba(93,184,106,.35)}
-  .stn.live .glass{border-color:var(--pandan-deep)}
-  .tip .t-live{margin-top:8px;font-family:'Space Mono',monospace;font-size:.64rem;font-weight:700;color:var(--pandan-deep)}
-  .rider-stat{display:flex;flex-wrap:wrap;align-items:center;gap:14px;margin-top:16px;background:var(--milo);color:var(--santan);border:var(--bd);border-radius:14px;box-shadow:var(--shadow-sm);padding:14px 18px}
-  .rider-stat .big{font-family:'Lilita One',cursive;font-size:1.5rem;color:var(--kaya);line-height:1}
-  .rider-stat .lbl{font-family:'Space Mono',monospace;font-size:.66rem;font-weight:700;color:#EAD9C2;text-transform:uppercase;letter-spacing:.05em}
-  .rider-stat .trend{font-weight:800;font-size:.82rem;border:2px solid var(--santan);border-radius:999px;padding:2px 10px}
-  .rider-stat .trend.up{background:var(--sesak);color:#fff;border-color:var(--sesak)}
-  .rider-stat .trend.down{background:var(--pandan);color:#fff;border-color:var(--pandan-deep)}
-  .rider-stat .src{font-family:'Space Mono',monospace;font-size:.6rem;color:#B79D82;margin-left:auto}
-  .rider-stat .spark{display:flex;align-items:flex-end;gap:2px;height:30px}
-  .rider-stat .spark i{width:5px;background:var(--kaya);border-radius:2px 2px 0 0;opacity:.85;display:block}
-
-  /* ===== jom plan: train vs drive ===== */
-  .gt-sel{width:100%;font-family:'Baloo 2';font-weight:700;font-size:1rem;padding:12px;border:var(--bd);border-radius:12px;background:var(--kopi-cup);color:var(--milo);box-shadow:var(--shadow-sm);margin-top:18px;margin-bottom:16px}
-  .gt-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
-  .gt-card{background:var(--kopi-cup);border:var(--bd);border-radius:var(--r);box-shadow:var(--shadow);padding:16px;display:flex;flex-direction:column}
-  .gt-card.pick{outline:4px solid var(--pandan);outline-offset:2px}
-  .gt-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px}
-  .gt-title{font-family:'Lilita One',cursive;font-size:1.15rem;display:flex;align-items:center;gap:8px}
-  .gt-tag{font-family:'Space Mono',monospace;font-weight:700;font-size:.62rem;border:2.5px solid var(--milo-deep);border-radius:999px;padding:3px 9px;white-space:nowrap}
-  .gt-tag.best{background:var(--pandan);color:#fff} .gt-tag.jam{background:#9FD9F6;color:var(--milo)}
-  .gt-body{display:flex;justify-content:space-between;align-items:flex-end;gap:8px}
-  .gt-big{font-family:'Lilita One',cursive;font-size:1.9rem;line-height:1}
-  .gt-big.dim{color:#A98E72}
-  .gt-meta{font-weight:600;font-size:.8rem;color:#6B4E37;margin-top:4px}
-  .gt-crowd{display:inline-flex;align-items:center;gap:5px;font-weight:800;font-size:.78rem;border:2.5px solid var(--milo-deep);border-radius:999px;padding:3px 10px}
-  .gt-crowd.c-g{background:var(--pandan);color:#fff} .gt-crowd.c-a{background:var(--kaya)} .gt-crowd.c-r{background:var(--sesak);color:#fff}
-  .gt-live{font-family:'Space Mono',monospace;font-size:.6rem;font-weight:700;margin-top:8px}
-  .gt-verdict{display:flex;gap:9px;align-items:flex-start;margin-top:18px;background:var(--kaya);border:var(--bd);border-radius:14px;box-shadow:var(--shadow-sm);padding:13px 16px;font-weight:700;font-size:.95rem;transform:rotate(-.4deg)}
-
-  /* ===== weather (Tier 1) ===== */
-  .wx-chip{display:inline-flex;align-items:center;gap:8px;margin-top:16px;font-family:'Space Mono',monospace;font-weight:700;font-size:.8rem;background:var(--kopi-cup);border:2.5px solid var(--milo-deep);border-radius:999px;padding:6px 14px;box-shadow:var(--shadow-sm)}
-  .wx-warn{margin-top:20px;background:var(--sesak);color:#fff;border:var(--bd);border-radius:14px;box-shadow:var(--shadow-sm);padding:14px 18px;font-weight:800;font-size:1rem;transform:rotate(-.4deg);display:flex;gap:10px;align-items:flex-start}
-
-  @media (max-width:860px){
-    .park-grid{grid-template-columns:1fr 1fr}
-    .report-grid{grid-template-columns:1fr}
-    .tab{padding:7px 10px;font-size:.78rem}
-  }
-  @media (max-width:560px){.park-grid{grid-template-columns:1fr} .gt-grid{grid-template-columns:1fr}}
-  /* ===== click-clarity cues ===== */
-  .point{
-    display:inline-flex;align-items:center;gap:7px;
-    font-family:'Space Mono',monospace;font-weight:700;font-size:.72rem;
-    background:var(--kaya);border:2.5px solid var(--milo-deep);border-radius:999px;
-    padding:6px 13px;box-shadow:var(--shadow-sm);color:var(--milo);
-    transform:rotate(-2deg);margin:14px 0 6px;
-    transition:opacity .3s ease, transform .3s ease;
-  }
-  .point.point-quiet{background:var(--santan)}
-  .point .arr{font-size:.95rem;line-height:1;display:inline-block}
-  .point.up .arr{animation:mm-bob 1.6s ease-in-out infinite}
-  .point.dismissed{opacity:0;transform:rotate(-2deg) scale(.88);pointer-events:none;margin-bottom:-32px}
-  @keyframes mm-bob{
-    0%,100%{transform:translateY(0)}
-    50%{transform:translateY(-3px)}
-  }
-  @keyframes mm-pulse{
-    0%,100%{box-shadow:0 0 0 0 rgba(255,201,60,.55)}
-    50%{box-shadow:0 0 0 10px rgba(255,201,60,0)}
-  }
-  .pulse-hint{animation:mm-pulse 1.9s ease-in-out infinite}
-  .tip .close{
-    position:absolute;top:6px;right:8px;
-    background:var(--kopi-cup);border:2.5px solid var(--milo-deep);border-radius:50%;
-    width:26px;height:26px;padding:0;line-height:1;
-    font-family:'Space Mono',monospace;font-weight:700;font-size:.95rem;color:var(--milo);
-    cursor:pointer;box-shadow:2px 2px 0 var(--milo-deep);
-    display:inline-flex;align-items:center;justify-content:center;
-    transition:transform .12s, box-shadow .12s;
-  }
-  .tip .close:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--milo-deep)}
-  .tip .close:active{transform:translate(1px,1px);box-shadow:0 0 0 var(--milo-deep)}
-  .tip .close:focus-visible{outline:2.5px dashed var(--teh);outline-offset:2px}
-  .tip .t-name{padding-right:30px}
-  .nav-btn.mr{background:var(--pandan);color:#fff;border-color:var(--pandan-deep)}
-  .thanks .outcome{
-    display:inline-block;margin-top:4px;font-family:'Baloo 2';font-size:.82rem;font-weight:700;
-    background:var(--santan);border:2px solid var(--milo-deep);border-radius:8px;padding:2px 8px;color:var(--milo);
-  }
-  @media (max-width:560px){
-    .point{font-size:.68rem;padding:5px 11px}
+  .features li{padding:4px 0;display:flex;align-items:center;gap:8px}
+  .features li::before{
+    content:"";width:8px;height:8px;background:var(--pandan);
+    border:2px solid var(--milo-deep);border-radius:3px;flex:none;
   }
 
-  /* ===== service-alerts banner (news pull) ===== */
-  .alerts-band{
-    margin:14px 0 6px;background:var(--sesak);color:#fff;border:var(--bd);border-radius:14px;
-    box-shadow:var(--shadow-sm);padding:12px 16px 8px;transform:rotate(-.4deg);
+  .cta{
+    margin-top:22px;display:inline-flex;align-items:center;gap:8px;
+    font-family:'Lilita One',cursive;font-size:1.1rem;padding:10px 18px;
+    border:var(--bd);border-radius:14px;box-shadow:4px 4px 0 var(--milo-deep);
+    align-self:flex-start;
   }
-  .alerts-band .lbl{font-family:'Space Mono',monospace;font-weight:700;font-size:.66rem;text-transform:uppercase;letter-spacing:.05em;opacity:.85;margin-bottom:4px}
-  .alerts-band .a-item{display:block;color:#fff;text-decoration:none;padding:6px 0;border-top:2px dashed rgba(255,255,255,.35);font-weight:700;font-size:.92rem;line-height:1.25}
-  .alerts-band .a-item:first-of-type{border-top:none}
-  .alerts-band .a-item .a-meta{display:block;margin-top:2px;font-family:'Space Mono',monospace;font-weight:700;font-size:.62rem;opacity:.85;text-transform:uppercase;letter-spacing:.03em}
-  .alerts-band .a-item:hover{text-decoration:underline}
-  .alerts-band .a-more{display:inline-block;margin-top:6px;font-family:'Space Mono',monospace;font-weight:700;font-size:.66rem;background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.4);padding:2px 8px;border-radius:999px;cursor:pointer;color:#fff}
 
-  /* ===== data-source + off-hours states ===== */
-  /* Recolor the station node by data source, so eyes land on what's live vs forecast */
-  .stn.src-report    .node{background:var(--pandan);border-color:var(--pandan-deep);box-shadow:0 0 0 3px rgba(93,184,106,.35)}
-  .stn.src-busy      .node{background:#9FD9F6;border-color:#5A9DC4}
-  .stn.src-ridership .node{background:var(--kaya);border-color:var(--milo-deep)}
-  .stn.src-forecast  .node{background:var(--kopi-cup);border-color:#B79D82}
-  /* Forecast is a guess, so its fill is dimmed and doesn't try to look authoritative */
-  .stn.src-forecast .fill{opacity:.35}
-  .stn.src-forecast .foam{opacity:.5}
-  /* Off-hours: empty glasses, no face, no color — the strip should read "closed", not "lengang" */
-  .strip.offhours .stn .fill,
-  .strip.offhours .stn .foam{display:none}
-  .strip.offhours .stn .face{visibility:hidden}
-  .strip.offhours .stn .node{background:#D9C7A5;border-color:#B79D82;box-shadow:none}
-  .strip.offhours .stn .glass{background:#EFE4CE;opacity:.7}
-  .offhours-banner{
-    margin:16px 0 6px;background:var(--milo);color:var(--kaya);border:var(--bd);border-radius:14px;
-    box-shadow:var(--shadow-sm);padding:14px 18px;font-weight:800;font-size:1rem;transform:rotate(-.4deg);
-    display:flex;gap:10px;align-items:flex-start;
-  }
-  .offhours-banner .lbl{font-family:'Space Mono',monospace;font-weight:700;font-size:.7rem;color:#EAD9C2;text-transform:uppercase;letter-spacing:.05em;margin-top:4px}
-  .offhours-banner b{color:#fff}
-  /* Reports section during off-hours: kill the buttons and explain */
-  .vbtns.paused button{opacity:.35;pointer-events:none;filter:grayscale(1)}
-  .vbtns.paused{position:relative}
-  .vbtns.paused::after{
-    content:"\1F319 Reports pause overnight — back at 6:00 AM";
-    position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
-    font-family:'Baloo 2';font-weight:800;font-size:.9rem;color:var(--kaya);
-    background:var(--milo);border:var(--bd);border-radius:10px;padding:8px 14px;
-    box-shadow:var(--shadow-sm);white-space:nowrap;
-  }
-  /* Source key row in the board head */
-  .src-key{display:flex;gap:12px;flex-wrap:wrap;margin-top:8px;font-family:'Space Mono',monospace;font-size:.66rem;font-weight:700;color:#6B4E37}
-  .src-key span{display:inline-flex;align-items:center;gap:5px}
-  .src-key i{width:9px;height:9px;border-radius:50%;border:2px solid var(--milo-deep);display:inline-block}
-  .src-key i.k-r{background:var(--pandan);border-color:var(--pandan-deep)}
-  .src-key i.k-b{background:#9FD9F6;border-color:#5A9DC4}
-  .src-key i.k-y{background:var(--kaya)}
-  .src-key i.k-g{background:var(--kopi-cup);border-color:#B79D82}
+  .card.my{background:linear-gradient(135deg, #FFFDF6 0%, #FFF4DE 100%)}
+  .card.my .cta{background:var(--teh);color:#fff}
+  .card.my .features li::before{background:var(--pandan)}
 
-  /* ===== My commute widget ===== */
-  .commute-sec{padding:22px 0 0}
-  .commute-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
-  .commute-title{font-family:'Lilita One',cursive;font-size:1.15rem;display:flex;align-items:center;gap:8px}
-  .commute-title .st{transform:rotate(-8deg);display:inline-block}
-  .install-chip, .tg-chip{
-    font-family:'Space Mono',monospace;font-weight:800;font-size:.76rem;
-    padding:7px 12px;border:var(--bd);border-radius:999px;
-    background:var(--kaya);color:var(--milo);cursor:pointer;
-    box-shadow:var(--shadow-sm);transition:transform .12s, box-shadow .12s;
+  .card.sg{background:linear-gradient(135deg, #FFFDF6 0%, #FFF0F0 100%)}
+  .card.sg .cta{background:var(--sg-red);color:#fff}
+  .card.sg .features li::before{background:var(--sg-red)}
+  .card.sg .badge-new{
+    position:absolute;top:22px;left:22px;
+    font-family:'Space Mono',monospace;font-size:.6rem;font-weight:700;letter-spacing:.1em;
+    background:var(--kaya);color:var(--milo);border:2.5px solid var(--milo-deep);border-radius:6px;
+    padding:2px 8px;transform:rotate(-4deg);
   }
-  .install-chip:hover, .tg-chip:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--milo-deep)}
-  .install-chip:active, .tg-chip:active{transform:translate(1px,1px);box-shadow:1px 1px 0 var(--milo-deep)}
-  .install-chip:focus-visible, .tg-chip:focus-visible{outline:3px dashed var(--teh);outline-offset:3px}
-  .install-chip.ios{background:var(--santan);cursor:default}
-  .tg-chip{background:#EAF6FF}
-  .tg-chip.linked{background:var(--pandan);color:#fff;border-color:var(--pandan-deep);cursor:default}
-  .tg-chip.linked:hover{transform:none;box-shadow:var(--shadow-sm)}
-  .commute-actions{display:flex;gap:8px;flex-wrap:wrap}
-  .commute-list{display:grid;grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));gap:14px;margin-top:14px}
-  .commute-empty{
-    margin-top:14px;background:var(--kopi-cup);border:var(--bd);border-radius:14px;
-    box-shadow:var(--shadow-sm);padding:14px 16px;font-weight:600;font-size:.9rem;color:#6B4E37;
-  }
-  .cc-card{
-    background:var(--kopi-cup);border:var(--bd);border-radius:var(--r);
-    box-shadow:var(--shadow-sm);padding:14px 16px;position:relative;
-    transition:transform .12s;
-  }
-  .cc-card:hover{transform:translate(-1px,-1px)}
-  .cc-line{font-family:'Space Mono',monospace;font-weight:700;font-size:.66rem;color:#6B4E37;text-transform:uppercase;letter-spacing:.05em}
-  .cc-name{font-family:'Lilita One',cursive;font-size:1.05rem;line-height:1.15;padding-right:26px;margin-top:2px}
-  .cc-chip{display:inline-flex;align-items:center;gap:5px;margin-top:8px;font-weight:800;font-size:.8rem;border:2.5px solid var(--milo-deep);border-radius:999px;padding:2px 10px}
-  .cc-chip.c-g{background:var(--pandan);color:#fff}
-  .cc-chip.c-a{background:var(--kaya)}
-  .cc-chip.c-r{background:var(--sesak);color:#fff}
-  .cc-chip.c-none{background:#EFE4CE;color:#6B4E37}
-  .cc-src{margin-top:6px;font-family:'Space Mono',monospace;font-size:.62rem;color:#8B6D50}
-  .cc-x{
-    position:absolute;top:6px;right:8px;background:none;border:none;
-    font-family:'Space Mono',monospace;font-weight:700;font-size:1.1rem;color:#8B6D50;
-    cursor:pointer;padding:2px 8px;line-height:1;
-  }
-  .cc-x:hover{color:var(--milo)}
-  .cc-x:focus-visible{outline:2.5px dashed var(--teh);outline-offset:2px;border-radius:6px}
-  /* ☆ Save button in station tooltip */
-  .nav-btn.sv{background:var(--milo);color:var(--santan);border-color:var(--milo-deep);cursor:pointer;font:inherit;font-weight:800;font-size:.74rem}
-  .nav-btn.sv.saved{background:var(--kaya);color:var(--milo)}
 
-  @media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
+  footer{
+    margin-top:44px;text-align:center;font-size:.82rem;color:#7a5a40;font-weight:600;
+    padding-top:20px;border-top:2px dashed var(--milo-deep);
+  }
+  footer a{color:var(--milo)}
+  footer code{font-family:'Space Mono',monospace;background:var(--kopi-cup);padding:1px 6px;border-radius:4px;border:1px solid var(--milo-deep);font-size:.78rem}
 </style>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
-<div class="ticker" aria-hidden="true">
-  <div class="ticker-track">
-    &nbsp;NOW COVERING 4 LRT LINES + MONORAIL&nbsp;&nbsp;·&nbsp;&nbsp;JOM CHECK DULU BEFORE YOU GO&nbsp;&nbsp;·&nbsp;&nbsp;LRT3 FREE RIDES UNTIL 31 JULY 🎉&nbsp;&nbsp;·&nbsp;&nbsp;FREE PARKING AT 6 LRT3 PARK N' RIDE&nbsp;&nbsp;·&nbsp;&nbsp;
-    NOW COVERING 4 LRT LINES + MONORAIL&nbsp;&nbsp;·&nbsp;&nbsp;JOM CHECK DULU BEFORE YOU GO&nbsp;&nbsp;·&nbsp;&nbsp;LRT3 FREE RIDES UNTIL 31 JULY 🎉&nbsp;&nbsp;·&nbsp;&nbsp;FREE PARKING AT 6 LRT3 PARK N' RIDE&nbsp;&nbsp;·&nbsp;&nbsp;
+<div class="wrap">
+  <header>
+    <div class="logo-big">🚈</div>
+    <span class="sticker">✦ pick your city ✦</span>
+    <h1>Same question, two cities: <span class="hl">sesak ke tak?</span></h1>
+    <p class="sub">Mana-Mana started for Klang Valley. Singapore joins because they actually publish the crowd data. Pick where you're travelling.</p>
+  </header>
+
+  <div class="picker">
+    <a class="card my" href="/my/">
+      <span class="flag">🇲🇾</span>
+      <div>
+        <div class="city-name">Malaysia</div>
+        <div class="city-tag">Klang Valley · KL</div>
+        <p class="pitch">LRT, Monorail &amp; the new Shah Alam Line — glass-fill crowd per station, parking rates, weather warnings.</p>
+        <ul class="features">
+          <li>Live commuter reports</li>
+          <li>Parking maps &amp; harga</li>
+          <li>Ridership-baselined forecast</li>
+        </ul>
+      </div>
+      <span class="cta">Jom check dulu →</span>
+    </a>
+
+    <a class="card sg" href="/sg/">
+      <span class="badge-new">FEASIBILITY</span>
+      <span class="flag">🇸🇬</span>
+      <div>
+        <div class="city-name">Singapore</div>
+        <div class="city-tag">MRT · leave-by planner</div>
+        <p class="pitch">Tell us when you need to arrive. We rank departure options by <b>predicted crowd</b>, not just fastest — using LTA's official feed.</p>
+        <ul class="features">
+          <li>Arrive-at-time picker</li>
+          <li>Least-crowded ranking</li>
+          <li>Live service alerts</li>
+        </ul>
+      </div>
+      <span class="cta">Plan a trip →</span>
+    </a>
   </div>
+
+  <footer>
+    <p>manamana.io — <a href="/my/">Malaysia</a> · <a href="/sg/">Singapore</a> · <a href="https://github.com/anracollective/manamana">GitHub</a></p>
+    <p style="margin-top:6px">SG is currently a feasibility prototype running on sample data — see <code>/sg/README.md</code>.</p>
+  </footer>
 </div>
 
-<nav>
-  <div class="nav-inner">
-    <a class="logo" href="#top"><span class="cup">🚈</span>Mana-Mana</a>
-    <div class="tabs">
-      <a class="tab t1" href="#live">Live Lines</a>
-      <a class="tab t1" href="#getthere">Plan</a>
-      <a class="tab t2" href="#parking">Parking</a>
-      <a class="tab t3" href="#reports">Reports</a>
-    </div>
-  </div>
-</nav>
-
-<header id="top">
-  <div class="wrap">
-    <span class="sticker">✦ seluruh Klang Valley punya crowd check ✦</span>
-    <h1>Every train line. One question: <span class="hl">sesak ke tak?</span></h1>
-    <p class="hero-sub">Kelana Jaya, Ampang, Sri Petaling, the new Shah Alam Line, Monorail — pick your line, see which stations are packed, where got parking, and report from the platform.</p>
-    <div class="wx-chip" id="wxChip" hidden></div>
-  </div>
-</header>
-
-<div class="wrap"><div class="wx-warn" id="wxWarn" hidden></div></div>
-
-<!-- ============ MY COMMUTE (saved stations) ============ -->
-<section id="commute" class="commute-sec">
-  <div class="wrap">
-    <div class="commute-head">
-      <span class="commute-title"><span class="st">⭐</span> My commute</span>
-      <div class="commute-actions">
-        <button class="tg-chip" id="tgChip" onclick="linkTelegram()">🔗 Link Telegram</button>
-        <button class="install-chip" id="installChip" hidden onclick="installApp()">📲 Install app</button>
-      </div>
-    </div>
-    <div class="commute-list" id="commuteList"></div>
-    <div class="commute-empty" id="commuteEmpty">
-      Save your usual station — tap <b>☆ Save</b> on any station below and it'll show up here with live status.
-    </div>
-  </div>
-</section>
-
-<!-- ============ 1. LIVE LINES ============ -->
-<section id="live">
-  <div class="wrap">
-    <span class="sec-badge">01 · LIVE LINES</span>
-    <h2>Pick your line</h2>
-    <p class="sec-sub">Each station is a glass of teh tarik — the fuller the glass, the more sesak the platform. MRT lines coming soon, sabar ya.</p>
-    <span class="demo-chip" id="dataChip">Baseline forecast · loading live reports…</span>
-
-    <div class="line-switch" id="lineSwitch" role="tablist" aria-label="Choose a train line"></div>
-
-    <div class="point up" id="pointLive" hidden><span class="arr">👇</span> Tap any station to see crowd &amp; parking</div>
-
-    <div class="offhours-banner" id="offhoursBanner" hidden>
-      <span style="font-size:1.3rem;line-height:1">🌙</span>
-      <div>
-        <div class="lbl">off-hours</div>
-        <div><b>LRT tak jalan sekarang</b> — <span id="offhoursNext">service resumes at 6:00 AM</span>.</div>
-      </div>
-    </div>
-
-    <div class="alerts-band" id="alertsBand" hidden></div>
-
-    <div class="board">
-      <div class="board-head">
-        <div class="board-title"><span class="swatch" id="boardSwatch"></span><span id="boardName"></span></div>
-        <div class="board-meta" id="boardMeta"></div>
-        <div class="legend">
-          <span><i class="dot g"></i>Lengang</span>
-          <span><i class="dot a"></i>Biasa</span>
-          <span><i class="dot r"></i>Sesak</span>
-        </div>
-      </div>
-      <div class="src-key" aria-label="Source of each station's reading">
-        <span><i class="k-r"></i>live report</span>
-        <span><i class="k-b"></i>live busyness</span>
-        <span><i class="k-y"></i>typical (ridership)</span>
-        <span><i class="k-g"></i>baseline forecast</span>
-      </div>
-      <div class="strip-scroller" id="scroller">
-        <div class="strip" id="strip" role="list" aria-label="Crowd level by station"></div>
-      </div>
-      <div class="tip" id="tip" role="status" aria-live="polite"></div>
-      <div class="strip-ends"><span id="endA"></span><span id="endB"></span></div>
-    </div>
-    <div class="hint" id="lineHint"></div>
-    <div class="rider-stat" id="riderStat" hidden></div>
-  </div>
-</section>
-
-<!-- ============ 2. JOM PLAN (train vs drive) ============ -->
-<section id="getthere">
-  <div class="wrap">
-    <span class="sec-badge" style="background:var(--kaya);color:var(--milo)">02 · JOM PLAN</span>
-    <h2>Nak pergi mana? Train ke drive? 🤔</h2>
-    <p class="sec-sub">Pick your destination station — we'll check if the platform's lengang, and you tap through to see the drive.</p>
-    <select class="gt-sel" id="destSelect" aria-label="Destination station"></select>
-    <div class="point" id="pointPlan" hidden><span class="arr">→</span> ① Pick where, ② tap Maps / Waze / Timetable</div>
-    <div class="gt-grid" id="gtGrid"></div>
-    <div class="gt-verdict" id="gtVerdict"></div>
-  </div>
-</section>
-
-<!-- ============ 3. PARKING ============ -->
-<section id="parking">
-  <div class="wrap">
-    <span class="sec-badge" style="background:var(--bandung);color:var(--milo)">03 · PARKING</span>
-    <h2 id="parkTitle">Where can park? How much? 🚗</h2>
-    <p class="sec-sub" id="parkSub"></p>
-
-    <div class="free-banner" id="freeBanner" hidden></div>
-
-    <div class="point up" id="pointPark" hidden><span class="arr">👇</span> Tap Maps or Waze on your pick</div>
-
-    <div class="park-grid" id="parkGrid"></div>
-
-    <div class="park-note" id="parkNote"></div>
-  </div>
-</section>
-
-<!-- ============ 4. REPORTS ============ -->
-<section id="reports">
-  <div class="wrap">
-    <span class="sec-badge" style="background:var(--pandan)">04 · REPORTS</span>
-    <div class="report-band">
-      <div class="report-grid">
-        <div>
-          <h2>At the station? Tolong sikit lah.</h2>
-          <p>Your one tap overrides our forecast for 20 minutes and saves the next person's evening. Works on every line. No account, no typing — tap je.</p>
-        </div>
-        <div class="vote">
-          <label for="lineSelect">Which line?</label>
-          <select id="lineSelect" aria-label="Select your line"></select>
-          <label for="stationSelect">Which station?</label>
-          <select id="stationSelect" aria-label="Select your station"></select>
-          <div class="vq">How packed is it right now?<small>YOUR REPORT EXPIRES AFTER 20 MIN</small></div>
-          <div class="point up point-quiet" id="pointVote" hidden><span class="arr">👇</span> Tap how it feels</div>
-          <div class="vbtns">
-            <button class="g" onclick="voted('Lengang')">Lengang<br>😌</button>
-            <button class="a" onclick="voted('Biasa')">Biasa<br>🙂</button>
-            <button class="r" onclick="voted('Sesak')">Sesak<br>🥵</button>
-          </div>
-          <div class="thanks" id="thanks"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<footer>
-  <div class="wrap">
-    <div class="foot-grid">
-      <div>
-        <a class="logo" href="#top" style="font-size:1.1rem"><span class="cup" style="width:28px;height:28px;font-size:.85rem">🚈</span>Mana-Mana</a>
-        <div class="fine">Ridership data: data.gov.my · Parking info: Prasarana announcements, June 2026. Mana-Mana is an independent community project — not affiliated with Prasarana Malaysia or Rapid KL. Live crowd levels come from community reports laid over a time-of-day forecast — tap to report from any platform, and the freshest report wins. These are not official passenger counts. Station lists per official Rapid KL network.</div>
-      </div>
-      <div style="text-align:right">
-        <a href="https://manamana.io" rel="me">manamana.io</a> · <a href="#">GitHub</a> · <a href="#">Feedback</a><br>
-        <span class="fine">ANRA Collective 🇲🇾</span>
-      </div>
-    </div>
-  </div>
-</footer>
-
-<div class="train-track" aria-hidden="true"><span id="train">🚈</span></div>
-
 <script>
-  // =============== NETWORK DATA ===============
-  // interchange stations get a natural crowd boost in the demo model
-  const IC = new Set(["Masjid Jamek","KL Sentral","Hang Tuah","Titiwangsa","Chan Sow Lin","Putra Heights",
-    "Bandar Utama","Glenmarie 2","Glenmarie","Ampang Park","Pasar Seni","Bandar Tasik Selatan","Subang Jaya","Sungai Besi","Sri Rampai"]);
-
-  const LINES = [
-    {
-      id:"sa", name:"LRT3 Shah Alam", color:"#2FA3DC", tag:"11",
-      stations:["Bandar Utama","Kayu Ara","BU 11","Damansara Idaman","Subang","Glenmarie 2","Kerjaya","Stadium Shah Alam","Dato' Menteri","UiTM Shah Alam","Seksyen 7","Bandar Baru Klang","Pasar Klang","Jalan Meru","Jambatan Kota","Taman Selatan","Seri Andalas","Klang Jaya","Bandar Bukit Tinggi","Johan Setia"],
-      hint:"💡 UiTM Shah Alam sesak gila right now — Dato' Menteri is one stop away and steady je."
-    },
-    {
-      id:"kj", name:"LRT Kelana Jaya", color:"#D5223E", tag:"5",
-      stations:["Gombak","Taman Melati","Wangsa Maju","Sri Rampai","Setiawangsa","Jelatek","Dato' Keramat","Damai","Ampang Park","KLCC","Kampung Baru","Dang Wangi","Masjid Jamek","Pasar Seni","KL Sentral","Bangsar","Abdullah Hukum","Kerinchi","Universiti","Taman Jaya","Asia Jaya","Taman Paramount","Taman Bahagia","Kelana Jaya","Lembah Subang","Ara Damansara","Glenmarie","Subang Jaya","SS 15","SS 18","USJ 7","Taipan","Wawasan","USJ 21","Alam Megah","Subang Alam","Putra Heights"],
-      hint:"💡 KLCC & Masjid Jamek are the usual culprits at this hour — Kampung Baru and Dang Wangi are a short walk away and much calmer."
-    },
-    {
-      id:"ag", name:"LRT Ampang", color:"#F0932B", tag:"3",
-      stations:["Sentul Timur","Sentul","Titiwangsa","PWTC","Sultan Ismail","Bandaraya","Masjid Jamek","Plaza Rakyat","Hang Tuah","Pudu","Chan Sow Lin","Miharja","Maluri","Pandan Jaya","Pandan Indah","Cempaka","Cahaya","Ampang"],
-      hint:"💡 Masjid Jamek interchange is squeeze-city at rush hour — Bandaraya is one stop up and breathing room galore."
-    },
-    {
-      id:"sp", name:"LRT Sri Petaling", color:"#8A2A44", tag:"4",
-      stations:["Sentul Timur","Sentul","Titiwangsa","PWTC","Sultan Ismail","Bandaraya","Masjid Jamek","Plaza Rakyat","Hang Tuah","Pudu","Chan Sow Lin","Cheras","Salak Selatan","Bandar Tun Razak","Bandar Tasik Selatan","Sungai Besi","Bukit Jalil","Sri Petaling","Awan Besar","Muhibbah","Alam Sutera","Kinrara BK5","IOI Puchong Jaya","Pusat Bandar Puchong","Taman Perindustrian Puchong","Bandar Puteri","Puchong Perdana","Puchong Prima","Putra Heights"],
-      hint:"💡 Bukit Jalil goes full sesak on match & concert nights — check before big events, or hop off at Sri Petaling."
-    },
-    {
-      id:"mr", name:"KL Monorail", color:"#7DC242", tag:"8",
-      stations:["KL Sentral","Tun Sambanthan","Maharajalela","Hang Tuah","Imbi","Bukit Bintang","Raja Chulan","Bukit Nanas","Medan Tuanku","Chow Kit","Titiwangsa"],
-      hint:"💡 Monorail trains are the smallest in the network — Bukit Bintang at peak is a hug you didn't ask for. Raja Chulan is calmer."
-    },
-    { id:"kg", name:"MRT Kajang", color:"#1B7C4D", tag:"9", soon:true },
-    { id:"py", name:"MRT Putrajaya", color:"#C8A415", tag:"12", soon:true }
-  ];
-
-  const col = c => c > 0.75 ? "var(--sesak)" : c > 0.5 ? "var(--biasa)" : "var(--lengang)";
-  const lvl = c => c > 0.75 ? "Sesak" : c > 0.5 ? "Biasa" : "Lengang";
-  const face = c => c > 0.75 ? "🥵" : c > 0.5 ? "🙂" : "😌";
-
-  // --- map deep links: no API key needed, opens the Maps/Waze app on mobile ---
-  function stationQuery(name, line){
-    const kind = line && line.id === "mr" ? "Monorail station" : "LRT station";
-    return encodeURIComponent(name + " " + kind + " Malaysia");
-  }
-  const mapsUrl = (name, line) => "https://www.google.com/maps/search/?api=1&query=" + stationQuery(name, line);
-  const wazeUrl = (name, line) => "https://waze.com/ul?q=" + stationQuery(name, line) + "&navigate=yes";
-
-  // =============== per-station parking lookup (verified sources) ===============
-  // Sources: Prasarana LRT3 launch info (Jun 2026); Rapid KL RM4/entry announcement (LEP
-  // stations); Prasarana statement on Puchong LEP stations; MyRapid Park N' Ride page.
-  const PARKINFO = {
-    // LRT3 — verified bays, free until 31 Jul 2026
-    "Kayu Ara":{bays:"350 bays",price:"FREE til 31 Jul"},
-    "Damansara Idaman":{bays:"150 bays",price:"FREE til 31 Jul"},
-    "Pasar Klang":{bays:"100 bays",price:"FREE til 31 Jul"},
-    "Seri Andalas":{bays:"550 bays",price:"FREE til 31 Jul"},
-    "Bandar Bukit Tinggi":{bays:"600 bays",price:"FREE til 31 Jul"},
-    "Johan Setia":{bays:"550 bays",price:"FREE til 31 Jul"},
-    "Bandar Utama":{bays:"Park N' Ride",price:"Existing rates"},
-    "Glenmarie 2":{bays:"Park N' Ride",price:"Existing rates"},
-    // Kelana Jaya Line — officially RM4/entry at LEP stations; moto & bicycle bays free
-    "Gombak":{bays:"Multi-storey P+R",price:"Check on site"},
-    "Kelana Jaya":{bays:"Park N' Ride",price:"Check on site"},
-    "Lembah Subang":{bays:"Park N' Ride",price:"Check on site"},
-    "Ara Damansara":{bays:"Park N' Ride",price:"RM4/entry"},
-    "Glenmarie":{bays:"Park N' Ride",price:"RM4/entry"},
-    "USJ 21":{bays:"Park N' Ride",price:"RM4/entry"},
-    "Alam Megah":{bays:"Park N' Ride",price:"RM4/entry"},
-    "Subang Alam":{bays:"Park N' Ride",price:"RM4/entry"},
-    "Putra Heights":{bays:"Park N' Ride",price:"RM4/entry"},
-    // Sri Petaling Line — Prasarana-stated bay counts at Puchong LEP stations
-    "Awan Besar":{bays:"Park N' Ride",price:"ref RM4/entry"},
-    "IOI Puchong Jaya":{bays:"470 bays + 95 moto",price:"ref RM4/entry"},
-    "Pusat Bandar Puchong":{bays:"122 bays + 90 moto",price:"ref RM4/entry"},
-    "Taman Perindustrian Puchong":{bays:"350 bays + 164 moto",price:"ref RM4/entry"}
-  };
-
-  // deterministic-ish demo crowd model: interchanges busier, evening-peak flavour
-  function crowdFor(name, i, total){
-    let c = 0.3 + 0.35*Math.abs(Math.sin(i*2.7 + name.length));
-    if(IC.has(name)) c += 0.3;
-    return Math.min(0.97, c);
-  }
-
-  // =============== line switcher ===============
-  const sw = document.getElementById("lineSwitch");
-  let currentLine = LINES[0];
-  LINES.forEach(L=>{
-    const b = document.createElement("button");
-    b.className = "line-chip" + (L.soon ? " soon" : "");
-    b.setAttribute("role","tab");
-    b.innerHTML = '<span class="swatch" style="background:'+L.color+'"></span>'+L.name+
-      (L.soon ? ' <span class="soon-tag">SOON</span>' : '');
-    if(!L.soon){
-      b.addEventListener("click", ()=>{ currentLine = L; renderLine(); highlight(); });
-    }else{
-      b.title = "Coming soon";
-      b.disabled = true;
-      b.setAttribute("aria-disabled","true");
-    }
-    b.dataset.id = L.id;
-    sw.appendChild(b);
-  });
-  function highlight(){
-    document.querySelectorAll(".line-chip").forEach(ch=>{
-      const on = ch.dataset.id===currentLine.id;
-      ch.classList.toggle("on", on);
-      ch.setAttribute("aria-pressed", on ? "true" : "false");
-    });
-  }
-
-  // =============== service hours (KL rail rough window) ===============
-  // Rapid KL LRT + Monorail publish first ~6:00 AM and last ~11:30 PM. We treat
-  // 06:00-23:59 Malaysia time as service, and 00:00-05:59 as off-hours.
-  function nowKL(){
-    const parts = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Kuala_Lumpur', hour12: false, hour: '2-digit', minute: '2-digit' }).formatToParts(new Date());
-    const h = parseInt(parts.find(p=>p.type==='hour').value, 10);
-    const m = parseInt(parts.find(p=>p.type==='minute').value, 10);
-    return { h, m };
-  }
-  function serviceRunning(){
-    const { h } = nowKL();
-    return h >= 6 && h < 24;
-  }
-  function nextServiceCopy(){
-    const { h, m } = nowKL();
-    if (h >= 6 && h < 24) return null;
-    // Off-hours (00:00-05:59): compute time until 06:00
-    const mins = (6 - h) * 60 - m;
-    const hh = Math.floor(mins / 60), mm = mins % 60;
-    const rel = hh > 0 ? `${hh}h ${mm}m` : `${mm}m`;
-    return `service resumes at 6:00 AM (in ${rel})`;
-  }
-  function refreshServiceState(){
-    const running = serviceRunning();
-    const banner = document.getElementById('offhoursBanner');
-    const nextEl = document.getElementById('offhoursNext');
-    if (banner) banner.hidden = running;
-    if (!running && nextEl) nextEl.textContent = nextServiceCopy() || '';
-    if (typeof strip !== 'undefined' && strip) strip.classList.toggle('offhours', !running);
-    const vb = document.querySelector('.vbtns');
-    if (vb) vb.classList.toggle('paused', !running);
-    if (typeof updateDataChip === 'function') updateDataChip();
-  }
-
-  // =============== render line strip ===============
-  const strip = document.getElementById("strip");
-  let crowds = [];
-  let crowdSrc = [];   // per-station provenance: "report" | "busy" | "ridership" | "forecast"
-  function renderLine(){
-    const L = currentLine;
-    tipPinned = false; tipIdx = -1; tip.classList.remove("show");
-    strip.innerHTML = '<div class="track-line" style="background:repeating-linear-gradient(90deg,'+L.color+' 0 18px, var(--kaya) 18px 30px)"></div>';
-    strip.style.minWidth = Math.max(700, L.stations.length*48) + "px";
-    // baseline: real live-station-busyness feed where we have it, else time-of-day forecast
-    crowds = L.stations.map((n,i)=>{
-      const b = busyMap[n];
-      if(typeof b === "number") return Math.max(.05, Math.min(.97, b/100));
-      const r = riderScore[n];
-      if(typeof r === "number") return Math.max(.05, Math.min(.97, r));
-      return crowdFor(n,i,L.stations.length);
-    });
-    crowdSrc = L.stations.map(n => (typeof busyMap[n] === "number") ? "busy" : (typeof riderScore[n] === "number" ? "ridership" : "forecast"));
-    liveIdx = new Set();
-    // freshest signal wins: a community report overrides the busyness baseline
-    L.stations.forEach((n,i)=>{
-      const lr = liveMap[L.id+"||"+n];
-      if(lr){ crowds[i] = levelToC(lr.level); liveIdx.add(i); crowdSrc[i] = "report"; }
-    });
-    L.stations.forEach((n,i)=>{
-      const c = crowds[i];
-      const b = document.createElement("button");
-      b.className = "stn" + (IC.has(n) ? " ic" : "") + (liveIdx.has(i) ? " live" : "") + " src-" + crowdSrc[i];
-      b.setAttribute("role","listitem");
-      b.setAttribute("aria-label", n + ": " + lvl(c) + (PARKINFO[n] ? ", has Park N' Ride" : ""));
-      b.title = n + " — " + lvl(c);
-      b.addEventListener("mouseenter", ()=>showTip(i));
-      b.addEventListener("focus", ()=>showTip(i));
-      b.addEventListener("mouseleave", scheduleHideTip);
-      b.addEventListener("blur", scheduleHideTip);
-      b.addEventListener("click", (e)=>{ e.preventDefault(); showTip(i, true); dismissSection("live"); });
-      const fillH = Math.round(8 + c*92);
-      b.innerHTML =
-        '<div class="glass"><div class="foam" style="bottom:'+fillH+'%"></div><div class="fill" style="height:'+fillH+'%;background:'+col(c)+'"></div></div>' +
-        '<div class="node"></div>' +
-        '<div class="name"><span>'+(IC.has(n)?"<b>"+n+"</b>":n)+'</span></div>';
-      strip.appendChild(b);
-    });
-    document.getElementById("boardSwatch").style.background = L.color;
-    document.getElementById("boardName").textContent = L.name + " Line";
-    const feedTime = busyUpdated ? " · as of " + new Date(busyUpdated).toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"}) : "";
-    document.getElementById("boardMeta").textContent = "LALUAN " + L.tag + " · " + L.stations.length + " STATIONS" + feedTime;
-    document.getElementById("endA").textContent = "◀ " + L.stations[0].toUpperCase();
-    document.getElementById("endB").textContent = L.stations[L.stations.length-1].toUpperCase() + " ▶";
-    const hintEl = document.getElementById("lineHint");
-    if (!serviceRunning()) { hintEl.textContent = "🌙 Trains resume at 6:00 AM. Any 'crowd' reading you saw before was a stale value — ignore till morning."; }
-    else { hintEl.textContent = L.hint; }
-    renderParking(L);
-    renderRidership(L);
-    renderGetThere(L);
-    // sync report selects
-    if(lineSelect.value !== L.name) lineSelect.value = L.name;
-    fillStations(L);
-    applyPulseHints();
-    if (typeof commute !== 'undefined') commute.render();
-    refreshServiceState();
-    if (typeof renderAlerts === 'function') renderAlerts();
-  }
-
-  // =============== station tooltip: hover or tap a stop ===============
-  const tip = document.getElementById("tip");
-  const scroller = document.getElementById("scroller");
-  let tipTimer = null, tipPinned = false, tipIdx = -1;
-
-  function crowdClass(c){ return c > 0.75 ? "c-r" : c > 0.5 ? "c-a" : "c-g"; }
-
-  function showTip(i, pin){
-    clearTimeout(tipTimer);
-    const L = currentLine, n = L.stations[i], c = crowds[i];
-    tipIdx = i; if(pin) tipPinned = true;
-    const P = PARKINFO[n];
-    tip.innerHTML =
-      '<button class="close" type="button" aria-label="Close">×</button>' +
-      '<div class="t-name">'+n+'</div>' +
-      (function(){
-        const offhours = !serviceRunning();
-        return offhours
-          ? '<span class="t-crowd" style="background:#EFE4CE;color:var(--milo)">🌙 not running</span>'
-          : '<span class="t-crowd '+crowdClass(c)+'">'+face(c)+' '+lvl(c)+' now</span>';
-      })() +
-      (liveMap[currentLine.id+"||"+n]
-        ? '<div class="t-live">\u25CF LIVE \u00b7 '+liveMap[currentLine.id+"||"+n].reports+' report'+(liveMap[currentLine.id+"||"+n].reports>1?'s':'')+' \u00b7 '+timeAgo(liveMap[currentLine.id+"||"+n].last_at)+'</div>'
-        : (!serviceRunning() ? '<div class="t-live" style="color:#6B4E37">🌙 off-hours \u00b7 resumes 6:00 AM</div>'
-          : crowdSrc[i]==="busy"      ? '<div class="t-live" style="color:#5A9DC4">\u25CF live busyness \u00b7 via Google (Popular Times)</div>'
-          : crowdSrc[i]==="ridership" ? '<div class="t-live" style="color:#8B6D50">\u25d1 typical crowd \u00b7 data.gov.my ridership</div>'
-          :                             '<div class="t-live" style="color:#B79D82">🔮 baseline forecast \u00b7 no live signal \u2014 tap Reports to be first</div>')) +
-      '<div class="t-park">' +
-        (P ? '🅿️ ' + P.bays + ' · ' + P.price
-           : '<span class="no">No Park N\' Ride here — feeder bus or drop-off je.</span>') +
-      '</div>' +
-      '<div class="nav-btns">' +
-        '<a class="nav-btn gm" target="_blank" rel="noopener" href="'+mapsUrl(n, L)+'">🗺️ Maps</a>' +
-        '<a class="nav-btn wz" target="_blank" rel="noopener" href="'+wazeUrl(n, L)+'">🚗 Waze</a>' +
-        '<button class="nav-btn sv'+(commute.has(L.id,n)?' saved':'')+'" type="button" data-line="'+L.id+'" data-station="'+n.replace(/"/g,'&quot;')+'">'+(commute.has(L.id,n)?'★ Saved':'☆ Save')+'</button>' +
-      '</div>';
-    positionTip();
-    tip.classList.add("show");
-  }
-  function positionTip(){
-    if(tipIdx < 0) return;
-    const stns = strip.querySelectorAll(".stn");
-    if(!stns[tipIdx]) return;
-    const sRect = stns[tipIdx].getBoundingClientRect();
-    const bRect = tip.parentElement.getBoundingClientRect();
-    let x = sRect.left - bRect.left + sRect.width/2;
-    x = Math.max(120, Math.min(bRect.width - 120, x)); // keep card inside the board
-    tip.style.left = x + "px";
-    tip.style.bottom = (bRect.bottom - sRect.top + 14) + "px";
-  }
-  function scheduleHideTip(){
-    if(tipPinned) return;
-    tipTimer = setTimeout(()=>tip.classList.remove("show"), 250);
-  }
-  tip.addEventListener("mouseenter", ()=>clearTimeout(tipTimer));
-  tip.addEventListener("mouseleave", ()=>{ tipPinned = false; scheduleHideTip(); });
-  tip.addEventListener("click", (e)=>{
-    if(e.target.closest(".close")){
-      tipPinned = false; tip.classList.remove("show"); tipIdx = -1;
-    }
-  });
-  scroller.addEventListener("scroll", ()=>{ tipPinned = false; tip.classList.remove("show"); }, {passive:true});
-  document.addEventListener("click", (e)=>{
-    if(!tip.contains(e.target) && !e.target.closest(".stn")){
-      tipPinned = false; tip.classList.remove("show");
-    }
-  });
-  window.addEventListener("resize", positionTip);
-
-  // wobble
-  if(!window.matchMedia("(prefers-reduced-motion: reduce)").matches){
-    setInterval(()=>{
-      document.querySelectorAll("#strip .stn").forEach((el,i)=>{
-        const base = 8 + (crowds[i]||0.4)*92;
-        const h = Math.max(6, Math.min(100, base + (Math.random()*6-3)));
-        el.querySelector(".fill").style.height = h + "%";
-        el.querySelector(".foam").style.bottom = h + "%";
-      });
-    }, 2400);
-  }
-
-  // =============== parking: per line ===============
-  // verified = we have official bays/prices. Others show an honest "verifying" state.
-  const PARKING = {
-    sa: {
-      sub:"LRT3 Shah Alam Line Park N' Ride — verified bays and prices from Prasarana's launch announcement.",
-      banner:"🎉 FREE parking at all 6 LRT3 Park N' Ride until <u>31 July 2026</u> — same promo as the free rides.",
-      note:"<b>After 31 July:</b> Prasarana belum announce LRT3 parking rates. For reference, Rapid KL's usual Park N' Ride rate at other LRT stations is <b>RM4 per entry</b> — we'll update the moment it's confirmed <span class='kao'>(๑•̀ᴗ•́)๑</span>. <b>Bandar Utama</b> &amp; <b>Glenmarie 2</b> are NOT in the free promo — existing rates apply there now.",
-      items:[
-        {n:"Kayu Ara", area:"Petaling Jaya", bays:"350", now:{t:"FREE til 31 Jul",cls:"free"}, later:"TBA · ref RM4"},
-        {n:"Damansara Idaman", area:"Petaling Jaya", bays:"150", now:{t:"FREE til 31 Jul",cls:"free"}, later:"TBA · ref RM4"},
-        {n:"Pasar Klang", area:"Klang town", bays:"100", now:{t:"FREE til 31 Jul",cls:"free"}, later:"TBA · ref RM4"},
-        {n:"Seri Andalas", area:"South Klang", bays:"550", now:{t:"FREE til 31 Jul",cls:"free"}, later:"TBA · ref RM4"},
-        {n:"Bandar Bukit Tinggi", area:"South Klang", bays:"600", now:{t:"FREE til 31 Jul",cls:"free"}, later:"TBA · ref RM4"},
-        {n:"Johan Setia", area:"Klang terminus", bays:"550", now:{t:"FREE til 31 Jul",cls:"free"}, later:"TBA · ref RM4"},
-        {n:"Bandar Utama", area:"⇄ MRT Kajang", bays:"Available", now:{t:"Existing rates",cls:"paid"}, later:"Unchanged"},
-        {n:"Glenmarie 2", area:"⇄ LRT Kelana Jaya", bays:"Available", now:{t:"Existing rates",cls:"paid"}, later:"Unchanged"}
-      ]
-    },
-    kj: {
-      sub:"Kelana Jaya Line has 10 Park N' Ride stations with 4,000+ bays in total (per MyRapid). The extension stations below are officially RM4 per entry per day — motorcycle & bicycle bays free.",
-      note:"RM4/entry is from Rapid KL's official announcement for the extension (LEP) stations and may have been revised — confirm on arrival. Gombak, Kelana Jaya & Lembah Subang rates: check on site. Full list on <a href='https://myrapid.com.my/bus-train/rapid-kl/park-ride/' target='_blank' rel='noopener'>MyRapid Park N' Ride</a>.",
-      items:[
-        {n:"Gombak", area:"Northern terminus", bays:"Multi-storey", now:{t:"Check on site",cls:"tba"}, later:"—"},
-        {n:"Kelana Jaya", area:"Petaling Jaya", bays:"Check on site", now:{t:"Check on site",cls:"tba"}, later:"—"},
-        {n:"Lembah Subang", area:"Petaling Jaya", bays:"Check on site", now:{t:"Check on site",cls:"tba"}, later:"—"},
-        {n:"Ara Damansara", area:"Petaling Jaya", bays:"Check on site", now:{t:"RM4/entry",cls:"paid"}, later:"Moto free"},
-        {n:"Glenmarie", area:"Shah Alam", bays:"Check on site", now:{t:"RM4/entry",cls:"paid"}, later:"Moto free"},
-        {n:"USJ 21", area:"Subang Jaya", bays:"Check on site", now:{t:"RM4/entry",cls:"paid"}, later:"Moto free"},
-        {n:"Alam Megah", area:"Subang Jaya", bays:"Check on site", now:{t:"RM4/entry",cls:"paid"}, later:"Moto free"},
-        {n:"Subang Alam", area:"Subang Jaya", bays:"Check on site", now:{t:"RM4/entry",cls:"paid"}, later:"Moto free"},
-        {n:"Putra Heights", area:"Terminus · ⇄ Sri Petaling", bays:"Check on site", now:{t:"RM4/entry",cls:"paid"}, later:"Moto free"}
-      ]
-    },
-    ag: { sub:"Ampang Line (Sentul Timur ⇄ Ampang) has no dedicated Prasarana Park N' Ride — parking near stations is mostly council & private lots.",
-      note:"Per MyRapid: some stations rely on nearby parking provided by the City Council and independent parties — rates vary by operator. If you're driving, the Sri Petaling branch's Puchong stations or an MRT hub may be a better park-and-ride bet. Details: <a href='https://myrapid.com.my/bus-train/rapid-kl/park-ride/' target='_blank' rel='noopener'>MyRapid Park N' Ride</a>.", items:[] },
-    sp: {
-      sub:"Sri Petaling Line Park N' Ride — bay counts below are from Prasarana's official statements for the Puchong extension stations.",
-      note:"Bandar Puteri has NO parking facility (per Prasarana). Awan Besar has a dedicated Park N' Ride lot. Rates shown as reference from Rapid KL's LEP announcement — confirm on arrival. Full list: <a href='https://myrapid.com.my/bus-train/rapid-kl/park-ride/' target='_blank' rel='noopener'>MyRapid Park N' Ride</a>.",
-      items:[
-        {n:"Awan Besar", area:"Bukit OUG", bays:"Dedicated lot", now:{t:"ref RM4/entry",cls:"tba"}, later:"—"},
-        {n:"IOI Puchong Jaya", area:"Puchong", bays:"470 + 95 moto", now:{t:"ref RM4/entry",cls:"tba"}, later:"Moto free"},
-        {n:"Pusat Bandar Puchong", area:"Puchong", bays:"122 + 90 moto", now:{t:"ref RM4/entry",cls:"tba"}, later:"Moto free"},
-        {n:"Taman Perindustrian Puchong", area:"Puchong", bays:"350 + 164 moto", now:{t:"ref RM4/entry",cls:"tba"}, later:"Moto free"},
-        {n:"Putra Heights", area:"Terminus · ⇄ Kelana Jaya", bays:"Check on site", now:{t:"RM4/entry",cls:"paid"}, later:"Moto free"}
-      ]
-    },
-    mr: { sub:"KL Monorail is a city-centre line — no Park N' Ride on this one.",
-      note:"Driving in? Park at an LRT/MRT Park N' Ride outside the city centre and ride in — cheaper than KL parking, less pening. Interchange to Monorail at KL Sentral, Hang Tuah or Titiwangsa.", items:[] }
-  };
-
-  function renderParking(L){
-    const P = PARKING[L.id];
-    document.getElementById("parkTitle").textContent = "Where can park on the " + L.name + "? 🚗";
-    document.getElementById("parkSub").textContent = P.sub;
-    const banner = document.getElementById("freeBanner");
-    if(P.banner){ banner.innerHTML = P.banner; banner.hidden = false; } else { banner.hidden = true; }
-    document.getElementById("parkNote").innerHTML = P.note;
-    const grid = document.getElementById("parkGrid");
-    grid.innerHTML = "";
-    P.items.forEach(p=>{
-      const d = document.createElement("div");
-      d.className = "pk";
-      d.innerHTML =
-        '<div class="area">'+p.area+'</div><h3>🅿️ '+p.n+'</h3>' +
-        '<div class="row"><span>Bays</span><b>'+p.bays+'</b></div>' +
-        '<div class="row"><span>Price now</span><span class="pill '+p.now.cls+'">'+p.now.t+'</span></div>' +
-        '<div class="row"><span>After promo</span><span class="pill tba">'+p.later+'</span></div>' +
-        '<div class="nav-btns">' +
-          '<a class="nav-btn gm" target="_blank" rel="noopener" href="'+mapsUrl(p.n, L)+'">🗺️ Maps</a>' +
-          '<a class="nav-btn wz" target="_blank" rel="noopener" href="'+wazeUrl(p.n, L)+'">🚗 Waze</a>' +
-        '</div>';
-      grid.appendChild(d);
-    });
-  }
-
-  // =============== 1.5 JOM PLAN: train crowd vs drive ===============
-  // Reuses the already-computed crowds[] / crowdSrc[] for the current line, plus the
-  // no-API-key mapsUrl()/wazeUrl() deep-links. The only thing NOT live is the drive
-  // ETA number — see the Routes API stub below for the paid upgrade path.
-  const destSelect = document.getElementById("destSelect");
-  if(destSelect) destSelect.addEventListener("change", ()=>renderGetThere(currentLine));
-
-  function renderGetThere(L){
-    const grid = document.getElementById("gtGrid");
-    const verdict = document.getElementById("gtVerdict");
-    if(!grid || !destSelect || L.soon) return;
-    // keep the destination list in sync with the current line (persist selection within a line)
-    if(destSelect.dataset.line !== L.id){
-      destSelect.innerHTML = "";
-      L.stations.forEach(s=>{ const o=document.createElement("option"); o.textContent=s; destSelect.appendChild(o); });
-      destSelect.dataset.line = L.id;
-    }
-    const dest = destSelect.value || L.stations[0];
-    const i = L.stations.indexOf(dest);
-    const c = (crowds[i] != null) ? crowds[i] : 0.5;
-    const src = crowdSrc[i] || "forecast";
-    const quiet = c <= 0.5;   // lengang → train is the easy win
-    const liveTag =
-      src === "report" ? '<div class="gt-live" style="color:var(--pandan-deep)">● LIVE · commuter report</div>'
-      : src === "busy" ? '<div class="gt-live" style="color:#6B4E37">● LIVE BUSYNESS · via Google</div>'
-      : src === "ridership" ? '<div class="gt-live" style="color:#6B4E37">◑ TYPICAL · data.gov.my ridership</div>'
-      : '<div class="gt-live" style="color:#B79D82">forecast · no live data</div>';
-
-    grid.innerHTML =
-      '<div class="gt-card'+(quiet?' pick':'')+'">' +
-        '<div class="gt-head"><span class="gt-title">🚈 Naik train</span>' +
-          (quiet ? '<span class="gt-tag best">✓ BEST CALL</span>' : '') + '</div>' +
-        '<div class="gt-body"><div>' +
-          (serviceRunning()
-             ? '<div class="gt-crowd '+crowdClass(c)+'">'+face(c)+' '+lvl(c)+'</div>'
-             : '<div class="gt-crowd" style="background:#EFE4CE;color:var(--milo)">🌙 not running</div>') +
-          '<div class="gt-meta">'+L.name+' Line</div>' +
-        '</div></div>' + (serviceRunning() ? liveTag : '<div class="gt-live" style="color:#6B4E37">🌙 off-hours · resumes 6:00 AM</div>') +
-        '<div class="nav-btns">' +
-          '<a class="nav-btn mr" target="_blank" rel="noopener" href="https://myrapid.com.my/bus-train/rapid-kl/rapid-rail/">🚈 Timetable</a>' +
-        '</div>' +
-      '</div>' +
-      '<div class="gt-card'+(quiet?'':' pick')+'">' +
-        '<div class="gt-head"><span class="gt-title">🚗 Drive</span>' +
-          '<span class="gt-tag jam">see traffic</span></div>' +
-        '<div class="gt-body"><div>' +
-          '<div class="gt-big dim">check</div>' +
-          '<div class="gt-meta">tap Waze for live traffic</div>' +
-        '</div></div>' +
-        '<div class="nav-btns">' +
-          '<a class="nav-btn gm" target="_blank" rel="noopener" href="'+mapsUrl(dest, L)+'">🗺️ Maps</a>' +
-          '<a class="nav-btn wz" target="_blank" rel="noopener" href="'+wazeUrl(dest, L)+'">🚗 Waze</a>' +
-        '</div>' +
-        // TODO(Routes API): call your Supabase edge fn -> {minutes, vsUsual};
-        // replace the "check" gt-big with "~NN min" and set the jam tag red when vsUsual > 10.
-      '</div>';
-
-    verdict.innerHTML = '<span>💡</span><span>' +
-      (!serviceRunning()
-        ? '🌙 Trains tak jalan sekarang — service resumes at 6:00 AM. Driving is your only option until then.'
-        : (quiet
-            ? dest+' looks '+lvl(c).toLowerCase()+' right now — naik train lah, skip the traffic &amp; parking.'
-            : dest+' is '+lvl(c).toLowerCase()+' at the moment — tap Waze, driving might actually be smoother.')) +
-      '</span>';
-  }
-
-  // =============== reports ===============
-  const lineSelect = document.getElementById("lineSelect");
-  const stationSelect = document.getElementById("stationSelect");
-  LINES.filter(L=>!L.soon).forEach(L=>{
-    const o=document.createElement("option");o.textContent=L.name;lineSelect.appendChild(o);
-  });
-  function fillStations(L){
-    stationSelect.innerHTML="";
-    L.stations.forEach(s=>{const o=document.createElement("option");o.textContent=s;stationSelect.appendChild(o)});
-  }
-  lineSelect.addEventListener("change", ()=>{
-    const L = LINES.find(x=>x.name===lineSelect.value);
-    currentLine = L; renderLine(); highlight();
-  });
-  function outcomeChip(station, level){
-    const bg = level==="Lengang" ? "var(--pandan)" : level==="Sesak" ? "var(--sesak)" : "var(--kaya)";
-    const fg = level==="Biasa" ? "var(--milo)" : "#fff";
-    return '<span class="outcome" style="background:'+bg+';color:'+fg+'">'+station+' → '+level+' '+face(levelToC(level))+'</span>';
-  }
-  async function voted(level){
-    const L = LINES.find(x=>x.name===lineSelect.value) || currentLine;
-    const station = stationSelect.value;
-    const thanks = document.getElementById("thanks");
-    thanks.style.color = "#3E9A4C";
-    dismissSection("vote");
-    const chip = outcomeChip(station, level);
-    if(!sb){
-      thanks.innerHTML = "TERIMA KASIH BOSS! You just moved " + chip + " on the strip ↑";
-      return;
-    }
-    thanks.textContent = "Sending…";
-    try{
-      const { error } = await sb.from("reports").insert({ line_id:L.id, station, level, client_id:clientId() });
-      if(error) throw error;
-      track('report_submit', { line:L.id, station, level });
-      liveMap[L.id+"||"+station] = { level, reports:((liveMap[L.id+"||"+station]||{}).reports||0)+1, last_at:new Date().toISOString() };
-      thanks.innerHTML = "TERIMA KASIH BOSS! You just moved " + chip + " on the strip ↑";
-      if(L.id===currentLine.id){ renderLine(); highlight(); }
-      updateDataChip();
-      loadLive();
-    }catch(e){
-      thanks.style.color = "#D5223E";
-      thanks.textContent = "Alamak, report tak jadi — cuba lagi? (" + (e.message||"network") + ")";
-    }
-  }
-
-  // =============== scroll train ===============
-  const train = document.getElementById("train");
-  function moveTrain(){
-    const max = document.documentElement.scrollHeight - window.innerHeight;
-    const pct = max > 0 ? window.scrollY / max : 0;
-    train.style.left = "calc(" + (pct*100) + "% - " + (pct*40) + "px)";
-  }
-  document.addEventListener("scroll", moveTrain, {passive:true});
-  moveTrain();
-
-  // =============== V2: Supabase live reports ===============
-  const SUPABASE_URL = "https://dbcrjbiqcmyhhmwzgewy.supabase.co";
-  const SUPABASE_KEY = "sb_publishable_VmKBiyv6cCkNiVuHa9GWcg_KaXJtIXk";
-  const sb = (window.supabase && window.supabase.createClient) ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
-
-  let liveMap = {};        // "lineId||Station" -> {level, reports, last_at}
-  let liveIdx = new Set(); // station indices on the current line that are live
-  let busyMap = {};        // "Station" -> live busyness score 0-100 (from crowd.json)
-  let riderScore = {};     // "Station" -> typical busyness 0-1 from real ridership (station_ridership.json)
-  let busyUpdated = null;  // ISO timestamp of the busyness feed
-  const LEVEL_C = { Lengang:0.35, Biasa:0.62, Sesak:0.9 };
-  const levelToC = lv => (LEVEL_C[lv] != null ? LEVEL_C[lv] : 0.5);
-
-  // live station busyness (Google Live Busyness), collected by crowd-live/collect_crowd.py
-  // and served next to this page as crowd.json. This is the BASELINE crowd layer;
-  // community reports override it per-station when fresher.
-  async function loadBusyness(){
-    try{
-      const res = await fetch("crowd.json?t=" + Date.now());
-      if(!res.ok) return;
-      const j = await res.json();
-      busyMap = j.busyness || {};
-      busyUpdated = j.updated || null;
-      updateDataChip();
-      renderLine(); highlight();
-    }catch(e){ /* no feed deployed yet: stay on time-of-day forecast */ }
-  }
-
-  function track(){ /* analytics hook — no-op for now, keeps report submit from erroring */ }
-
-  function clientId(){
-    let id = null;
-    try{ id = localStorage.getItem("mm_cid"); }catch(e){}
-    if(!id){ id = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : "c"+Math.random().toString(36).slice(2); try{ localStorage.setItem("mm_cid", id); }catch(e){} }
-    return id;
-  }
-  function timeAgo(iso){
-    const sec = Math.max(0, (Date.now() - new Date(iso).getTime())/1000);
-    if(sec < 60) return "just now";
-    return Math.round(sec/60) + " min ago";
-  }
-  function updateDataChip(){
-    const chip = document.getElementById("dataChip");
-    if (!serviceRunning()) {
-      chip.classList.remove("live");
-      chip.textContent = "🌙 Off-hours · trains resume at 6:00 AM · no live crowd until then";
-      return;
-    }
-    const reports = Object.keys(liveMap).length;
-    const busy = Object.keys(busyMap).length;
-    if(reports > 0){
-      chip.classList.add("live");
-      chip.textContent = reports + " live commuter report" + (reports>1?"s":"") + " now \u00b7 " +
-        (busy>0 ? "live busyness baseline" : "forecast baseline");
-    } else if(busy > 0){
-      chip.classList.add("live");
-      chip.textContent = "Live station busyness \u00b7 " + busy + " stations \u00b7 tap Reports to add yours";
-    } else if(Object.keys(riderScore).length > 0){
-      chip.classList.remove("live");
-      chip.textContent = "Typical crowd from official ridership \u00b7 data.gov.my \u00b7 tap Reports for live";
-    } else {
-      chip.classList.remove("live");
-      chip.textContent = "Baseline forecast \u00b7 no live data yet \u2014 tap Reports to be first";
-    }
-  }
-  async function loadLive(){
-    if(!sb) return;
-    try{
-      const { data, error } = await sb.rpc("get_live_reports");
-      if(error) throw error;
-      liveMap = {};
-      (data||[]).forEach(r => { liveMap[r.line_id+"||"+r.station] = { level:r.level, reports:r.reports, last_at:r.last_at }; });
-      updateDataChip();
-      renderLine(); highlight();
-    }catch(e){ /* offline: keep showing baseline forecast */ }
-  }
-
-  // =============== V3: service alerts (news pull) ===============
-  // Pulled from Google News RSS server-side and stored in service_alerts.
-  // Show items published in the last 24 h that match the current line, or that
-  // don't mention any specific line (treated as "affects all").
-  let alertRows = [];   // hydrated by loadAlerts, filtered per line by renderAlerts
-  let alertsExpanded = false;
-  function alertAgo(iso){
-    const sec = Math.max(0, (Date.now() - new Date(iso).getTime())/1000);
-    if(sec < 3600)   return Math.round(sec/60) + " min ago";
-    if(sec < 86400)  return Math.round(sec/3600) + "h ago";
-    return Math.round(sec/86400) + "d ago";
-  }
-  async function loadAlerts(){
-    if(!sb) return;
-    // News lags real-time by hours; a 72 h window keeps the banner useful
-    // most weeks while still filtering out stale month-old stories.
-    const since = new Date(Date.now() - 72*3600*1000).toISOString();
-    try{
-      const { data, error } = await sb
-        .from("service_alerts")
-        .select("id,title,url,publisher,published_at,line_ids")
-        .gte("published_at", since)
-        .order("published_at", { ascending:false })
-        .limit(25);
-      if(error) throw error;
-      alertRows = data || [];
-      renderAlerts();
-    }catch(e){ /* alerts silently unavailable */ }
-  }
-  function renderAlerts(){
-    const band = document.getElementById("alertsBand");
-    if(!band) return;
-    const forLine = alertRows.filter(a => !a.line_ids || a.line_ids.length === 0 || a.line_ids.includes(currentLine.id));
-    if(!forLine.length){ band.hidden = true; band.innerHTML = ""; return; }
-    band.hidden = false;
-    const shown = alertsExpanded ? forLine : forLine.slice(0, 1);
-    const more = forLine.length - shown.length;
-    band.innerHTML =
-      '<div class="lbl">🚨 latest news · ' + forLine.length + ' item' + (forLine.length>1?'s':'') + ' this week</div>' +
-      shown.map(a =>
-        '<a class="a-item" target="_blank" rel="noopener" href="'+a.url+'">' +
-          a.title +
-          '<span class="a-meta">' + (a.publisher || 'news') + ' · ' + alertAgo(a.published_at) + '</span>' +
-        '</a>'
-      ).join('') +
-      (more > 0 ? '<button class="a-more" type="button" id="alertsMore">+ ' + more + ' more</button>' : '') +
-      (alertsExpanded && forLine.length > 1 ? '<button class="a-more" type="button" id="alertsLess">show less</button>' : '');
-    const moreBtn = document.getElementById('alertsMore');
-    if (moreBtn) moreBtn.addEventListener('click', () => { alertsExpanded = true; renderAlerts(); });
-    const lessBtn = document.getElementById('alertsLess');
-    if (lessBtn) lessBtn.addEventListener('click', () => { alertsExpanded = false; renderAlerts(); });
-  }
-
-  // =============== V2: data.gov.my ridership ===============
-  // line id -> ridership_headline field. Ampang + Sri Petaling share one figure in the national dataset.
-  const RIDER_FIELD = { kj:"rail_lrt_kj", ag:"rail_lrt_ampang", sp:"rail_lrt_ampang", mr:"rail_monorail", kg:"rail_mrt_kajang", py:"rail_mrt_pjy" };
-  const RIDER_NOTE  = { ag:"Ampang + Sri Petaling combined", sp:"Ampang + Sri Petaling combined" };
-  let riderRows = null;
-  async function loadRidership(){
-    try{
-      const res = await fetch("https://api.data.gov.my/data-catalogue/?id=ridership_headline&sort=-date&limit=30");
-      riderRows = await res.json();
-      renderRidership(currentLine);
-    }catch(e){ /* leave hidden if the open-data API is unreachable */ }
-  }
-  function fmtK(n){ return n>=1000 ? Math.round(n/1000)+"k" : String(Math.round(n)); }
-  function renderRidership(L){
-    const box = document.getElementById("riderStat");
-    if(!box) return;
-    const field = RIDER_FIELD[L.id];
-    if(!riderRows || !field){
-      if(L.id === "sa"){
-        box.hidden = false;
-        box.innerHTML = '<div><div class="lbl">Daily ridership</div><div class="big">Baru!</div></div>' +
-          '<div class="lbl" style="max-width:36ch">LRT3 Shah Alam is too new for national ridership stats \u2014 we\u2019ll surface them once data.gov.my publishes the line.</div>' +
-          '<span class="src">via data.gov.my</span>';
-      } else { box.hidden = true; }
-      return;
-    }
-    const vals = riderRows.map(r=>r[field]).filter(v=>typeof v==="number");
-    if(vals.length < 8){ box.hidden = true; return; }
-    const latest = vals[0];
-    const last7 = vals.slice(0,7), prev7 = vals.slice(7,14);
-    const avg = a => a.reduce((t,v)=>t+v,0)/a.length;
-    const a1 = avg(last7), a0 = prev7.length ? avg(prev7) : a1;
-    const pct = a0 ? Math.round((a1-a0)/a0*100) : 0;
-    const spark = last7.slice().reverse();
-    const mx = Math.max.apply(null, spark);
-    const bars = spark.map(v=>'<i style="height:'+Math.max(3,Math.round(v/mx*30))+'px"></i>').join("");
-    const note = RIDER_NOTE[L.id] ? ' \u00b7 '+RIDER_NOTE[L.id] : '';
-    box.hidden = false;
-    box.innerHTML =
-      '<div><div class="lbl">Avg daily riders (7d)</div><div class="big">'+fmtK(a1)+'</div></div>' +
-      '<span class="trend '+(pct>=0?'up':'down')+'">'+(pct>=0?'\u25B2':'\u25BC')+' '+Math.abs(pct)+'% vs prev wk</span>' +
-      '<div class="spark" title="riders, last 7 days">'+bars+'</div>' +
-      '<div class="lbl">latest '+fmtK(latest)+' \u00b7 '+riderRows[0].date+note+'</div>' +
-      '<span class="src">official \u00b7 data.gov.my</span>';
-  }
-
-  // =============== Tier 1: real per-station ridership baseline ===============
-  // station_ridership.json = avg daily throughput per station (data.gov.my OD data, CC BY),
-  // normalized 0-1. Used as the crowd baseline UNDER live busyness + community reports.
-  async function loadRiderBaseline(){
-    try{
-      const res = await fetch("station_ridership.json?t=" + Date.now());
-      if(!res.ok) return;
-      const j = await res.json();
-      const s = j.stations || {};
-      riderScore = {};
-      Object.keys(s).forEach(n => { riderScore[n] = s[n].score; });
-      renderLine(); highlight();
-    }catch(e){ /* fall back to time-of-day forecast */ }
-  }
-
-  // =============== Tier 1: weather (Open-Meteo now + official MET warnings) ===============
-  const WX_LAT = 3.139, WX_LON = 101.687;   // Kuala Lumpur
-  function wmo(code, day){
-    if(code===0)  return {e: day ? "☀️" : "🌙", t:"clear"};
-    if(code<=2)   return {e:"⛅", t:"partly cloudy"};
-    if(code===3)  return {e:"☁️", t:"cloudy"};
-    if(code<=48)  return {e:"🌫️", t:"foggy"};
-    if(code<=57)  return {e:"🌦️", t:"drizzle"};
-    if(code<=67)  return {e:"🌧️", t:"rain"};
-    if(code<=77)  return {e:"🌨️", t:"snow"};
-    if(code<=82)  return {e:"🌦️", t:"showers"};
-    if(code<=86)  return {e:"🌨️", t:"snow showers"};
-    return {e:"⛈️", t:"thunderstorm"};
-  }
-  async function loadWeather(){
-    try{
-      const r = await fetch("https://api.open-meteo.com/v1/forecast?latitude=" + WX_LAT + "&longitude=" + WX_LON + "&current=temperature_2m,precipitation,weather_code,is_day&timezone=Asia%2FKuala_Lumpur");
-      const j = await r.json(); const c = j.current; if(!c) return;
-      const w = wmo(c.weather_code, c.is_day);
-      const chip = document.getElementById("wxChip");
-      if(chip){
-        chip.textContent = w.e + " KL now " + Math.round(c.temperature_2m) + "° · " + w.t + (c.precipitation > 0 ? " · " + c.precipitation + "mm" : "");
-        chip.hidden = false;
-      }
-    }catch(e){ /* leave chip hidden if unreachable */ }
-  }
-  async function loadWxWarning(){
-    try{
-      const r = await fetch("https://api.data.gov.my/weather/warning/");
-      const arr = await r.json(); const now = Date.now();
-      const hit = (arr||[]).find(w=>{
-        const t = ((w.heading_en||"") + " " + (w.text_en||"") + " " + ((w.warning_issue||{}).title_en||"")).toLowerCase();
-        const rain = /thunderstorm|heavy rain|\brain\b|flood/.test(t);
-        const here = /selangor|kuala lumpur|klang|nationwide|peninsular/.test(t);
-        const active = !w.valid_to || new Date(w.valid_to).getTime() > now;
-        return rain && here && active;
-      });
-      const box = document.getElementById("wxWarn"); if(!box) return;
-      if(hit){
-        const until = hit.valid_to ? new Date(hit.valid_to).toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"}) : "";
-        box.innerHTML = '<span>⛈️</span><span>MET warning: ' + (hit.heading_en || "Thunderstorms & heavy rain") + (until ? " until " + until : "") + '. Jom check dulu — train beats flooded roads.</span>';
-        box.hidden = false;
-      } else { box.hidden = true; }
-    }catch(e){ /* no warning layer if unreachable */ }
-  }
-
-  // =============== click-clarity cues (first-visit only) ===============
-  const CUES_KEY = "mm_seen_v1";
-  const dismissed = { live:false, plan:false, park:false, vote:false };
-  let cuesActive = false;
-  function cuesSeen(){ try { return localStorage.getItem(CUES_KEY) === "1"; } catch(e){ return false; } }
-  function markCuesSeen(){ try { localStorage.setItem(CUES_KEY, "1"); } catch(e){} }
-  function initCues(){
-    if(cuesSeen()) return;
-    cuesActive = true;
-    ["pointLive","pointPlan","pointPark","pointVote"].forEach(id=>{
-      const el = document.getElementById(id); if(el) el.hidden = false;
-    });
-    applyPulseHints();
-    // fallback for private-mode users where markCuesSeen() no-ops
-    setTimeout(()=>{ if(cuesActive) dismissAll(); }, 20000);
-  }
-  function applyPulseHints(){
-    if(!cuesActive) return;
-    if(!dismissed.live){
-      const stns = strip.querySelectorAll(".stn");
-      if(stns.length){
-        const g = stns[Math.floor(stns.length/2)].querySelector(".glass");
-        if(g) g.classList.add("pulse-hint");
-      }
-    }
-    if(!dismissed.park){
-      const firstPark = document.querySelector("#parkGrid .pk .nav-btns");
-      if(firstPark) firstPark.classList.add("pulse-hint");
-    }
-    if(!dismissed.vote){
-      const vb = document.querySelector(".vbtns");
-      if(vb) vb.classList.add("pulse-hint");
-    }
-  }
-  function dismissSection(sec){
-    if(!cuesActive || dismissed[sec]) return;
-    dismissed[sec] = true;
-    markCuesSeen();
-    const pointId = { live:"pointLive", plan:"pointPlan", park:"pointPark", vote:"pointVote" }[sec];
-    const p = pointId && document.getElementById(pointId);
-    if(p) p.classList.add("dismissed");
-    const pulseSel = { live:"#strip .pulse-hint", park:"#parkGrid .pulse-hint", vote:".vbtns.pulse-hint" }[sec];
-    if(pulseSel) document.querySelectorAll(pulseSel).forEach(el=>el.classList.remove("pulse-hint"));
-  }
-  function dismissAll(){
-    cuesActive = false; markCuesSeen();
-    ["live","plan","park","vote"].forEach(s=>{
-      dismissed[s] = true;
-      const p = document.getElementById({live:"pointLive",plan:"pointPlan",park:"pointPark",vote:"pointVote"}[s]);
-      if(p) p.classList.add("dismissed");
-    });
-    document.querySelectorAll(".pulse-hint").forEach(el=>el.classList.remove("pulse-hint"));
-  }
-  // dismiss triggers for sections rendered dynamically: delegate on the grids
-  document.getElementById("parkGrid").addEventListener("click", (e)=>{
-    if(e.target.closest(".nav-btn")) dismissSection("park");
-  });
-  document.getElementById("gtGrid").addEventListener("click", (e)=>{
-    if(e.target.closest(".nav-btn")) dismissSection("plan");
-  });
-  if(destSelect) destSelect.addEventListener("change", ()=>dismissSection("plan"));
-
-  // =============== PWA: service worker + install prompt ===============
+  // Clean up the old root-scoped service worker from PWA installs pre-city-split.
+  // The KL app now has its own SW at /my/sw.js with scope /my/.
   if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/sw.js').catch(err => console.warn('SW registration failed', err));
-    });
+    navigator.serviceWorker.getRegistrations().then(regs => {
+      regs.forEach(r => {
+        if (r.scope === new URL('/', location.origin).href) r.unregister()
+      })
+    }).catch(() => {})
   }
-  let deferredInstall = null;
-  window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredInstall = e;
-    const chip = document.getElementById('installChip');
-    if (chip) { chip.hidden = false; chip.textContent = '📲 Install app'; chip.classList.remove('ios'); }
-  });
-  window.addEventListener('appinstalled', () => {
-    const chip = document.getElementById('installChip'); if (chip) chip.hidden = true;
-  });
-  async function installApp(){
-    if (deferredInstall) {
-      deferredInstall.prompt();
-      const { outcome } = await deferredInstall.userChoice;
-      if (outcome !== 'dismissed') { const chip = document.getElementById('installChip'); if (chip) chip.hidden = true; }
-      deferredInstall = null;
-    }
-  }
-  // iOS Safari doesn't fire beforeinstallprompt — show a static hint instead.
-  (function iOSHint(){
-    const ua = navigator.userAgent || '';
-    const isIOS = /iPad|iPhone|iPod/.test(ua) && !window.MSStream;
-    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
-    if (isIOS && !isStandalone) {
-      const chip = document.getElementById('installChip');
-      if (chip) { chip.hidden = false; chip.textContent = '📲 Share → Add to Home Screen'; chip.classList.add('ios'); chip.onclick = null; }
-    }
-  })();
-
-  // =============== My commute (saved stations) ===============
-  const commute = {
-    items: [],
-    keySet: new Set(),
-    key(line_id, station){ return line_id + '||' + station; },
-    has(line_id, station){ return this.keySet.has(this.key(line_id, station)); },
-    async load(){
-      try {
-        const raw = localStorage.getItem('mm_commute_v1');
-        if (raw) {
-          this.items = JSON.parse(raw);
-          this.keySet = new Set(this.items.map(it => this.key(it.line_id, it.station)));
-          this.render();
-        }
-      } catch (e) {}
-      if (!sb) return;
-      try {
-        // saves_for_client merges rows saved on the web AND rows saved on Telegram
-        // by a chat that has linked to the same client_id.
-        const { data, error } = await sb.rpc('saves_for_client', { cid: clientId() });
-        if (error) throw error;
-        this.items = (data || []).map(r => ({ id: r.id, line_id: r.line_id, station: r.station }));
-        this.keySet = new Set(this.items.map(it => this.key(it.line_id, it.station)));
-        this.persist();
-        this.render();
-      } catch (e) { /* stay on local */ }
-    },
-    persist(){ try { localStorage.setItem('mm_commute_v1', JSON.stringify(this.items)); } catch (e) {} },
-    async add(line_id, station){
-      if (this.has(line_id, station)) return;
-      this.items.push({ id: null, line_id, station });
-      this.keySet.add(this.key(line_id, station));
-      this.render();
-      this.persist();
-      if (!sb) return;
-      try {
-        const { data, error } = await sb.from('saved_stations').insert({ client_id: clientId(), line_id, station }).select('id').single();
-        if (error) throw error;
-        const it = this.items.find(x => x.line_id === line_id && x.station === station);
-        if (it) it.id = data.id;
-        this.persist();
-      } catch (e) { /* keep local */ }
-    },
-    async remove(line_id, station){
-      this.items = this.items.filter(it => !(it.line_id === line_id && it.station === station));
-      this.keySet.delete(this.key(line_id, station));
-      this.render();
-      this.persist();
-      if (!sb) return;
-      try {
-        await sb.from('saved_stations').delete().eq('client_id', clientId()).eq('line_id', line_id).eq('station', station);
-      } catch (e) {}
-    },
-    levelForSaved(it){
-      const k = it.line_id + '||' + it.station;
-      if (liveMap[k]) return { level: liveMap[k].level, src: 'report' };
-      if (typeof busyMap[it.station] === 'number') {
-        const c = Math.max(.05, Math.min(.97, busyMap[it.station] / 100));
-        return { level: lvl(c), src: 'busy' };
-      }
-      if (typeof riderScore[it.station] === 'number') {
-        return { level: lvl(riderScore[it.station]), src: 'typical' };
-      }
-      return { level: null, src: null };
-    },
-    render(){
-      const list = document.getElementById('commuteList');
-      const empty = document.getElementById('commuteEmpty');
-      if (!list) return;
-      if (!this.items.length) { list.innerHTML = ''; if (empty) empty.style.display = ''; return; }
-      if (empty) empty.style.display = 'none';
-      list.innerHTML = this.items.map(it => {
-        const L = LINES.find(x => x.id === it.line_id);
-        const state = this.levelForSaved(it);
-        const c = state.level ? levelToC(state.level) : 0.5;
-        const cls = state.level ? crowdClass(c) : 'c-none';
-        const chipStr = state.level
-          ? '<span class="cc-chip '+cls+'">'+face(c)+' '+state.level+'</span>'
-          : '<span class="cc-chip c-none">no data yet</span>';
-        const srcTxt =
-          state.src === 'report'  ? '● live commuter report'  :
-          state.src === 'busy'    ? '● live busyness · google' :
-          state.src === 'typical' ? '◑ typical · data.gov.my ridership' :
-                                    'baseline';
-        const stationAttr = it.station.replace(/"/g, '&quot;');
-        return '<div class="cc-card">' +
-          '<button class="cc-x" aria-label="Remove" data-line="'+it.line_id+'" data-station="'+stationAttr+'">×</button>' +
-          '<div class="cc-line">'+(L ? L.name : it.line_id)+'</div>' +
-          '<div class="cc-name">'+it.station+'</div>' +
-          chipStr +
-          '<div class="cc-src">'+srcTxt+'</div>' +
-        '</div>';
-      }).join('');
-    }
-  };
-
-  // Delegated handlers for save (tooltip) and remove (commute card)
-  document.addEventListener('click', (e) => {
-    const sv = e.target.closest('.nav-btn.sv');
-    if (sv) {
-      const line = sv.dataset.line, station = sv.dataset.station;
-      if (commute.has(line, station)) commute.remove(line, station);
-      else commute.add(line, station);
-      // Re-render the currently open tip so the button reflects the new state
-      if (tipIdx >= 0) showTip(tipIdx, tipPinned);
-      return;
-    }
-    const cx = e.target.closest('.cc-x');
-    if (cx) {
-      commute.remove(cx.dataset.line, cx.dataset.station);
-    }
-  });
-
-  // =============== Telegram link flow ===============
-  const TG_BOT_USERNAME = 'manamanaio_bot';
-  // Alphabet drops 0/O/1/I/L to avoid mis-reading if the user ever sees the code
-  const LINK_CODE_ALPHABET = '23456789ABCDEFGHJKMNPQRSTUVWXYZ';
-  function newLinkCode(){
-    const buf = new Uint8Array(6);
-    (window.crypto && crypto.getRandomValues) ? crypto.getRandomValues(buf) : buf.forEach((_,i)=>{ buf[i] = Math.floor(Math.random()*256); });
-    let s = '';
-    for (let i=0; i<6; i++) s += LINK_CODE_ALPHABET[buf[i] % LINK_CODE_ALPHABET.length];
-    return s;
-  }
-  function markTgLinked(){
-    const chip = document.getElementById('tgChip');
-    if (!chip) return;
-    chip.textContent = '✓ Linked to @' + TG_BOT_USERNAME;
-    chip.classList.add('linked');
-    chip.disabled = true;
-  }
-  async function linkTelegram(){
-    const chip = document.getElementById('tgChip');
-    if (!chip || chip.classList.contains('linked')) return;
-    if (!sb) { alert('Sorry — Telegram link needs internet.'); return; }
-    const code = newLinkCode();
-    try {
-      const { error } = await sb.from('link_codes').insert({ code, client_id: clientId() });
-      if (error) throw error;
-    } catch (e) {
-      console.warn('link_codes insert failed', e);
-      alert('Alamak, tak jadi. Cuba lagi.');
-      return;
-    }
-    window.open('https://t.me/' + TG_BOT_USERNAME + '?start=' + code, '_blank', 'noopener');
-    // Poll for consumption on tab-focus (user returns from Telegram), then hydrate saves.
-    let cleared = false;
-    const check = async () => {
-      if (cleared) return true;
-      try {
-        const { data } = await sb.rpc('link_code_status', { c: code });
-        const row = (data || [])[0];
-        if (row && row.used_at) {
-          cleared = true;
-          markTgLinked();
-          commute.load();
-          return true;
-        }
-      } catch (e) {}
-      return false;
-    };
-    const onFocus = async () => {
-      if (await check()) window.removeEventListener('focus', onFocus);
-    };
-    window.addEventListener('focus', onFocus);
-    // Backup: also check every ~4 s for up to 2 minutes in case focus never fires.
-    let ticks = 30;
-    const iv = setInterval(async () => {
-      if (--ticks <= 0 || await check()) clearInterval(iv);
-    }, 4000);
-  }
-  async function checkTgLinkedOnLoad(){
-    if (!sb) return;
-    try {
-      const { data } = await sb.rpc('is_client_linked', { cid: clientId() });
-      if (data === true) markTgLinked();
-    } catch (e) {}
-  }
-
-  // init
-  renderLine(); highlight();
-  initCues();
-  commute.load();
-  checkTgLinkedOnLoad();
-  loadBusyness();
-  loadLive();
-  loadRidership();
-  loadRiderBaseline();
-  loadWeather();
-  loadWxWarning();
-  setInterval(loadLive, 45000);
-  setInterval(loadBusyness, 300000);   // busyness feed refreshes every 5 min
-  setInterval(loadWeather, 900000);    // weather every 15 min
-  setInterval(loadWxWarning, 900000);
-  setInterval(refreshServiceState, 60000); // catches the 6:00 AM boundary without a reload
-  loadAlerts();
-  setInterval(loadAlerts, 300000);     // hydrate service_alerts every 5 min
 </script>
+
 </body>
 </html>
